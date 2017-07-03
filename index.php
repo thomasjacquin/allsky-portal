@@ -46,6 +46,7 @@ include_once( 'includes/dhcp.php' );
 include_once( 'includes/hostapd.php' );
 include_once( 'includes/system.php' );
 include_once( 'includes/configure_client.php' );
+include_once( 'includes/camera_settings.php' );
 
 $output = $return = 0;
 $page = $_GET['page'];
@@ -70,7 +71,7 @@ $csrf_token = $_SESSION['csrf_token'];
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Raspbian WiFi Configuration Portal</title>
+    <title>Allsky Camera Configuration Portal</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -113,7 +114,7 @@ $csrf_token = $_SESSION['csrf_token'];
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="index.php">RaspAP Wifi Portal v1.1</a>
+          <a class="navbar-brand" href="index.php">Allsky Camera Portal v1.0</a>
         </div>
         <!-- /.navbar-header -->
 
@@ -124,10 +125,13 @@ $csrf_token = $_SESSION['csrf_token'];
               <li>
                 <a href="index.php?page=wlan0_info"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
               </li>
-              <li>
-                <a href="index.php?page=wpa_conf"><i class="fa fa-signal fa-fw"></i> Configure client</a>
+	      <li>
+                <a href="index.php?page=camera_conf"><i class="fa fa-camera fa-fw"></i> Camera Settings</a>
               </li>
               <li>
+                <a href="index.php?page=wpa_conf"><i class="fa fa-signal fa-fw"></i> Configure Wifi</a>
+              </li>
+              <!--<li>
                 <a href="index.php?page=hostapd_conf"><i class="fa fa-dot-circle-o fa-fw"></i> Configure hotspot</a>
               </li>
               <li>
@@ -142,9 +146,9 @@ $csrf_token = $_SESSION['csrf_token'];
               <li>
                  <a href="index.php?page=torproxy_conf"><i class="fa fa-eye-slash fa-fw"></i> Configure TOR proxy</a>
               </li>
-              <?php endif; ?>
+              <?php endif; ?>-->
               <li>
-                <a href="index.php?page=auth_conf"><i class="fa fa-lock fa-fw"></i> Configure Auth</a>
+                <a href="index.php?page=auth_conf"><i class="fa fa-lock fa-fw"></i> Change Password</a>
               </li>
               <li>
                  <a href="index.php?page=system_info"><i class="fa fa-cube fa-fw"></i> System</a>
@@ -157,13 +161,18 @@ $csrf_token = $_SESSION['csrf_token'];
       <div id="page-wrapper">
 
         <!-- Page Heading -->
-        <div class="row">
+        <!-- <div class="row">
           <div class="col-lg-12">
             <h1 class="page-header">
               <img class="logo" src="img/raspAP-logo.png" width="45" height="45">RaspAP
             </h1>
           </div>
-        </div><!-- /.row -->
+        </div>-->
+	<!-- /.row -->
+	<div class="row">
+		<div class="col-lg-12">&nbsp;
+		</div>
+	</div>
 
         <?php 
         // handle page actions
@@ -171,13 +180,16 @@ $csrf_token = $_SESSION['csrf_token'];
           case "wlan0_info":
             DisplayDashboard();
             break;
-          case "dhcpd_conf":
+          /*case "dhcpd_conf":
             DisplayDHCPConfig();
+            break;*/
+	  case "camera_conf":
+            DisplayCameraConfig();
             break;
           case "wpa_conf":
             DisplayWPAConfig();
             break;
-          case "hostapd_conf":
+          /*case "hostapd_conf":
             DisplayHostAPDConfig();
             break;
           case "openvpn_conf":
@@ -185,13 +197,13 @@ $csrf_token = $_SESSION['csrf_token'];
             break;
           case "torproxy_conf":
             DisplayTorProxyConfig();
-            break;
+            break;*/
           case "auth_conf":
             DisplayAuthConfig($config['admin_user'], $config['admin_pass']);
             break;
-          case "save_hostapd_conf":
+          /*case "save_hostapd_conf":
             SaveTORAndVPNConfig();
-            break;
+            break;*/
           case "system_info":
             DisplaySystem();
             break;
