@@ -15,10 +15,18 @@ function DisplayCameraConfig(){
         <div class="panel-body">
           <p><?php $status->showMessages(); ?></p>
           <h4>Camera settings</h4>
+	<?php
+		$ini_array = parse_ini_file("camera.ini");
+		//print_r($ini_array);
+	?>
 
           <form method="POST" action="?page=camera_conf" name="camera_conf_form">
-            <?php CSRFToken() ?>
-            <input type="hidden" name="camera_settings" ?>
+            <?php CSRFToken()?>
+ 
+             <?php foreach($ini_array as $key => $value) {
+		echo "<label style='width: 100px'>$key</label>";
+            	echo "<input type='text' style='text-align:right' name='$key' value='$value'></br>"; 
+	     }?>
             
           </form>
         </div><!-- ./ Panel body -->
