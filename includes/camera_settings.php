@@ -4,13 +4,16 @@ include_once( 'includes/status_messages.php' );
 
 function DisplayCameraConfig(){
 
+  $camera_options_str = file_get_contents(RASPI_CAMERA_OPTIONS, true);
+  $camera_options_array = json_decode($camera_options_str, true);
+
   $status = new StatusMessages();
   if (isset($_POST['save_camera_options'])) {
     if (CSRFValidate()) {
-	  if ($camera_config_file = fopen("./camera.ini", 'w')) {
+	  if ($camera_config_file = fopen(RASPI_CAMERA_CONFIG, 'w')) {
 	    foreach ($_POST as $key => $value){
 		if (!in_array($key, ["csrf_token", "save_camera_options", "reset_camera_options"]))
-	    		fwrite($camera_config_file, $key." = ".$value."\n");
+	    		fwrite($camera_config_file, $key.' = "'.$value.'"'.PHP_EOL);
 	    }
 	    fclose($camera_config_file);
 	    $status->addMessage('Camera configuration saved');
@@ -24,11 +27,11 @@ function DisplayCameraConfig(){
 
   if (isset($_POST['reset_camera_options'])) {
     if (CSRFValidate()) {
-	  if ($camera_config_file = fopen("./camera.ini", 'w')) {
+	  if ($camera_config_file = fopen(RASPI_CAMERA_CONFIG, 'w')) {
 	    foreach ($camera_options_array as $option){
 		$key = $option['name'];
 		$value = $option['default'];
-	    	fwrite($camera_config_file, $key." = ".$value."\n");
+	    	fwrite($camera_config_file, $key.' = "'.$value.'"'.PHP_EOL);
 	    }
 	    fclose($camera_config_file);
 	    $status->addMessage('Camera configuration reset to default');
@@ -40,9 +43,7 @@ function DisplayCameraConfig(){
     }
   }
 
-  $camera_options_str = $str = file_get_contents("camera_options.json", true);
-  $camera_options_array = json_decode($camera_options_str, true);
-  $ini_array = parse_ini_file("camera.ini");
+  $ini_array = parse_ini_file(RASPI_CAMERA_CONFIG);
 
 ?>
   <div class="row">
@@ -63,7 +64,7 @@ function DisplayCameraConfig(){
 		$description = $option['description'];
 		echo "<div class='form-group' style='margin: 3px 0'>";
 		echo "<label style='width: 140px'>$label</label>";
-            	echo "<input class='form-control' type='text' style='text-align:right; width: 120px; margin-right: 20px' name='$name' value='$value'>";
+            	echo "<input class='form-control' type='text' style='text-align:right; width: 120px; margin-right: 20px' onclick='this.select();' name='$name' value='$value'>";
 		echo "<span>$description</span>"; 
 		echo "</div><div style='clear:both'></div>";
 	     }?>
