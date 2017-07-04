@@ -1,0 +1,170 @@
+[
+{
+"name":"width",
+"default":"0",
+"description":"Image width. 0 = max width",
+"label":"Width"
+},
+{
+"name":"height",
+"default":"0",
+"description":"Image height. 0 = max height",
+"label":"Height"
+},
+{
+"name":"exposure",
+"default":"5000000",
+"description":"Time in µs (1000000µs = 1 sec)",
+"label":"Exposure"
+},
+{
+"name":"gain",
+"default":"50",
+"description":"Light sensitivity. Starts at 0. A high value returns a brighter image but more noise too",
+"label":"Gain"
+},
+{
+"name":"gamma",
+"default":"50",
+"description":"Changes the difference between light and dark areas. A hight value increases contrast",
+"label":"Gamma"
+},
+{
+"name":"brightness",
+"default":"50",
+"description":"Changes the amount of light in the image. Low value = dark. high value = bright",
+"label":"Brightness"
+},
+{
+"name":"wbr",
+"default":"50",
+"description":"Red component for the White Balance",
+"label":"Red balance"
+},
+{
+"name":"wbb",
+"default":"50",
+"description":"Blue component for the White Balance",
+"label":"Blue balance"
+},
+{
+"name":"bin",
+"default":"1",
+"description":"1 = binning OFF (1x1), 2 = 2x2 binning, 4 = 4x4 binning",
+"label":"Binning"
+},
+{
+"name":"delay",
+"default":"10",
+"description":"Delay between images in milliseconds. 1000ms = 1 sec.",
+"label":"Delay"
+},
+{
+"name":"type",
+"default":"1",
+"description":"0 = RAW8, 1 = RGB24, 2 = RAW16",
+"label":"Image Type"
+},
+{
+"name":"quality",
+"default":"95",
+"description":"Range for a PNG image: 0-9. Range for a JPG image: 0-100",
+"label":"Quality"
+},
+{
+"name":"usb",
+"default":"40",
+"description":"Values between 40-100, This is BandwidthOverload",
+"label":"USB bandwidth"
+},
+{
+"name":"filename",
+"default":"image.jpg",
+"description":"Images can have a .jpg or .png extension",
+"label":"Filename"
+},
+{
+"name":"flip",
+"default":"0",
+"description":"0 = Orig, 1 = Horiz, 2 = Verti, 3 = Both",
+"label":"Flip"
+},
+{
+"name":"text",
+"default":"",
+"description":"Text Overlay",
+"label":"Text Overlay"
+},
+{
+"name":"textx",
+"default":"15",
+"description":"Text Placement Horizontal from LEFT in Pixels",
+"label":"Text X"
+},
+{
+"name":"texty",
+"default":"25",
+"description":"Text Placement Vertical from TOP in Pixels",
+"label":"Text Y"
+},
+{
+"name":"fontname",
+"default":"0",
+"description":"Font Types (0-7), Ex. 0 = simplex, 4 = triplex, 7 = script",
+"label":"Font Name"
+},
+{
+"name":"fontcolor",
+"default":"255 255 255",
+"description":"BRG value of text color",
+"label":"Font Color"
+},
+{
+"name":"fonttype",
+"default":"0",
+"description":"Font Line Type, 0 = AA, 1 = 8, 2 = 4",
+"label":"Font Type"
+},
+{
+"name":"fontsize",
+"default":"0.5",
+"description":"Text Font Size",
+"label":"Font Size"
+},
+{
+"name":"fontline",
+"default":"1",
+"description":"Text Font Line Thickness",
+"label":"Font Weight"
+},
+{
+"name":"latitude",
+"default":"60.7N",
+"description":"Latitude of the camera",
+"label":"Latitude"
+},
+{
+"name":"longitude",
+"default":"135.05W",
+"description":"Longitude of the camera",
+"label":"Longitude"
+},
+{
+"name":"nodisplay",
+"default":"0",
+"description":"Set this parameter to 1 to capture images without using a desktop environment. Uses less CPU",
+"label":"No Display"
+},
+{
+"name":"timelapse",
+"default":"1",
+"description":"Set this parameter to 1 if you want to create a timelapse at the end of the night",
+"label":"Timelapse"
+},
+{
+"name":"time",
+"default":"1",
+"description":"Adds the time to the image. Combine with Text X and Text Y for placement",
+"label":"Time"
+}
+]
