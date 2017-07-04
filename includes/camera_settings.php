@@ -14,7 +14,6 @@ function DisplayCameraConfig(){
 	$text_options[] = $option['name'];
       } 
    }
-print_r($text_options);
 
   $status = new StatusMessages();
   if (isset($_POST['save_camera_options'])) {
