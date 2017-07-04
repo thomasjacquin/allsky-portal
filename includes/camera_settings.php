@@ -1,11 +1,49 @@
 <?php
 
-/**
-*
-*
-*/
+include_once( 'includes/status_messages.php' );
+
 function DisplayCameraConfig(){
+
   $status = new StatusMessages();
+  if (isset($_POST['save_camera_options'])) {
+    if (CSRFValidate()) {
+	  if ($camera_config_file = fopen("./camera.ini", 'w')) {
+	    foreach ($_POST as $key => $value){
+		if (!in_array($key, ["csrf_token", "save_camera_options", "reset_camera_options"]))
+	    		fwrite($camera_config_file, $key." = ".$value."\n");
+	    }
+	    fclose($camera_config_file);
+	    $status->addMessage('Camera configuration saved');
+	  } else {
+	    $status->addMessage('Failed to save camera configuration', 'danger');
+	  }
+    } else {
+      error_log('CSRF violation');
+    }
+  }
+
+  if (isset($_POST['reset_camera_options'])) {
+    if (CSRFValidate()) {
+	  if ($camera_config_file = fopen("./camera.ini", 'w')) {
+	    foreach ($camera_options_array as $option){
+		$key = $option['name'];
+		$value = $option['default'];
+	    	fwrite($camera_config_file, $key." = ".$value."\n");
+	    }
+	    fclose($camera_config_file);
+	    $status->addMessage('Camera configuration reset to default');
+	  } else {
+	    $status->addMessage('Failed to reset camera configuration', 'danger');
+	  }
+    } else {
+      error_log('CSRF violation');
+    }
+  }
+
+  $camera_options_str = $str = file_get_contents("camera_options.json", true);
+  $camera_options_array = json_decode($camera_options_str, true);
+  $ini_array = parse_ini_file("camera.ini");
+
 ?>
   <div class="row">
     <div class="col-lg-12">
@@ -14,15 +52,8 @@ function DisplayCameraConfig(){
         <!-- /.panel-heading -->
         <div class="panel-body">
           <p><?php $status->showMessages(); ?></p>
-          <!--<h4>Camera settings</h4>-->
-	<?php
-		$camera_options_str = $str = file_get_contents("camera_options.json", true);
-		$camera_options_array = json_decode($camera_options_str, true);
-		//echo '<pre>' . print_r($camera_options_array, true) . '</pre>';
-		$ini_array = parse_ini_file("camera.ini");
-	?>
 
-          <form method="POST" action="?page=camera_conf" name="camera_conf_form">
+          <form method="POST" class="form-inline" action="?page=camera_conf" name="camera_conf_form">
             <?php CSRFToken()?>
  
              <?php foreach($camera_options_array as $option) {
@@ -30,13 +61,16 @@ function DisplayCameraConfig(){
 		$name = $option['name'];
 		$value = $ini_array[$option['name']] ? $ini_array[$option['name']] : $option['default'];
 		$description = $option['description'];
+		echo "<div class='form-group' style='margin: 3px 0'>";
 		echo "<label style='width: 140px'>$label</label>";
-            	echo "<input type='text' style='text-align:right; width: 120px' name='$name' value='$value'>";
-		echo "<span style='margin-left: 20px'>$description</span></br>"; 
+            	echo "<input class='form-control' type='text' style='text-align:right; width: 120px; margin-right: 20px' name='$name' value='$value'>";
+		echo "<span>$description</span>"; 
+		echo "</div><div style='clear:both'></div>";
 	     }?>
 
-            <div class="btn-group" style="margin-top: 20px">
-	        <input type="submit" class="btn btn-outline btn-primary" value="Save">
+            <div style="margin-top: 20px">
+	        <input type="submit" class="btn btn-outline btn-primary" name="save_camera_options" value="Save">
+		<input type="submit" class="btn btn-warning" name="reset_camera_options" value="Reset to default values">
 	    </div>
           </form>
         </div><!-- ./ Panel body -->

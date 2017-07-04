@@ -74,7 +74,7 @@
 {
 "name":"usb",
 "default":"40",
-"description":"Values between 40-100, This is BandwidthOverload",
+"description":"Values between 40-100. This is BandwidthOverload",
 "label":"USB bandwidth"
 },
 {
