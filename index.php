@@ -42,6 +42,7 @@ define('RASPI_TORPROXY_ENABLED', false );
 include_once( RASPI_CONFIG.'/raspap.php' );
 include_once( 'includes/functions.php' );
 include_once( 'includes/dashboard.php' );
+include_once( 'includes/liveview.php' );
 include_once( 'includes/authenticate.php' );
 include_once( 'includes/admin.php' );
 include_once( 'includes/dhcp.php' );
@@ -125,7 +126,10 @@ $csrf_token = $_SESSION['csrf_token'];
           <div class="sidebar-nav navbar-collapse">
             <ul class="nav" id="side-menu">
               <li>
-                <a href="index.php?page=wlan0_info"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                <a href="index.php?page=live_view"><i class="fa fa-eye fa-fw"></i> Live View</a>
+              </li>
+              <li>
+                <a href="index.php?page=wlan0_info"><i class="fa fa-dashboard fa-fw"></i> Connection Status</a>
               </li>
 	      <li>
                 <a href="index.php?page=camera_conf"><i class="fa fa-camera fa-fw"></i> Camera Settings</a>
@@ -179,6 +183,9 @@ $csrf_token = $_SESSION['csrf_token'];
         <?php 
         // handle page actions
         switch( $page ) {
+	  case "live_view":
+            DisplayLiveView();
+            break;
           case "wlan0_info":
             DisplayDashboard();
             break;
