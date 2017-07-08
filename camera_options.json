@@ -43,14 +43,14 @@
 },
 {
 "name":"wbr",
-"default":"50",
+"default":"53",
 "description":"Red component for the White Balance",
 "label":"Red balance",
 "type":"number"
 },
 {
 "name":"wbb",
-"default":"50",
+"default":"90",
 "description":"Blue component for the White Balance",
 "label":"Blue balance",
 "type":"number"
@@ -120,7 +120,7 @@
 },
 {
 "name":"texty",
-"default":"25",
+"default":"35",
 "description":"Text Placement Vertical from TOP in Pixels",
 "label":"Text Y",
 "type":"number"
@@ -135,7 +135,7 @@
 {
 "name":"fontcolor",
 "default":"255 255 255",
-"description":"BRG value of text color",
+"description":"BRG value of text color. 0 to 255 for each channel",
 "label":"Font Color",
 "type":"text"
 },
@@ -148,7 +148,7 @@
 },
 {
 "name":"fontsize",
-"default":"0.5",
+"default":"1",
 "description":"Text Font Size",
 "label":"Font Size",
 "type":"number"

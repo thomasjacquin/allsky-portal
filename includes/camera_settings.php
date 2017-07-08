@@ -21,7 +21,7 @@ function DisplayCameraConfig(){
 	  if ($camera_config_file = fopen(RASPI_CAMERA_CONFIG, 'w')) {
 	    foreach ($_POST as $key => $value){
 		if (!in_array($key, ["csrf_token", "save_camera_options", "reset_camera_options"])){
-		    if (in_array($key, $text_options))
+		    if (in_array($key, $text_options) && !in_array("filename", "fontcolor"))
 		        fwrite($camera_config_file, $key.' = "'.$value.'"'.PHP_EOL);
 		    else
 			fwrite($camera_config_file, $key.' = '.$value.PHP_EOL);
@@ -43,7 +43,7 @@ function DisplayCameraConfig(){
 	    foreach ($camera_options_array as $option){
 		$key = $option['name'];
 		$value = $option['default'];
-		if (in_array($key, $text_options))
+		if (in_array($key, $text_options) && !in_array("filename", "fontcolor"))
 		        fwrite($camera_config_file, $key.' = "'.$value.'"'.PHP_EOL);
 		    else
 			fwrite($camera_config_file, $key.' = '.$value.PHP_EOL);
