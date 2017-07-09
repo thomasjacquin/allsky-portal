@@ -240,6 +240,43 @@ $csrf_token = $_SESSION['csrf_token'];
     <!--script src="bower_components/morrisjs/morris.min.js"></script-->
     <!--script src="js/morris-data.js"></script-->
 
+	<script src="js/bigscreen.min.js"></script>
+	<script type="text/javascript">
+		function getImage(){
+			var img = $("<img />").attr('src', 'image.jpg?_ts=' + new Date().getTime())
+				.attr("id", "current")
+				.attr("class", "current")
+				.css("width", "100%")
+				.on('load', function() {
+				    if (!this.complete || typeof this.naturalWidth == "undefined" || this.naturalWidth == 0) {
+				        alert('broken image!');
+				        setTimeout(function(){
+				            getImage();
+				        }, 500);
+				    } else {
+				        $("#live_container").empty().append(img);
+				    }
+				});
+		}
+		
+		$("#live_container").click(function(){
+			console.log("before");
+			if (BigScreen.enabled) {
+				console.log("hello");
+				BigScreen.toggle(this, null, null, null);
+			}
+			else {
+				console.log("Not Supported");
+			}
+		});
+
+		setInterval(function(){
+			console.log("hello");
+			getImage();
+		}, 2000);
+
+	</script>
+
     <!-- Custom Theme JavaScript -->
     <script src="dist/js/sb-admin-2.js"></script>
   </body>
