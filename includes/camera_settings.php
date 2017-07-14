@@ -22,10 +22,10 @@ function DisplayCameraConfig(){
 	    foreach ($_POST as $key => $value){
 		if (!in_array($key, ["csrf_token", "save_camera_options", "reset_camera_options"])){
 		    if (in_array($key, $text_options))
-		        fwrite($camera_config_file, $key.' = "'.$value.'"'.PHP_EOL);
+		        fwrite($camera_config_file, $key.'="'.$value.'"'.PHP_EOL);
 		    else
-			fwrite($camera_config_file, $key.' = '.$value.PHP_EOL);
-		}    		
+			fwrite($camera_config_file, $key.'='.$value.PHP_EOL);
+		}
 	    }
 	    fclose($camera_config_file);
 	    $status->addMessage('Camera configuration saved');
@@ -44,9 +44,9 @@ function DisplayCameraConfig(){
 		$key = $option['name'];
 		$value = $option['default'];
 		if (in_array($key, $text_options))
-		        fwrite($camera_config_file, $key.' = "'.$value.'"'.PHP_EOL);
+		        fwrite($camera_config_file, $key.'="'.$value.'"'.PHP_EOL);
 		    else
-			fwrite($camera_config_file, $key.' = '.$value.PHP_EOL);
+			fwrite($camera_config_file, $key.'='.$value.PHP_EOL);
 	    }
 	    fclose($camera_config_file);
 	    $status->addMessage('Camera configuration reset to default');

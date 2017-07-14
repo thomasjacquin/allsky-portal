@@ -93,7 +93,7 @@
 {
 "name":"filename",
 "default":"image.jpg",
-"description":"Images can have a .jpg or .png extension",
+"description":"No whitespaces in filename. Extensions allowed: .jpg or .png",
 "label":"Filename",
 "type":"text"
 },

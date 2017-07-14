@@ -54,6 +54,8 @@ include_once( 'includes/camera_settings.php' );
 $output = $return = 0;
 $page = $_GET['page'];
 
+$ini_array = parse_ini_file(RASPI_CAMERA_CONFIG);
+
 session_start();
 if (empty($_SESSION['csrf_token'])) {
     if (function_exists('mcrypt_create_iv')) {
@@ -217,7 +219,7 @@ $csrf_token = $_SESSION['csrf_token'];
             DisplaySystem();
             break;
           default:
-            DisplayDashboard();
+            DisplayLiveView();
         }
         ?>
       </div><!-- /#page-wrapper --> 
@@ -243,13 +245,13 @@ $csrf_token = $_SESSION['csrf_token'];
 	<script src="js/bigscreen.min.js"></script>
 	<script type="text/javascript">
 		function getImage(){
-			var img = $("<img />").attr('src', 'image.jpg?_ts=' + new Date().getTime())
+			var img = $("<img />").attr('src', 'current/<?php echo $ini_array["filename"] ?>?_ts=' + new Date().getTime())
 				.attr("id", "current")
 				.attr("class", "current")
 				.css("width", "100%")
 				.on('load', function() {
 				    if (!this.complete || typeof this.naturalWidth == "undefined" || this.naturalWidth == 0) {
-				        alert('broken image!');
+				        console.log('broken image!');
 				        setTimeout(function(){
 				            getImage();
 				        }, 500);
@@ -258,11 +260,9 @@ $csrf_token = $_SESSION['csrf_token'];
 				    }
 				});
 		}
-		
+
 		$("#live_container").click(function(){
-			console.log("before");
 			if (BigScreen.enabled) {
-				console.log("hello");
 				BigScreen.toggle(this, null, null, null);
 			}
 			else {
@@ -271,9 +271,8 @@ $csrf_token = $_SESSION['csrf_token'];
 		});
 
 		setInterval(function(){
-			console.log("hello");
 			getImage();
-		}, 2000);
+		}, <?php echo $ini_array["exposure"]/1000 ?>);
 
 	</script>
 
