@@ -76,7 +76,7 @@ $csrf_token = $_SESSION['csrf_token'];
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Allsky Camera Configuration Portal</title>
+    <title>NexAllSky</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -99,7 +99,7 @@ $csrf_token = $_SESSION['csrf_token'];
     <!-- Custom CSS -->
     <link href="dist/css/custom.css" rel="stylesheet">
 
-    <link rel="shortcut icon" type="image/png" href="../img/favicon.png">
+    <link rel="shortcut icon" type="image/png" href="../img/nexdome-favicon.png">
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -119,7 +119,9 @@ $csrf_token = $_SESSION['csrf_token'];
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="index.php">Allsky Camera Portal v1.0</a>
+          <a class="navbar-brand" href="index.php">
+		<img style="height:50px; display:inline-block; margin-right: 20px" src="img/allsky-nexdome-logo.png">
+		<div class="navbar-title">NexAllSky Administration Panel</div></a>
         </div>
         <!-- /.navbar-header -->
 

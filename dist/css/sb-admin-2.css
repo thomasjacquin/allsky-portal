@@ -27,6 +27,16 @@ body {
     }
 }
 
+@media(max-width:768px) {
+	.navbar-title {
+		display: none;	
+	}
+}
+
+.navbar {
+	height: 75px;
+}
+
 .navbar-top-links {
     margin-right: 0;
 }
@@ -132,7 +142,7 @@ body {
         z-index: 1;
         position: absolute;
         width: 250px;
-        margin-top: 51px;
+        margin-top: 76px;
     }
 
     .navbar-top-links .dropdown-messages,
@@ -140,6 +150,10 @@ body {
     .navbar-top-links .dropdown-alerts {
         margin-left: auto;
     }
+
+	.navbar-title {
+		display: inline-block;	
+	}
 }
 
 .btn-outline {

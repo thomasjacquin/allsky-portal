@@ -7,12 +7,12 @@
 }
 
 .panel-primary {
-	border-color: #c61931;
+	border-color: #d86227;
 }
 
 .panel-primary>.panel-heading {
-	border-color: #d8224c;
-	background-color: #d8224c;
+	border-color: #d86227;
+	background-color: #d86227;
 }
 
 .panel-footer {
