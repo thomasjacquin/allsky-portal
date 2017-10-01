@@ -26,9 +26,13 @@ echo "<h2>$chosen_day</h2>
 
 foreach ($images as $image) {
 	echo "<a href='/images/$chosen_day/$image'>
-			<div style='float: left'>
-				<img src='/images/$chosen_day/$image' style='width: 100px;'/>
-			</div>
+			<div style='float: left'>";
+	$ext = explode(".",$image);
+	if($ext[1] != 'mp4')
+		echo "<img src='/images/$chosen_day/$image' style='width: 100px;'/>";
+	else
+		echo "<img src='https://cdn2.iconfinder.com/data/icons/freecns-cumulus/16/519539-085_Movie-128.png' style='height: 76px;'/>";
+	echo "</div>
 		</a>";
 }
 ?>
