@@ -50,6 +50,8 @@ include_once( 'includes/hostapd.php' );
 include_once( 'includes/system.php' );
 include_once( 'includes/configure_client.php' );
 include_once( 'includes/camera_settings.php' );
+include_once( 'includes/days.php' );
+include_once( 'includes/images.php' );
 
 $output = $return = 0;
 $page = $_GET['page'];
@@ -160,6 +162,9 @@ $csrf_token = $_SESSION['csrf_token'];
               <li>
                 <a href="index.php?page=auth_conf"><i class="fa fa-lock fa-fw"></i> Change Password</a>
               </li>
+	      	  <li>
+                <a href="index.php?page=list_days"><i class="fa fa-image fa-fw"></i> Images</a>
+              </li>
               <li>
                  <a href="index.php?page=system_info"><i class="fa fa-cube fa-fw"></i> System</a>
               </li>
@@ -220,6 +225,12 @@ $csrf_token = $_SESSION['csrf_token'];
           case "system_info":
             DisplaySystem();
             break;
+	  case "list_days":
+            ListDays();
+            break;
+      case "list_images":
+            ListImages();
+            break;
           default:
             DisplayLiveView();
         }
@@ -245,6 +256,7 @@ $csrf_token = $_SESSION['csrf_token'];
     <!--script src="js/morris-data.js"></script-->
 
 	<script src="js/bigscreen.min.js"></script>
+
 	<script type="text/javascript">
 		function getImage(){
 			var img = $("<img />").attr('src', 'current/<?php echo $ini_array["filename"] ?>?_ts=' + new Date().getTime())
