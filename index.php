@@ -56,7 +56,10 @@ include_once( 'includes/images.php' );
 $output = $return = 0;
 $page = $_GET['page'];
 
-$ini_array = parse_ini_file(RASPI_CAMERA_CONFIG);
+$camera_settings_str = file_get_contents(RASPI_CAMERA_SETTINGS, true);
+$camera_settings_array = json_decode($camera_settings_str, true);
+
+
 
 session_start();
 if (empty($_SESSION['csrf_token'])) {
@@ -259,7 +262,7 @@ $csrf_token = $_SESSION['csrf_token'];
 
 	<script type="text/javascript">
 		function getImage(){
-			var img = $("<img />").attr('src', 'current/<?php echo $ini_array["filename"] ?>?_ts=' + new Date().getTime())
+			var img = $("<img />").attr('src', 'current/<?php echo $camera_settings_array["filename"] ?>?_ts=' + new Date().getTime())
 				.attr("id", "current")
 				.attr("class", "current")
 				.css("width", "100%")
@@ -286,7 +289,7 @@ $csrf_token = $_SESSION['csrf_token'];
 
 		setInterval(function(){
 			getImage();
-		}, <?php echo $ini_array["exposure"]/1000 ?>);
+		}, <?php echo $camera_settings_array["exposure"]/1000 ?>);
 
 	</script>
 
