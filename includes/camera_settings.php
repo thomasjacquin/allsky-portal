@@ -18,16 +18,16 @@ function DisplayCameraConfig(){
   $status = new StatusMessages();
   if (isset($_POST['save_camera_options'])) {
     if (CSRFValidate()) {
-	  if ($camera_config_file = fopen(RASPI_CAMERA_CONFIG, 'w')) {
+	  if ($camera_settings_file = fopen(RASPI_CAMERA_SETTINGS, 'w')) {
+		$settings = array();
 	    foreach ($_POST as $key => $value){
-		if (!in_array($key, ["csrf_token", "save_camera_options", "reset_camera_options"])){
-		    if (in_array($key, $text_options))
-		        fwrite($camera_config_file, $key.'="'.$value.'"'.PHP_EOL);
-		    else
-			fwrite($camera_config_file, $key.'='.$value.PHP_EOL);
-		}
+			// We look into POST data to only select camera settings
+			if (!in_array($key, ["csrf_token", "save_camera_options", "reset_camera_options"])){
+				$settings[$key] = $value;
+			}
 	    }
-	    fclose($camera_config_file);
+		fwrite($camera_settings_file, json_encode($settings));
+		fclose($camera_settings_file);
 	    $status->addMessage('Camera configuration saved');
 	  } else {
 	    $status->addMessage('Failed to save camera configuration', 'danger');
@@ -39,16 +39,15 @@ function DisplayCameraConfig(){
 
   if (isset($_POST['reset_camera_options'])) {
     if (CSRFValidate()) {
-	  if ($camera_config_file = fopen(RASPI_CAMERA_CONFIG, 'w')) {
+	  if ($camera_settings_file = fopen(RASPI_CAMERA_SETTINGS, 'w')) {
+		$settings = array();
 	    foreach ($camera_options_array as $option){
-		$key = $option['name'];
-		$value = $option['default'];
-		if (in_array($key, $text_options))
-		        fwrite($camera_config_file, $key.'="'.$value.'"'.PHP_EOL);
-		    else
-			fwrite($camera_config_file, $key.'='.$value.PHP_EOL);
+			$key = $option['name'];
+			$value = $option['default'];
+			$settings[$key] = $value;
 	    }
-	    fclose($camera_config_file);
+	    fwrite($camera_settings_file, json_encode($settings));
+		fclose($camera_settings_file);
 	    $status->addMessage('Camera configuration reset to default');
 	  } else {
 	    $status->addMessage('Failed to reset camera configuration', 'danger');
@@ -58,7 +57,16 @@ function DisplayCameraConfig(){
     }
   }
 
-  $ini_array = parse_ini_file(RASPI_CAMERA_CONFIG);
+  $camera_settings_str = file_get_contents(RASPI_CAMERA_SETTINGS, true);
+  $camera_settings_array = json_decode($camera_settings_str, true);
+
+  $text_options = array();
+   foreach($camera_options_array as $option)
+   {
+      if ( $option['type'] === 'text' && !in_array($option['name'], ["filename", "fontcolor"])){
+	$text_options[] = $option['name'];
+      } 
+   }
 
 ?>
   <div class="row">
@@ -73,17 +81,17 @@ function DisplayCameraConfig(){
             <?php CSRFToken()?>
  
              <?php foreach($camera_options_array as $option) {
-		$label = $option['label'];
-		$name = $option['name'];
-		$value = $ini_array[$option['name']] ? $ini_array[$option['name']] : $option['default'];
-		$description = $option['description'];
-		$type = $option['type'];
-		echo "<div class='form-group' style='margin: 3px 0'>";
-		echo "<label style='width: 140px'>$label</label>";
-            	echo "<input class='form-control' type='$type' style='text-align:right; width: 120px; margin-right: 20px' onclick='this.select();' name='$name' value='$value'>";
-		echo "<span>$description</span>"; 
-		echo "</div><div style='clear:both'></div>";
-	     }?>
+				$label = $option['label'];
+				$name = $option['name'];
+				$value = $camera_settings_array[$option['name']] ? $camera_settings_array[$option['name']] : $option['default'];
+				$description = $option['description'];
+				$type = $option['type'];
+				echo "<div class='form-group' style='margin: 3px 0'>";
+				echo "<label style='width: 140px'>$label</label>";
+				    	echo "<input class='form-control' type='$type' style='text-align:right; width: 120px; margin-right: 20px' onclick='this.select();' name='$name' value='$value'>";
+				echo "<span>$description</span>"; 
+				echo "</div><div style='clear:both'></div>";
+			 }?>
 
             <div style="margin-top: 20px">
 	        <input type="submit" class="btn btn-outline btn-primary" name="save_camera_options" value="Save">
