@@ -1,21 +1,17 @@
 <?php
 
 /**
- * Raspbian WiFi Configuration Portal
+ * AllSky Administration Panel
  *
- * Enables use of simple web interface rather than SSH to control wifi and hostapd on the Raspberry Pi.
- * Recommended distribution is Raspbian Server Edition. Specific instructions to install the supported software are
- * in the README and original post by @SirLagz. For a quick run through, the packages required for the WebGUI are:
- * lighttpd (I have version 1.4.31-2 installed via apt)
- * php5-cgi (I have version 5.4.4-12 installed via apt)
- * along with their supporting packages, php5 will also need to be enabled.
+ * Enables use of simple web interface rather than SSH to control a ZWO camera on the Raspberry Pi.
+ * Uses code from RaspAP by Lawrence Yau <sirlagz@gmail.com> and Bill Zimmerman <billzimmerman@gmail.com>
  * 
  * @author     Lawrence Yau <sirlagz@gmail.comm>
  * @author     Bill Zimmerman <billzimmerman@gmail.com>
+ * @author     Thomas Jacquin <jacquin.thomas@gmail.com>
  * @license    GNU General Public License, version 3 (GPL-3.0)
- * @version    1.1
- * @link       https://github.com/billz/raspap-webgui
- * @see        http://sirlagz.net/2013/02/08/raspap-webgui/
+ * @version    0.0.1
+ * @link       https://github.com/thomasjacquin/allsky-portal
  */
 
 define('RASPI_CONFIG', '/etc/raspap');
@@ -79,9 +75,9 @@ $csrf_token = $_SESSION['csrf_token'];
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
-    <meta name="author" content="">
+    <meta name="author" content="Thomas Jacquin">
 
-    <title>NexAllSky</title>
+    <title>AllSky Admin Panel</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -104,7 +100,7 @@ $csrf_token = $_SESSION['csrf_token'];
     <!-- Custom CSS -->
     <link href="dist/css/custom.css" rel="stylesheet">
 
-    <link rel="shortcut icon" type="image/png" href="../img/nexdome-favicon.png">
+    <link rel="shortcut icon" type="image/png" href="img/allsky-favicon.png">
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -125,8 +121,8 @@ $csrf_token = $_SESSION['csrf_token'];
             <span class="icon-bar"></span>
           </button>
           <a class="navbar-brand" href="index.php">
-		<img style="height:50px; display:inline-block; margin-right: 20px" src="img/allsky-nexdome-logo.png">
-		<div class="navbar-title">NexAllSky Administration Panel</div></a>
+		<img style="height:50px; display:inline-block; margin-right: 20px" src="img/allsky-logo.png">
+		<div class="navbar-title">AllSky Administration Panel</div></a>
         </div>
         <!-- /.navbar-header -->
 
@@ -178,60 +174,36 @@ $csrf_token = $_SESSION['csrf_token'];
 
       <div id="page-wrapper">
 
-        <!-- Page Heading -->
-        <!-- <div class="row">
-          <div class="col-lg-12">
-            <h1 class="page-header">
-              <img class="logo" src="img/raspAP-logo.png" width="45" height="45">RaspAP
-            </h1>
-          </div>
-        </div>-->
-	<!-- /.row -->
-	<div class="row">
-		<div class="col-lg-12">&nbsp;
+		<div class="row">
+			<div class="col-lg-12">&nbsp;
+			</div>
 		</div>
-	</div>
 
         <?php 
         // handle page actions
         switch( $page ) {
-	  case "live_view":
+	  		case "live_view":
             DisplayLiveView();
             break;
           case "wlan0_info":
             DisplayDashboard();
             break;
-          /*case "dhcpd_conf":
-            DisplayDHCPConfig();
-            break;*/
-	  case "camera_conf":
+	  		case "camera_conf":
             DisplayCameraConfig();
             break;
           case "wpa_conf":
             DisplayWPAConfig();
             break;
-          /*case "hostapd_conf":
-            DisplayHostAPDConfig();
-            break;
-          case "openvpn_conf":
-            DisplayOpenVPNConfig();
-            break;
-          case "torproxy_conf":
-            DisplayTorProxyConfig();
-            break;*/
           case "auth_conf":
             DisplayAuthConfig($config['admin_user'], $config['admin_pass']);
             break;
-          /*case "save_hostapd_conf":
-            SaveTORAndVPNConfig();
-            break;*/
           case "system_info":
             DisplaySystem();
             break;
-	  case "list_days":
+	  		case "list_days":
             ListDays();
             break;
-      case "list_images":
+      		case "list_images":
             ListImages();
             break;
           default:
@@ -252,11 +224,6 @@ $csrf_token = $_SESSION['csrf_token'];
 
     <!-- Metis Menu Plugin JavaScript -->
     <script src="bower_components/metisMenu/dist/metisMenu.min.js"></script>
-
-    <!-- Morris Charts JavaScript -->
-    <!--script src="bower_components/raphael/raphael-min.js"></script-->
-    <!--script src="bower_components/morrisjs/morris.min.js"></script-->
-    <!--script src="js/morris-data.js"></script-->
 
 	<script src="js/bigscreen.min.js"></script>
 

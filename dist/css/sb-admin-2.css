@@ -37,6 +37,10 @@ body {
 	height: 75px;
 }
 
+.navbar-brand {
+	padding-top: 12px;
+}
+
 .navbar-top-links {
     margin-right: 0;
 }

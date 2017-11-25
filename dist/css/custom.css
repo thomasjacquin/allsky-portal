@@ -6,13 +6,17 @@
 	margin-right: 5px;
 }
 
+.navbar-brand {
+	padding-top: 12px;
+}
+
 .panel-primary {
-	border-color: #d86227;
+	border-color: #6b6b6b;
 }
 
 .panel-primary>.panel-heading {
-	border-color: #d86227;
-	background-color: #d86227;
+	border-color: #6b6b6b;
+    background-color: #6b6b6b;
 }
 
 .panel-footer {
@@ -20,13 +24,19 @@
 }
 
 .btn-primary.btn-outline {
-	color: #c61931;
-	border-color: #c61931;
+	color: white;
+    border-color: #198bc6;
+    background-color: #198bc6;
 }
 
 .btn-primary:hover {
-	background-color: #c61931;
-	border-color: #c61931;
+	background-color: #2e6582;
+	border-color: #198bc6;
+}
+
+.btn-warning {
+    background-color: #e48d12;
+    border-color: #cc7b09;
 }
 
 .info-item {
