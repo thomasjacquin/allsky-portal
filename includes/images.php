@@ -6,7 +6,7 @@ $images = array();
 $chosen_day = $_GET['day'];
 
 
-if ($handle = opendir('/home/thomas/dev/allsky/images/'.$chosen_day)) {
+if ($handle = opendir('/home/pi/allsky/images/'.$chosen_day)) {
     $blacklist = array('.', '..', 'somedir', 'somefile.php');
     while (false !== ($image = readdir($handle))) {
         if (!in_array($image, $blacklist)) {
