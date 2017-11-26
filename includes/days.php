@@ -1,8 +1,8 @@
 <?php
 
 function delete_directory($dirname) {
-	$result = shell_exec("sudo chgrp -R www-data /home/thomas/dev/allsky/images/");
-	$result = shell_exec("sudo chgrp -R www-data /home/thomas/dev/allsky/images/*");
+	$result = shell_exec("sudo chgrp -R www-data /home/pi/allsky/images/");
+	$result = shell_exec("sudo chgrp -R www-data /home/pi/allsky/images/*");
      if (is_dir($dirname))
            $dir_handle = opendir($dirname);
 	 if (!$dir_handle)
@@ -27,10 +27,10 @@ $days = array();
 if (isset($_POST['delete_directory'])) {
 	$dir = $_POST['delete_directory'];
   echo '<div class="alert alert-warning">Deleted directory '.$dir.'</div>';
-  delete_directory('/home/thomas/dev/allsky/images/'.$dir);
+  delete_directory('/home/pi/allsky/images/'.$dir);
 }
 
-if ($handle = opendir('/home/thomas/dev/allsky/images/')) {
+if ($handle = opendir('/home/pi/allsky/images/')) {
     $blacklist = array('.', '..', 'somedir', 'somefile.php');
     while (false !== ($day = readdir($handle))) {
         if (!in_array($day, $blacklist)) {
