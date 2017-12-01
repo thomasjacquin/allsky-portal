@@ -6,8 +6,10 @@ This project is a graphical interface for the [**allsky camera**](https://github
 
 ## Demo
 A demo of the portal is available [**here**](http://thomasjacquin.com/allsky-portal). 
+
 **Note**: Most of the buttons have been disabled for the demo.
 
+## Screenshots
 Here are some screenshots:
 
 ![](http://www.thomasjacquin.com/allsky-portal/screenshots/connection-info.jpg)
