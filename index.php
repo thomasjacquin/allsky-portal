@@ -18,6 +18,7 @@ define('RASPI_CONFIG', '/etc/raspap');
 define('RASPI_ADMIN_DETAILS', RASPI_CONFIG.'/raspap.auth');
 define('RASPI_CAMERA_SETTINGS', './settings.json');
 define('RASPI_CAMERA_OPTIONS', './camera_options.json');
+define('RASPI_ALLSKY_DIR', 'RASPI_ALLSKY_DIR_PLACEHOLDER');
 
 // Constants for configuration file paths.
 // These are typical for default RPi installs. Modify if needed.
