@@ -72,7 +72,7 @@ function DisplayCameraConfig(){
 ?>
   <div class="row">
     <div class="col-lg-12">
-      <div class="panel panel-primary">           
+      <div class="panel panel-primary">
         <div class="panel-heading"><i class="fa fa-camera fa-fw"></i> Configure Camera Settings</div>
         <!-- /.panel-heading -->
         <div class="panel-body">
@@ -80,17 +80,17 @@ function DisplayCameraConfig(){
 
           <form method="POST" class="form-inline" action="?page=camera_conf" name="camera_conf_form">
             <?php CSRFToken()?>
- 
+
              <?php foreach($camera_options_array as $option) {
 				$label = $option['label'];
 				$name = $option['name'];
-				$value = $camera_settings_array[$option['name']] ? $camera_settings_array[$option['name']] : $option['default'];
+				$value = $camera_settings_array[$option['name']] != null ? $camera_settings_array[$option['name']] : $option['default'];
 				$description = $option['description'];
 				$type = $option['type'];
 				echo "<div class='form-group' style='margin: 3px 0'>";
 				echo "<label style='width: 140px'>$label</label>";
 				    	echo "<input class='form-control' type='$type' style='text-align:right; width: 120px; margin-right: 20px' onclick='this.select();' name='$name' value='$value'>";
-				echo "<span>$description</span>"; 
+				echo "<span>$description</span>";
 				echo "</div><div style='clear:both'></div>";
 			 }?>
 
