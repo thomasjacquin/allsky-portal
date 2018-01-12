@@ -230,7 +230,7 @@ $csrf_token = $_SESSION['csrf_token'];
 
 	<script type="text/javascript">
 		function getImage(){
-			var img = $("<img />").attr('src', 'current/<?php echo $camera_settings_array["filename"] ?>?_ts=' + new Date().getTime())
+			var img = $("<img />").attr('src', 'current/liveview-<?php echo $camera_settings_array["filename"] ?>?_ts=' + new Date().getTime())
 				.attr("id", "current")
 				.attr("class", "current")
 				.css("width", "100%")
