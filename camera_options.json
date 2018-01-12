@@ -194,5 +194,12 @@
 "description":"Adds the time to the image. Combine with Text X and Text Y for placement",
 "label":"Time",
 "type":"number"
+},
+{
+"name":"darkframe",
+"default":"0",
+"description":"Set to 1 to disable time and text overlay",
+"label":"Darkframe",
+"type":"number"
 }
 ]

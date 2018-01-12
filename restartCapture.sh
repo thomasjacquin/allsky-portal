@@ -11,7 +11,7 @@ for KEY in ${KEYS[@]}
 do
 	ARGUMENTS="$ARGUMENTS -$KEY `jq -r '.'$KEY $CAMERA_SETTINGS` "
 done
-echo "$ARGUMENTS">>log.txt
+echo "Restarting with new arguments $ARGUMENTS">>/home/pi/allsky/log.txt
 
 # We kill the capture process and restart it with new arguments
-killall -9 capture ; ./capture $ARGUMENTS
+killall -9 capture ; /home/pi/allsky/capture $ARGUMENTS

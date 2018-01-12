@@ -29,7 +29,7 @@ function DisplayCameraConfig(){
 		fwrite($camera_settings_file, json_encode($settings));
 		fclose($camera_settings_file);
 	    $status->addMessage('Camera configuration saved');
-	    shell_exec("sudo ./restartCapture.sh");
+//	    shell_exec("sudo ./restartCapture.sh");
 	  } else {
 	    $status->addMessage('Failed to save camera configuration', 'danger');
 	  }
