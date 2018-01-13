@@ -30,6 +30,7 @@ function DisplayCameraConfig(){
 		fclose($camera_settings_file);
 	    $status->addMessage('Camera configuration saved');
 //	    shell_exec("sudo ./restartCapture.sh");
+	    shell_exec("sudo /sbin/shutdown -h now");
 	  } else {
 	    $status->addMessage('Failed to save camera configuration', 'danger');
 	  }
@@ -95,7 +96,7 @@ function DisplayCameraConfig(){
 			 }?>
 
             <div style="margin-top: 20px">
-	        <input type="submit" class="btn btn-outline btn-primary" name="save_camera_options" value="Save">
+	        <input type="submit" class="btn btn-outline btn-primary" name="save_camera_options" value="Save and Reboot">
 		<input type="submit" class="btn btn-warning" name="reset_camera_options" value="Reset to default values">
 	    </div>
           </form>

@@ -198,8 +198,8 @@
 {
 "name":"darkframe",
 "default":"0",
-"description":"Set to 1 to disable time and text overlay",
-"label":"Darkframe",
+"description":"Set to 1 to capture a dark frame. This mode hides text and time overlays",
+"label":"Dark Frame",
 "type":"number"
 }
 ]
