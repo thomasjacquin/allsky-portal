@@ -12,7 +12,7 @@ function DisplayCameraConfig(){
    {
       if ( $option['type'] === 'text' && !in_array($option['name'], ["filename", "fontcolor"])){
 	$text_options[] = $option['name'];
-      } 
+      }
    }
 
   $status = new StatusMessages();
@@ -20,17 +20,21 @@ function DisplayCameraConfig(){
     if (CSRFValidate()) {
 	  if ($camera_settings_file = fopen(RASPI_CAMERA_SETTINGS, 'w')) {
 		$settings = array();
-	    foreach ($_POST as $key => $value){
+	    	foreach ($_POST as $key => $value){
 			// We look into POST data to only select camera settings
 			if (!in_array($key, ["csrf_token", "save_camera_options", "reset_camera_options"])){
-				$settings[$key] = $value;
+				if (camera_options_array[$key] == "checkbox"){
+					$settings[$key] = $value;
+				} else {
+					$settings[$key] = $value;
+				}
 			}
-	    }
+	    	}
 		fwrite($camera_settings_file, json_encode($settings));
 		fclose($camera_settings_file);
-	    $status->addMessage('Camera configuration saved. Reboot to apply changes');
-//	    shell_exec("sudo ./restartCapture.sh");
-	    shell_exec("sudo /sbin/reboot now");
+	    	$status->addMessage('Camera configuration saved. Reboot to apply changes');
+//	    	shell_exec("sudo ./restartCapture.sh");
+	    	shell_exec("sudo /sbin/reboot now");
 	  } else {
 	    $status->addMessage('Failed to save camera configuration', 'danger');
 	  }
@@ -67,7 +71,7 @@ function DisplayCameraConfig(){
    {
       if ( $option['type'] === 'text' && !in_array($option['name'], ["filename", "fontcolor"])){
 	$text_options[] = $option['name'];
-      } 
+      }
    }
 
 ?>
@@ -82,7 +86,8 @@ function DisplayCameraConfig(){
           <form method="POST" class="form-inline" action="?page=camera_conf" name="camera_conf_form">
             <?php CSRFToken()?>
 
-             <?php foreach($camera_options_array as $option) {
+             <?php
+			foreach($camera_options_array as $option) {
 				$label = $option['label'];
 				$name = $option['name'];
 				$value = $camera_settings_array[$option['name']] != null ? $camera_settings_array[$option['name']] : $option['default'];
@@ -90,7 +95,26 @@ function DisplayCameraConfig(){
 				$type = $option['type'];
 				echo "<div class='form-group' style='margin: 3px 0'>";
 				echo "<label style='width: 140px'>$label</label>";
-				    	echo "<input class='form-control' type='$type' style='text-align:right; width: 120px; margin-right: 20px' onclick='this.select();' name='$name' value='$value'>";
+				if ($type != "checkbox"){
+					echo "<input class='form-control' type='$type' ".
+					"style='text-align:right; width: 120px; margin-right: 20px' ".
+					"name='$name' value='$value'>";
+				} else {
+					echo "<div class='switch-field'>";
+						echo "<input id='switch_no_".$name."' class='form-control' type='radio' ".
+        	                                "style='width: 40px; box-shadow:none' ".
+                	                        "name='$name' value='0' ".
+                        	                ($value == 0 ? " checked " : "").
+                                	        ">";
+						echo "<label for='switch_no_".$name."'>No</label>";
+						echo "<input id='switch_yes_".$name."' class='form-control' type='radio' ".
+	                                        "style='width: 40px; box-shadow:none' ".
+        	                                "name='$name' value='1' ".
+                	                        ($value == 1 ? " checked " : "").
+                        	                ">";
+						echo "<label for='switch_yes_".$name."'>Yes</label>";
+					echo "</div>";
+				}
 				echo "<span>$description</span>";
 				echo "</div><div style='clear:both'></div>";
 			 }?>

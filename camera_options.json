@@ -177,29 +177,29 @@
 {
 "name":"nodisplay",
 "default":"0",
-"description":"Set this parameter to 1 to capture images without using a desktop environment. Uses less CPU",
+"description":"Activate to capture images with no preview on the Pi's desktop. Uses less CPU",
 "label":"No Display",
-"type":"number"
+"type":"checkbox"
 },
 {
 "name":"timelapse",
 "default":"1",
-"description":"Set this parameter to 1 if you want to create a timelapse at the end of the night",
+"description":"Activate if you want to create a timelapse at the end of the night",
 "label":"Timelapse",
-"type":"number"
+"type":"checkbox"
 },
 {
 "name":"time",
 "default":"1",
 "description":"Adds the time to the image. Combine with Text X and Text Y for placement",
 "label":"Time",
-"type":"number"
+"type":"checkbox"
 },
 {
 "name":"darkframe",
 "default":"0",
-"description":"Set to 1 to capture a dark frame. This mode hides text and time overlays",
+"description":"Activate to capture a dark frame. This mode hides text and time overlays",
 "label":"Dark Frame",
-"type":"number"
+"type":"checkbox"
 }
 ]
