@@ -55,8 +55,14 @@ asort($days);
 <?php
 foreach ($days as $day) {
 	echo "<tr>
-				<td style='width:100px'><a href='index.php?page=list_images&day=$day'>$day</a>
+                                <td style='width:100px; font-weight:bold'>$day
+                                </td>
+				<td style='width:100px'><a href='index.php?page=list_images&day=$day'>Images</a>
 				</td>
+				<td style='width:100px'><a href='index.php?page=list_videos&day=$day'>Videos</a>
+                                </td>
+                                <td style='width:100px'><a href='index.php?page=list_keograms&day=$day'>Keogram</a>
+                                </td>
 				<td style='padding: 5px'>
 					<button type='submit' 
 						class='btn btn-danger' 

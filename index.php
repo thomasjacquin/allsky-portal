@@ -49,14 +49,14 @@ include_once( 'includes/configure_client.php' );
 include_once( 'includes/camera_settings.php' );
 include_once( 'includes/days.php' );
 include_once( 'includes/images.php' );
+include_once( 'includes/videos.php' );
+include_once( 'includes/keograms.php' );
 
 $output = $return = 0;
 $page = $_GET['page'];
 
 $camera_settings_str = file_get_contents(RASPI_CAMERA_SETTINGS, true);
 $camera_settings_array = json_decode($camera_settings_str, true);
-
-
 
 session_start();
 if (empty($_SESSION['csrf_token'])) {
@@ -201,13 +201,19 @@ $csrf_token = $_SESSION['csrf_token'];
           case "system_info":
             DisplaySystem();
             break;
-	  		case "list_days":
+	  case "list_days":
             ListDays();
             break;
-      		case "list_images":
+	  case "list_images":
             ListImages();
             break;
-          default:
+          case "list_videos":
+            ListVideos();
+            break;
+	  case "list_keograms":
+            ListKeograms();
+            break;
+	  default:
             DisplayLiveView();
         }
         ?>

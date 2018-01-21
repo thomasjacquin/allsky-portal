@@ -182,13 +182,6 @@
 "type":"checkbox"
 },
 {
-"name":"timelapse",
-"default":"1",
-"description":"Activate if you want to create a timelapse at the end of the night",
-"label":"Timelapse",
-"type":"checkbox"
-},
-{
 "name":"time",
 "default":"1",
 "description":"Adds the time to the image. Combine with Text X and Text Y for placement",
