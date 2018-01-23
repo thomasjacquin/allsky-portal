@@ -1,23 +1,27 @@
 <?php
 
 function delete_directory($dirname) {
-	$result = shell_exec("sudo chgrp -R www-data /home/pi/allsky/images/");
-	$result = shell_exec("sudo chgrp -R www-data /home/pi/allsky/images/*");
-     if (is_dir($dirname))
-           $dir_handle = opendir($dirname);
-	 if (!$dir_handle)
-	      return false;
-	 while($file = readdir($dir_handle)) {
-	       if ($file != "." && $file != "..") {
-	            if (!is_dir($dirname."/".$file))
-	                 unlink($dirname."/".$file);
-	            else
-	                 delete_directory($dirname.'/'.$file);
-	       }
-	 }
-	 closedir($dir_handle);
-	 rmdir($dirname);
-	 return true;
+//	$result = shell_exec("sudo chown pi:www-data /home/pi/allsky/images/");
+//        $result = shell_exec("sudo chown -R www-data:www-data ".$dirname);
+//        chmod($dirname, 0777);
+//     if (is_dir($dirname))
+//           $dir_handle = opendir($dirname);
+//         if (!$dir_handle)
+//              return false;
+//         while($file = readdir($dir_handle)) {
+//               if ($file != "." && $file != "..") {
+//                    if (!is_dir($dirname."/".$file))
+//                         unlink($dirname."/".$file);
+//                    else
+//                         delete_directory($dirname.'/'.$file);
+//               }
+//         }
+//         closedir($dir_handle);
+//         rmdir($dirname);
+	error_log("deleting image directory: rm -rf ".$dirname."/");
+	$result=system("sudo rm -rf ".$dirname);
+        error_log($result);
+	return true;
 }
 
 function ListDays(){
