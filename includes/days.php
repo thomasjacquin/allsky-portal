@@ -1,23 +1,6 @@
 <?php
 
 function delete_directory($dirname) {
-//	$result = shell_exec("sudo chown pi:www-data /home/pi/allsky/images/");
-//        $result = shell_exec("sudo chown -R www-data:www-data ".$dirname);
-//        chmod($dirname, 0777);
-//     if (is_dir($dirname))
-//           $dir_handle = opendir($dirname);
-//         if (!$dir_handle)
-//              return false;
-//         while($file = readdir($dir_handle)) {
-//               if ($file != "." && $file != "..") {
-//                    if (!is_dir($dirname."/".$file))
-//                         unlink($dirname."/".$file);
-//                    else
-//                         delete_directory($dirname.'/'.$file);
-//               }
-//         }
-//         closedir($dir_handle);
-//         rmdir($dirname);
 	error_log("deleting image directory: rm -rf ".$dirname."/");
 	$result=system("sudo rm -rf ".$dirname);
         error_log($result);
@@ -66,6 +49,8 @@ foreach ($days as $day) {
 				<td style='width:100px'><a href='index.php?page=list_videos&day=$day'>Videos</a>
                                 </td>
                                 <td style='width:100px'><a href='index.php?page=list_keograms&day=$day'>Keogram</a>
+                                </td>
+  				<td style='width:100px'><a href='index.php?page=list_startrails&day=$day'>Startrails</a>
                                 </td>
 				<td style='padding: 5px'>
 					<button type='submit' 

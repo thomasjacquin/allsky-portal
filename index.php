@@ -51,6 +51,7 @@ include_once( 'includes/days.php' );
 include_once( 'includes/images.php' );
 include_once( 'includes/videos.php' );
 include_once( 'includes/keograms.php' );
+include_once( 'includes/startrails.php' );
 
 $output = $return = 0;
 $page = $_GET['page'];
@@ -212,6 +213,9 @@ $csrf_token = $_SESSION['csrf_token'];
             break;
 	  case "list_keograms":
             ListKeograms();
+            break;
+	  case "list_startrails":
+            ListStartrails();
             break;
 	  default:
             DisplayLiveView();
