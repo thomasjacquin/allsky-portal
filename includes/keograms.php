@@ -5,7 +5,7 @@ function ListKeograms(){
 	$chosen_day = $_GET['day'];
 
 	$keograms = array();
-	foreach (glob("/home/pi/allsky/images/$chosen_day/keogram-$chosen_day.jpg") as $keogram) {
+	foreach (glob("/home/pi/allsky/images/$chosen_day/keogram/keogram-$chosen_day.jpg") as $keogram) {
 	  $keograms[] = $keogram;
 	}
 
@@ -15,9 +15,9 @@ function ListKeograms(){
 
         foreach ($keograms as $keogram) {
 		$keogram_name = basename($keogram);
-                echo "<a href='/images/$chosen_day/$keogram_name'>
+                echo "<a href='/images/$chosen_day/keogram/$keogram_name'>
                         <div style='float: left'>
-                        <img src='/images/$chosen_day/$keogram_name' style='width: 100%;'/> 
+                        <img src='/images/$chosen_day/keogram/$keogram_name' style='width: 100%;'/> 
                         </div></a>";
         }
   	echo "</div>";
