@@ -30,6 +30,15 @@ if ($handle = opendir('/home/pi/allsky/images/')) {
 asort($days);
 
 ?>
+<style>
+	table th {
+		text-align:center;
+		padding: 0 10px;
+	}
+	table tr td {
+		padding: 0 10px;
+	}
+</style>
 <div class="row">
   <div class="col-lg-12">
   <div class="panel panel-primary">
@@ -37,27 +46,36 @@ asort($days);
   <div class="panel-body">
     <div class="row">
 	<form action="?page=list_days" method="POST" onsubmit="return confirm('Are you sure you want to delete ALL images for that day?');">
-	<table style='margin: 20px'>
+	<table style='margin: 20px; text-align:center'>
+		<thead>
+			<tr>
+				<th style="text-align:center">Day</th>
+				<th style="text-align:center">Images</th>
+				<th style="text-align:center">Timelapse</th>
+				<th style="text-align:center">Keogram</th>
+				<th style="text-align:center">Startrails</th>
+			</tr>
+		</thead>
 		<tbody>
 <?php
 foreach ($days as $day) {
 	echo "<tr>
-                                <td style='width:100px; font-weight:bold'>$day
+                                <td style='font-weight:bold'>$day
                                 </td>
-				<td style='width:100px'><a href='index.php?page=list_images&day=$day'>Images</a>
+				<td><a href='index.php?page=list_images&day=$day' title='Images'><i class='fa fa-image fa-lg fa-fw'></i></a>
 				</td>
-				<td style='width:100px'><a href='index.php?page=list_videos&day=$day'>Videos</a>
+				<td><a href='index.php?page=list_videos&day=$day' title='Timelapse'><i class='fa fa-film fa-lg fa-fw'></i></a>
                                 </td>
-                                <td style='width:100px'><a href='index.php?page=list_keograms&day=$day'>Keogram</a>
+                                <td><a href='index.php?page=list_keograms&day=$day' title='Keogram'><i class='fa fa-barcode fa-lg fa-fw'></i></a>
                                 </td>
-  				<td style='width:100px'><a href='index.php?page=list_startrails&day=$day'>Startrails</a>
+  				<td><a href='index.php?page=list_startrails&day=$day' title='Startrails'><i class='fa fa-circle-notch fa-lg fa-fw'></i></a>
                                 </td>
 				<td style='padding: 5px'>
-					<button type='submit' 
-						class='btn btn-danger' 
-						data-toggle='confirmation' 
-						name='delete_directory' 
-						value='$day' 
+					<button type='submit'
+						class='btn btn-danger'
+						data-toggle='confirmation'
+						name='delete_directory'
+						value='$day'
 						style='width: 90px; text-align: center, color:white'>
 					<i class='fa fa-trash text-danger' style='color:white'></i> Delete</button>
 				</td>

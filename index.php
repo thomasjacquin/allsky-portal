@@ -96,8 +96,8 @@ $csrf_token = $_SESSION['csrf_token'];
     <!-- Morris Charts CSS -->
     <link href="bower_components/morrisjs/morris.css" rel="stylesheet">
 
-    <!-- Custom Fonts -->
-    <link href="bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <!-- Font Awesome -->
+    <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
 
     <!-- Custom CSS -->
     <link href="dist/css/custom.css" rel="stylesheet">
@@ -136,7 +136,7 @@ $csrf_token = $_SESSION['csrf_token'];
                 <a href="index.php?page=live_view"><i class="fa fa-eye fa-fw"></i> Live View</a>
               </li>
               <li>
-                <a href="index.php?page=wlan0_info"><i class="fa fa-dashboard fa-fw"></i> Connection Status</a>
+                <a href="index.php?page=wlan0_info"><i class="fa fa-tachometer-alt fa-fw"></i> Connection Status</a>
               </li>
 	      <li>
                 <a href="index.php?page=camera_conf"><i class="fa fa-camera fa-fw"></i> Camera Settings</a>
