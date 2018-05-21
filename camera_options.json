@@ -21,11 +21,39 @@
 "type":"number"
 },
 {
+"name":"maxexposure",
+"default":10000000,
+"description":"Max exposure time in µs (1000000µs = 1 sec)",
+"label":"Max Exposure",
+"type":"number"
+},
+{
+"name":"autoexposure",
+"default":"0",
+"description":"Activate to enable auto-exposure",
+"label":"Auto-Exposure",
+"type":"checkbox"
+},
+{
 "name":"gain",
 "default":"50",
 "description":"Light sensitivity. Starts at 0. A high value returns a brighter image but more noise too",
 "label":"Gain",
 "type":"number"
+},
+{
+"name":"maxgain",
+"default":200,
+"description":"Upper gain limit when using auto-gain",
+"label":"Max Exposure",
+"type":"number"
+},
+{
+"name":"autogain",
+"default":"0",
+"description":"Activate to enable auto-gain",
+"label":"Auto-Gain",
+"type":"checkbox"
 },
 {
 "name":"gamma",
