@@ -32,9 +32,8 @@ function DisplayCameraConfig(){
 	    	}
 		fwrite($camera_settings_file, json_encode($settings));
 		fclose($camera_settings_file);
-	    	$status->addMessage('Camera configuration saved. Reboot to apply changes');
-//	    	shell_exec("sudo ./restartCapture.sh");
-	    	shell_exec("sudo /sbin/reboot now");
+	    	$status->addMessage('Camera configuration saved.');
+	    	shell_exec("sudo systemctl restart allsky.service");
 	  } else {
 	    $status->addMessage('Failed to save camera configuration', 'danger');
 	  }
@@ -120,7 +119,7 @@ function DisplayCameraConfig(){
 			 }?>
 
             <div style="margin-top: 20px">
-		<input type="submit" class="btn btn-outline btn-primary" name="save_camera_options" value="Save and Reboot">
+		<input type="submit" class="btn btn-outline btn-primary" name="save_camera_options" value="Save changes">
 		<input type="submit" class="btn btn-warning" name="reset_camera_options" value="Reset to default values">
 	    </div>
           </form>

@@ -98,6 +98,13 @@
 "type":"number"
 },
 {
+"name":"daytimeDelay",
+"default":"5000",
+"description":"Delay between images during daytime in milliseconds. 1000ms = 1 sec.",
+"label":"Daytime Delay",
+"type":"number"
+},
+{
 "name":"type",
 "default":"1",
 "description":"0 = RAW8, 1 = RGB24, 2 = RAW16",
@@ -201,13 +208,6 @@
 "description":"Longitude of the camera",
 "label":"Longitude",
 "type":"text"
-},
-{
-"name":"nodisplay",
-"default":"0",
-"description":"Activate to capture images with no preview on the Pi's desktop. Uses less CPU",
-"label":"No Display",
-"type":"checkbox"
 },
 {
 "name":"time",
