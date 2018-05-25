@@ -23,7 +23,7 @@
 {
 "name":"maxexposure",
 "default":10000000,
-"description":"Max exposure time in µs (1000000µs = 1 sec)",
+"description":"Max exposure time in ms (1000ms = 1 sec)",
 "label":"Max Exposure",
 "type":"number"
 },
@@ -45,7 +45,7 @@
 "name":"maxgain",
 "default":200,
 "description":"Upper gain limit when using auto-gain",
-"label":"Max Exposure",
+"label":"Max Gain",
 "type":"number"
 },
 {
@@ -58,14 +58,14 @@
 {
 "name":"gamma",
 "default":"50",
-"description":"Changes the difference between light and dark areas. A hight value increases contrast",
+"description":"0 to 100. Changes the difference between light and dark areas. A hight value increases contrast",
 "label":"Gamma",
 "type":"number"
 },
 {
 "name":"brightness",
 "default":"50",
-"description":"Changes the amount of light in the image. Low value = dark. high value = bright",
+"description":"0 to 100. Changes the amount of light in the image. Low value = dark. high value = bright",
 "label":"Brightness",
 "type":"number"
 },
