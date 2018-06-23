@@ -7,9 +7,10 @@ $chosen_day = $_GET['day'];
 
 
 if ($handle = opendir('/home/pi/allsky/images/'.$chosen_day)) {
-    $blacklist = array('.', '..', 'somedir', 'somefile.php');
+    $blacklist = array('.', '..', '*.mp4', 'startrails', 'keogram', 'thumbnails');
     while (false !== ($image = readdir($handle))) {
-        if (!in_array($image, $blacklist)) {
+	$ext = explode(".",$image);
+        if (!in_array($image, $blacklist) && $ext[1]!='mp4') {
             $images[] = $image;
         }
     }
@@ -27,11 +28,10 @@ echo "<h2>$chosen_day</h2>
 foreach ($images as $image) {
 	echo "<a href='/images/$chosen_day/$image'>
 			<div style='float: left'>";
-	$ext = explode(".",$image);
-	if($ext[1] != 'mp4')
-		echo "<img src='/images/$chosen_day/$image' style='width: 100px;'/>";
+	if(file_exists("/home/pi/allsky/images/$chosen_day/thumbnails/$image"))
+		echo "<img src='/images/$chosen_day/thumbnails/$image' style='width: 100px;'/>";
 	else
-		echo "<img src='https://cdn2.iconfinder.com/data/icons/freecns-cumulus/16/519539-085_Movie-128.png' style='height: 76px;'/>";
+		echo "<img src='/images/$chosen_day/$image' style='width: 100px;'/>";
 	echo "</div>
 		</a>";
 }
