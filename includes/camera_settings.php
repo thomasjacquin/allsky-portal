@@ -94,11 +94,24 @@ function DisplayCameraConfig(){
 				$type = $option['type'];
 				echo "<div class='form-group' style='margin: 3px 0'>";
 				echo "<label style='width: 140px'>$label</label>";
-				if ($type != "checkbox"){
+				if ($type == "text" || $type == "number"){
 					echo "<input class='form-control' type='$type' ".
-					"style='text-align:right; width: 120px; margin-right: 20px' ".
+					"style='text-align: right; width: 120px; margin-right: 20px' ".
 					"name='$name' value='$value'>";
-				} else {
+				} else if ($type == "select"){
+					echo "<select class='form-control' name='$name' ".
+						"style='width: 120px; margin-right: 20px'>";
+					foreach($option['options'] as $opt){
+						$val = $opt['value'];
+						$lab = $opt['label'];
+						if ($value == $val){
+							echo "<option value='$val' selected>$lab</option>";
+						} else {
+							echo "<option value='$val'>$lab</option>";
+						}
+					}
+					echo "</select>";
+				} else if ($type == "checkbox"){
 					echo "<div class='switch-field'>";
 						echo "<input id='switch_no_".$name."' class='form-control' type='radio' ".
         	                                "style='width: 40px; box-shadow:none' ".

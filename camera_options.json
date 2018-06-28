@@ -86,7 +86,7 @@
 {
 "name":"bin",
 "default":"1",
-"description":"1 = binning OFF (1x1), 2 = 2x2 binning, 4 = 4x4 binning",
+"description":"1 = binning OFF (1x1), 2 = 2x2 binning, 4 = 4x4 binning. Check available binning mode for your camera",
 "label":"Binning",
 "type":"number"
 },
@@ -107,9 +107,14 @@
 {
 "name":"type",
 "default":"1",
-"description":"0 = RAW8, 1 = RGB24, 2 = RAW16",
+"description":"Choose between Color (RGB24) or Grayscale (RAW8, RAW16). 16 bits only works with PNG extension",
 "label":"Image Type",
-"type":"number"
+"type":"select",
+"options": [
+	{"value": "0", "label": "RAW8"},
+	{"value": "1", "label": "RGB24"},
+	{"value": "2", "label": "RAW16"}
+]
 },
 {
 "name":"quality",
@@ -135,9 +140,15 @@
 {
 "name":"flip",
 "default":"0",
-"description":"0 = Orig, 1 = Horiz, 2 = Verti, 3 = Both",
+"description":"Select a flipping option if you want to reverse the image along an axis",
 "label":"Flip",
-"type":"number"
+"type":"select",
+"options": [
+	{"value": "0", "label": "Original"},
+	{"value": "1", "label": "Horizontal"},
+	{"value": "2", "label": "Vertical"},
+	{"value": "3", "label": "Both"}
+]
 },
 {
 "name":"text",
@@ -163,9 +174,19 @@
 {
 "name":"fontname",
 "default":"0",
-"description":"Font Types (0-7), Ex. 0 = simplex, 4 = triplex, 7 = script",
+"description":"Font Types for the text overlay",
 "label":"Font Name",
-"type":"number"
+"type":"select",
+"options": [
+	{"value": "0", "label": "Simplex"},
+	{"value": "1", "label": "Plain"},
+	{"value": "2", "label": "Duplex"},
+	{"value": "3", "label": "Complex"},
+	{"value": "4", "label": "Triplex"},
+	{"value": "5", "label": "Complex Small"},
+	{"value": "6", "label": "Script Simplex"},
+	{"value": "7", "label": "Script Complex"}
+]
 },
 {
 "name":"fontcolor",
@@ -177,9 +198,14 @@
 {
 "name":"fonttype",
 "default":"0",
-"description":"Font Line Type, 0 = AA, 1 = 8, 2 = 4",
-"label":"Font Type",
-"type":"number"
+"description":"Choose between smooth font lines (antialiased), 8-pixel or 4 pixel connectivity (harder edges)",
+"label":"Font Smoothness",
+"type":"select",
+"options": [
+        {"value": "0", "label": "Antialiased"},
+        {"value": "1", "label": "8 connected"},
+        {"value": "2", "label": "4 connected"}
+]
 },
 {
 "name":"fontsize",
@@ -198,14 +224,14 @@
 {
 "name":"latitude",
 "default":"60.7N",
-"description":"Latitude of the camera",
+"description":"Latitude of the camera. Needs a number (0 to 90) and direction (N or S). Ex: 60.7N",
 "label":"Latitude",
 "type":"text"
 },
 {
 "name":"longitude",
 "default":"135.05W",
-"description":"Longitude of the camera",
+"description":"Longitude of the camera. Needs a number (0 to 180) and direction (E or W). Ex: 135.05W",
 "label":"Longitude",
 "type":"text"
 },
