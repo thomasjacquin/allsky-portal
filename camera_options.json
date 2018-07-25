@@ -15,8 +15,8 @@
 },
 {
 "name":"exposure",
-"default":3000000,
-"description":"Time in µs (1000000µs = 1 sec)",
+"default":5000,
+"description":"Time in ms (1000ms = 1 sec)",
 "label":"Exposure",
 "type":"number"
 },

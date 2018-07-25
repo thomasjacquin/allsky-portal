@@ -267,7 +267,7 @@ $csrf_token = $_SESSION['csrf_token'];
 
 		setInterval(function(){
 			getImage();
-		}, <?php echo $camera_settings_array["exposure"]/1000 ?>);
+		}, <?php echo $camera_settings_array["exposure"] ?>);
 
 	</script>
 
