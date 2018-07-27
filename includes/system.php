@@ -30,7 +30,8 @@ function RPiVersion() {
     '900093' => 'PiZero 1.3',
     '9000c1' => 'PiZero W',
     'a02082' => 'Pi 3 Model B',
-    'a22082' => 'Pi 3 Model B'
+    'a22082' => 'Pi 3 Model B',
+    'a020d3' => 'Pi 3 Model B+'
   );
   exec('cat /proc/cpuinfo', $cpuinfo_array);
   $rev = trim(array_pop(explode(':',array_pop(preg_grep("/^Revision/", $cpuinfo_array)))));
