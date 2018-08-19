@@ -10,15 +10,16 @@ function ListVideos(){
 	}
 
 
-	echo "<h2>Videos - $chosen_day</h2>
+	echo "<h2>Timelapse - $chosen_day</h2>
 	  <div class='row'>";
 
         foreach ($videos as $video) {
 		$video_name = basename($video);
-                echo "<a href='/images/$chosen_day/$video_name'>
-                        <div style='float: left'>
-                        <img src='../img/video-icon.png' style='height: 76px;'/> 
-                        </div></a>";
+		echo "<video width='640' height='480' controls>
+  			<source src='/images/$chosen_day/$video_name' type='video/mp4'>
+  			<source src='movie.ogg' type='video/ogg'>
+  			Your browser does not support the video tag.
+		     </video>";
         }
   	echo "</div>";
 }

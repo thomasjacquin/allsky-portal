@@ -17,7 +17,7 @@ function ListKeograms(){
 		$keogram_name = basename($keogram);
                 echo "<a href='/images/$chosen_day/keogram/$keogram_name'>
                         <div style='float: left'>
-                        <img src='/images/$chosen_day/keogram/$keogram_name' style='width: 100%;'/> 
+                        <img src='/images/$chosen_day/keogram/$keogram_name' style='max-width: 100%;max-height:400px'/> 
                         </div></a>";
         }
   	echo "</div>";

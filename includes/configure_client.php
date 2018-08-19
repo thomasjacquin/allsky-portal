@@ -171,7 +171,7 @@ function DisplayWPAConfig(){
                 <i class="fa fa-check-circle fa-fw"></i>
                 <?php } ?>
                 <?php if ($network['connected']) { ?>
-                <i class="fa fa-exchange fa-fw"></i>
+                <i class="fa fa-exchange-alt fa-fw"></i>
                 <?php } ?>
                 </td>
                 <td>
