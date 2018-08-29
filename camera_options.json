@@ -248,5 +248,13 @@
 "description":"Activate to capture a dark frame. This mode hides text and time overlays",
 "label":"Dark Frame",
 "type":"checkbox"
+},
+{
+"name":"showTemperature",
+"default":"0",
+"description":"Activate to display the sensor temperature on the image",
+"label":"Show Temperature",
+"type":"checkbox"
 }
+
 ]
