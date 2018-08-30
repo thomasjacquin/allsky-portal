@@ -68,6 +68,13 @@ function DisplaySystem(){
   // mem used
   exec("free -m | awk '/Mem:/ { total=$2 } /buffers\/cache/ { used=$3 } END { print used/total*100}'", $memarray);
   $memused = floor($memarray[0]);
+  // check for memused being unreasonably low, if so repeat expecting modern output of "free" command
+  if ($memused < 0.1)  {
+    unset($memarray);
+    exec("free -m | awk '/Mem:/ { total=$2 } /Mem:/ { used=$3 } END { print used/total*100}'", $memarray);
+    $memused = floor($memarray[0]);
+  }
+
   if     ($memused > 90) { $memused_status = "danger";  }
   elseif ($memused > 75) { $memused_status = "warning"; }
   elseif ($memused >  0) { $memused_status = "success"; }
