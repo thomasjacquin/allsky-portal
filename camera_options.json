@@ -15,21 +15,21 @@
 },
 {
 "name":"exposure",
-"default":5000,
+"default":10000,
 "description":"Time in ms (1000ms = 1 sec)",
 "label":"Exposure",
 "type":"number"
 },
 {
 "name":"maxexposure",
-"default":10000000,
+"default":20000,
 "description":"Max exposure time in ms (1000ms = 1 sec)",
 "label":"Max Exposure",
 "type":"number"
 },
 {
 "name":"autoexposure",
-"default":"0",
+"default":"1",
 "description":"Activate to enable auto-exposure",
 "label":"Auto-Exposure",
 "type":"checkbox"
@@ -251,7 +251,7 @@
 },
 {
 "name":"showTemperature",
-"default":"0",
+"default":"1",
 "description":"Activate to display the sensor temperature on the image",
 "label":"Show Temperature",
 "type":"checkbox"
