@@ -87,6 +87,12 @@ function DisplaySystem(){
   elseif ($cpuload > 75) { $cpuload_status = "warning"; }
   elseif ($cpuload >  0) { $cpuload_status = "success"; }
 
+  // temperature
+  $temperature = round(exec("awk '{print $1/1000}' /sys/class/thermal/thermal_zone0/temp"),2);
+  if     ($temperature > 70 || $temperature < 0) { $temperature_status = "danger";  }
+  elseif ($temperature > 60 || $temperature < 10) { $temperature_status = "warning"; }
+  else { $temperature_status = "success"; }
+  
   ?>
   <div class="row">
   <div class="col-lg-12">
@@ -127,6 +133,14 @@ function DisplaySystem(){
           role="progressbar"
           aria-valuenow="<?php echo $cpuload ?>" aria-valuemin="0" aria-valuemax="100"
           style="width: <?php echo $cpuload ?>%;"><?php echo $cpuload ?>%
+        </div>
+        </div>
+      <div class="info-item">CPU Temperature</div>
+        <div class="progress">
+        <div class="progress-bar progress-bar-<?php echo $temperature_status ?> progress-bar-striped active"
+          role="progressbar"
+          aria-valuenow="<?php echo $temperature ?>" aria-valuemin="0" aria-valuemax="100"
+          style="width: <?php echo $temperature ?>%;"><?php echo $temperature ?>&deg;C
         </div>
         </div>
     </div><!-- /.panel-body -->
