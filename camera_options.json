@@ -250,10 +250,10 @@
 "type":"checkbox"
 },
 {
-"name":"showTemperature",
+"name":"showDetails",
 "default":"1",
-"description":"Activate to display the sensor temperature on the image",
-"label":"Show Temperature",
+"description":"Activate to display the image metadata on the overlay",
+"label":"Show Details",
 "type":"checkbox"
 }
 
