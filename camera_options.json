@@ -236,6 +236,13 @@
 "type":"text"
 },
 {
+"name":"angle",
+"default":"-6",
+"description":"Altitude of the sun in degrees relative to the horizon at which to start/stop capture",
+"label":"Angle",
+"type":"text"
+},
+{
 "name":"time",
 "default":"1",
 "description":"Adds the time to the image. Combine with Text X and Text Y for placement",
