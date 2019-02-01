@@ -10,6 +10,16 @@
 	padding-top: 12px;
 }
 
+.navbar-brand img { 
+    height: 50px;
+    display:inline-block;
+    margin-right: 20px;
+}
+
+.right-panel .panel:first-of-type {
+    margin: 20px 0;
+}
+
 .panel-primary {
 	border-color: #6b6b6b;
 }
@@ -110,4 +120,154 @@
 
 h2 {
     margin-top:0;
+}
+
+.nav>li>span {
+    position: relative;
+    display: block;
+    padding: 10px 15px;
+    color: #4b4a4b;
+    cursor: pointer;
+}
+
+body.dark {
+    background-color: #222222;
+    color: #676767;
+}
+
+.dark #page-wrapper {
+    background-color: #171717;
+    border-left: #333333;
+}
+
+.dark .navbar-default {
+    background-color: #272727;
+    border-color: #333333;
+}
+
+.dark .sidebar ul li {
+    border-bottom: 1px solid #333333;
+}
+
+.dark .sidebar ul li a,
+.dark .sidebar ul li span {
+    color: #676767;
+}
+
+.dark .sidebar ul li a.active {
+    background-color: #171717;
+}
+
+.dark .nav>li>a:hover {
+    background-color: #1D1D1D;
+}
+
+.dark .panel {
+    background-color: #272727;
+}
+
+.dark .panel-default,
+.dark .panel-primary {
+    border-color: #333333;
+}
+
+.dark .panel-heading,
+.dark .panel-footer {
+    color: #676767;
+    border-color: #333333;
+    background-color: #171717;
+}
+
+.dark .alert-success {
+    border-color: #333333;
+    background-color: #171717;
+}
+
+.dark .form-control,
+.dark input[type="text"],
+.dark input[type="number"],
+.dark select {
+    background-color: #171717;
+    color: #676767;
+    border-color: #333333;
+}
+
+.dark .progress {
+    background-color: #171717;
+}
+
+.dark .progress-bar {
+    color: #ccc;
+}
+
+.dark .progress-bar-success {
+    background-color: #276b27;
+}
+
+.dark .progress-bar-info {
+    background-color: #2a5f6f;
+}
+
+.dark .progress-bar-warning {
+    background-color: #a7742d;
+}
+
+.dark .table-striped>tbody>tr:nth-of-type(odd) {
+    background-color: #171717;
+}
+
+.dark .table>tbody>tr>td,
+.dark .table>tbody>tr>th,
+.dark .table>tfoot>tr>td,
+.dark .table>tfoot>tr>th,
+.dark .table>thead>tr>td,
+.dark .table>thead>tr>th {
+    border-color: transparent;
+}
+
+.dark .navbar-default .navbar-collapse {
+    border-color: transparent;
+}
+
+.dark .switch-field label { 
+    background-color: #171717;
+    color: #676767;
+}
+
+.dark .switch-field input:checked + label {
+    background-color: #1d5f2f;
+    color: #171717;
+}
+
+.dark .btn-primary {
+    border-color: #1475a7;
+    background-color: #1d5a79;
+}
+
+.dark .btn-warning {
+    background-color: #a7742d;
+    border-color: #cc7b09;
+}
+
+@media screen and (max-width: 767px) {
+    .dark .table-responsive {
+        border-color: transparent;
+    }
+
+    .navbar {
+        height: 52px;
+    }
+
+    .navbar-brand img {
+        height: 29px;
+    }
+
+    .switch-field {
+        display: block;
+        height: 50px;
+    }
+	
+    form thead {
+        display: none;
+    }
 }

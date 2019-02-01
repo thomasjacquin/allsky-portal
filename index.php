@@ -5,7 +5,7 @@
  *
  * Enables use of simple web interface rather than SSH to control a ZWO camera on the Raspberry Pi.
  * Uses code from RaspAP by Lawrence Yau <sirlagz@gmail.com> and Bill Zimmerman <billzimmerman@gmail.com>
- * 
+ *
  * @author     Lawrence Yau <sirlagz@gmail.comm>
  * @author     Bill Zimmerman <billzimmerman@gmail.com>
  * @author     Thomas Jacquin <jacquin.thomas@gmail.com>
@@ -123,7 +123,7 @@ $csrf_token = $_SESSION['csrf_token'];
             <span class="icon-bar"></span>
           </button>
           <a class="navbar-brand" href="index.php">
-		<img style="height:50px; display:inline-block; margin-right: 20px" src="img/allsky-logo.png">
+		<img src="img/allsky-logo.png">
 		<div class="navbar-title">AllSky Administration Panel</div></a>
         </div>
         <!-- /.navbar-header -->
@@ -169,28 +169,28 @@ $csrf_token = $_SESSION['csrf_token'];
               <li>
                  <a href="index.php?page=system_info"><i class="fa fa-cube fa-fw"></i> System</a>
               </li>
-            </ul>
+	      <li>
+                 <span onclick="switchTheme()"><i class="fa fa-moon fa-fw"></i> Light/Dark mode</span>
+              </li>
+
+          </ul>
           </div><!-- /.navbar-collapse -->
         </div><!-- /.navbar-default -->
       </nav>
 
       <div id="page-wrapper">
-
-		<div class="row">
-			<div class="col-lg-12">&nbsp;
-			</div>
-		</div>
-
+	<div class="row right-panel">
+		<div class="col-lg-12">
         <?php 
         // handle page actions
         switch( $page ) {
-	  		case "live_view":
+	  case "live_view":
             DisplayLiveView();
             break;
           case "wlan0_info":
             DisplayDashboard();
             break;
-	  		case "camera_conf":
+	  case "camera_conf":
             DisplayCameraConfig();
             break;
           case "wpa_conf":
@@ -221,6 +221,8 @@ $csrf_token = $_SESSION['csrf_token'];
             DisplayLiveView();
         }
         ?>
+	</div>
+	</div>
       </div><!-- /#page-wrapper --> 
     </div><!-- /#wrapper -->
 
@@ -269,6 +271,21 @@ $csrf_token = $_SESSION['csrf_token'];
 			getImage();
 		}, <?php echo $camera_settings_array["exposure"] ?>);
 
+		// Inititalize theme to light
+		if (!localStorage.getItem("theme")) {
+			localStorage.setItem("theme", "light")
+		}
+
+		$("body").attr("class", localStorage.getItem("theme"));
+
+		function switchTheme() {
+			if (localStorage.getItem("theme") === "light") {
+				localStorage.setItem("theme", "dark");
+			} else {
+				localStorage.setItem("theme", "light");
+			}
+			$("body").attr("class", localStorage.getItem("theme"));
+		}
 	</script>
 
     <!-- Custom Theme JavaScript -->
