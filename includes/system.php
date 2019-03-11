@@ -162,6 +162,14 @@ function DisplaySystem()
                         echo '<div class="alert alert-warning">System Shutting Down Now!</div>';
                         $result = shell_exec("sudo /sbin/shutdown -h now");
                     }
+		    if (isset($_POST['service_start'])) {
+                        echo '<div class="alert alert-warning">Allsky service started</div>';
+                        $result = shell_exec("sudo /bin/systemctl start allsky");
+                    }
+		    if (isset($_POST['service_stop'])) {
+                        echo '<div class="alert alert-warning">Allsky service stopped</div>';
+                        $result = shell_exec("sudo /bin/systemctl stop allsky");
+                    }
                     ?>
 
                     <div class="row">
@@ -218,8 +226,12 @@ function DisplaySystem()
                     </div><!-- /.row -->
 
                     <form action="?page=system_info" method="POST">
-                        <input type="submit" class="btn btn-warning" name="system_reboot" value="Reboot"/>
-                        <input type="submit" class="btn btn-warning" name="system_shutdown" value="Shutdown"/>
+			<div style="margin-bottom: 20px">
+				<input type="submit" class="btn btn-success" name="service_start" value="Start Allsky Program"/>
+				<input type="submit" class="btn btn-danger" name="service_stop" value="Stop Allsky Program"/>
+			</div>
+                        <input type="submit" class="btn btn-warning" name="system_reboot" value="Reboot Raspberry Pi"/>
+                        <input type="submit" class="btn btn-warning" name="system_shutdown" value="Shutdown Raspberry Pi"/>
                         <input type="button" class="btn btn-outline btn-primary" value="Refresh"
                                onclick="document.location.reload(true)"/>
                     </form>
