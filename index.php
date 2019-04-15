@@ -16,8 +16,8 @@
 
 define('RASPI_CONFIG', '/etc/raspap');
 define('RASPI_ADMIN_DETAILS', RASPI_CONFIG.'/raspap.auth');
-define('RASPI_CAMERA_SETTINGS', './settings.json');
-define('RASPI_CAMERA_OPTIONS', './camera_options.json');
+define('RASPI_CAMERA_SETTINGS', RASPI_CONFIG.'/settings.json');
+define('RASPI_CAMERA_OPTIONS',  RASPI_CONFIG.'/camera_options.json');
 define('RASPI_ALLSKY_DIR', 'RASPI_ALLSKY_DIR_PLACEHOLDER');
 
 // Constants for configuration file paths.
