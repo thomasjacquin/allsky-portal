@@ -27,7 +27,7 @@ if ($handle = opendir('/home/pi/allsky/images/')) {
     closedir($handle);
 }
 
-asort($days);
+arsort($days);
 
 ?>
 <style>
