@@ -14,21 +14,20 @@ function DisplayDashboard(){
   $strWlan0 = implode( " ", $return );
   $strWlan0 = preg_replace( '/\s\s+/', ' ', $strWlan0 );
 
-  // Parse results from ifconfig/iwconfig
-  preg_match( '/HWaddr ([0-9a-f:]+)/i',$strWlan0,$result );
+// Parse results from ifconfig/iwconfig
+  preg_match( '/ether ([0-9a-f:]+)/i',$strWlan0,$result );
   $strHWAddress = $result[1];
-  preg_match( '/inet addr:([0-9.]+)/i',$strWlan0,$result );
+  preg_match( '/inet ([0-9.]+)/i',$strWlan0,$result );
   $strIPAddress = $result[1];
-  preg_match( '/Mask:([0-9.]+)/i',$strWlan0,$result );
+  preg_match( '/netmask ([0-9.]+)/i',$strWlan0,$result );
   $strNetMask = $result[1];
-  preg_match( '/RX packets:(\d+)/',$strWlan0,$result );
+  preg_match( '/RX packets (\d+)/',$strWlan0,$result );
   $strRxPackets = $result[1];
-  preg_match( '/TX packets:(\d+)/',$strWlan0,$result );
+  preg_match( '/TX packets (\d+)/',$strWlan0,$result );
   $strTxPackets = $result[1];
-  preg_match( '/RX bytes:(\d+ \(\d+.\d+ [K|M|G]iB\))/i',$strWlan0,$result );
-  $strRxBytes = $result[1];
-  preg_match( '/TX Bytes:(\d+ \(\d+.\d+ [K|M|G]iB\))/i',$strWlan0,$result );
-  $strTxBytes = $result[1];
+  preg_match_all( '/bytes (\d+ \(\d+.\d+ [K|M|G]iB\))/i',$strWlan0,$result );
+  $strRxBytes = $result[1][0];
+  $strTxBytes = $result[1][1];
   preg_match( '/ESSID:\"([a-zA-Z0-9\s]+)\"/i',$strWlan0,$result );
   $strSSID = str_replace( '"','',$result[1] );
   preg_match( '/Access Point: ([0-9a-f:]+)/i',$strWlan0,$result );
