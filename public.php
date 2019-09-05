@@ -1,10 +1,17 @@
 <?php
 
-  define('RASPI_CAMERA_SETTINGS', './settings.json');
+  define('RASPI_CONFIG', '/etc/raspap');
+  define('RASPI_CAMERA_SETTINGS', RASPI_CONFIG.'/settings.json');
   $camera_settings_str = file_get_contents(RASPI_CAMERA_SETTINGS, true);
   $camera_settings_array = json_decode($camera_settings_str, true);
 
 ?>
+
+<style>
+body {
+	margin: 0;
+}
+</style>
 
 <div class="row">
    <div id="live_container" style="background-color: black;">
@@ -36,7 +43,7 @@
 
                 setInterval(function(){
                         getImage();
-                }, <?php echo $camera_settings_array["exposure"]/1000 ?>);
+                }, <?php echo $camera_settings_array["exposure"]/1000 < 5000 ? 5000 : $camera_settings_array["exposure"]/1000?>);
 
  </script>
 
