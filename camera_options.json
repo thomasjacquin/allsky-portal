@@ -229,6 +229,13 @@
 "type":"number"
 },
 {
+"name":"outlinefont",
+"default":"0",
+"description":"Adds an outline to the text overlay to improve contrast",
+"label":"Use Outline Font",
+"type":"checkbox"
+},
+{
 "name":"latitude",
 "default":"60.7N",
 "description":"Latitude of the camera. Needs a number (0 to 90) and direction (N or S). Ex: 60.7N",
