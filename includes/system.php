@@ -32,7 +32,10 @@ function RPiVersion()
         '9000c1' => 'PiZero W',
         'a02082' => 'Pi 3 Model B',
         'a22082' => 'Pi 3 Model B',
-        'a020d3' => 'Pi 3 Model B+'
+        'a020d3' => 'Pi 3 Model B+',
+	'a03111' => 'Model 4B Revision 1.1 (1 GB)',
+    	'b03111' => 'Model 4B Revision 1.1 (2 GB)',
+    	'c03111' => 'Model 4B Revision 1.1 (4 GB)'
     );
     exec('cat /proc/cpuinfo', $cpuinfo_array);
     $rev = trim(array_pop(explode(':', array_pop(preg_grep("/^Revision/", $cpuinfo_array)))));
@@ -227,13 +230,14 @@ function DisplaySystem()
 
                     <form action="?page=system_info" method="POST">
 			<div style="margin-bottom: 20px">
-				<input type="submit" class="btn btn-success" name="service_start" value="Start Allsky Program"/>
-				<input type="submit" class="btn btn-danger" name="service_stop" value="Stop Allsky Program"/>
+				<button type="button" class="btn btn-outline btn-primary" onclick="document.location.reload(true)"><i class="fa fa-sync-alt"></i> Refresh</button>
+                        </div>
+			<div style="margin-bottom: 15px">
+				<button type="submit" class="btn btn-success" style="margin-bottom:5px" name="service_start"/><i class="fa fa-play"></i> Start Allsky</button>
+				<button type="submit" class="btn btn-danger" style="margin-bottom:5px" name="service_stop"/><i class="fa fa-stop"></i> Stop Allsky</button>
 			</div>
-                        <input type="submit" class="btn btn-warning" name="system_reboot" value="Reboot Raspberry Pi"/>
-                        <input type="submit" class="btn btn-warning" name="system_shutdown" value="Shutdown Raspberry Pi"/>
-                        <input type="button" class="btn btn-outline btn-primary" value="Refresh"
-                               onclick="document.location.reload(true)"/>
+                        <button type="submit" class="btn btn-warning" style="margin-bottom:5px" name="system_reboot"/><i class="fa fa-power-off"></i> Reboot Raspberry Pi</button>
+                        <button type="submit" class="btn btn-warning" style="margin-bottom:5px" name="system_shutdown"/><i class="fa fa-plug"></i> Shutdown Raspberry Pi</button>
                     </form>
 
                 </div><!-- /.panel-body -->
