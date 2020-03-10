@@ -56,6 +56,20 @@
 "type":"checkbox"
 },
 {
+"name":"coolerEnabled",
+"default":"0",
+"description":"Activate to use cooling (works only on cooled cameras)",
+"label":"Cooling",
+"type":"checkbox"
+},
+{
+"name":"targetTemp",
+"default":"0",
+"description":"Sensor's target temperature when cooler is enabled (degrees Celsius)",
+"label":"Target Temp.",
+"type":"number"
+},
+{
 "name":"gamma",
 "default":"50",
 "description":"0 to 100. Changes the difference between light and dark areas. A hight value increases contrast",
