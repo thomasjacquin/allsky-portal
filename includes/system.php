@@ -35,7 +35,8 @@ function RPiVersion()
         'a020d3' => 'Pi 3 Model B+',
 	'a03111' => 'Model 4B Revision 1.1 (1 GB)',
     	'b03111' => 'Model 4B Revision 1.1 (2 GB)',
-    	'c03111' => 'Model 4B Revision 1.1 (4 GB)'
+    	'c03111' => 'Model 4B Revision 1.1 (4 GB)',
+        'c03112' => 'Model 4B Revision 1.2 (4 GB)'		
     );
     exec('cat /proc/cpuinfo', $cpuinfo_array);
     $rev = trim(array_pop(explode(':', array_pop(preg_grep("/^Revision/", $cpuinfo_array)))));
