@@ -97,7 +97,7 @@ $csrf_token = $_SESSION['csrf_token'];
     <link href="bower_components/morrisjs/morris.css" rel="stylesheet">
 
     <!-- Font Awesome -->
-    <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+    <script defer src="js/all.min.js"></script>
 
     <!-- Custom CSS -->
     <link href="dist/css/custom.css" rel="stylesheet">
