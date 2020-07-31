@@ -99,9 +99,6 @@ $csrf_token = $_SESSION['csrf_token'];
     <!-- Morris Charts CSS -->
     <link href="bower_components/morrisjs/morris.css" rel="stylesheet">
 
-    <!-- Code Mirror -->
-    <link rel="stylesheet" href="lib/codeMirror/lib/codemirror.css">
-
     <!-- Font Awesome -->
     <script defer src="js/all.min.js"></script>
 
@@ -171,17 +168,17 @@ $csrf_token = $_SESSION['csrf_token'];
     <script src="dist/js/sb-admin-2.js"></script>
 
     <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.52.2/codemirror.min.css">
+          href="lib/codeMirror/codemirror.min.css">
 
     <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.52.2/theme/monokai.min.css">
+          href="lib/codeMirror/monokai.min.css">
 
     <script type="text/javascript"
-            src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.52.2/codemirror.min.js">
+            src="lib/codeMirror/codemirror.min.js">
     </script>
 
     <script type="text/javascript"
-            src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.52.2/mode/shell/shell.js">
+            src="lib/codeMirror/shell.js">
     </script>
 </head>
 <body>
