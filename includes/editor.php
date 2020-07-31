@@ -79,8 +79,8 @@ function DisplayEditor()
                             </select>
                             <button type="submit" class="btn btn-success" style="margin-bottom:5px" id="save_file"/>
                             <i class="fa fa-save"></i> Save Changes</button>
-                            <button class="btn btn-danger" style="margin-bottom:5px"/>
-                            <i class="fa fa-times"></i> Cancel</button>
+                            <!-- <button class="btn btn-danger" style="margin-bottom:5px"/>
+                            <i class="fa fa-times"></i> Cancel</button> -->
                         </div>
                 </div>
             </div>
