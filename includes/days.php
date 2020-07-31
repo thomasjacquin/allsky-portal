@@ -87,8 +87,8 @@ foreach ($days as $day) {
 						data-toggle='confirmation'
 						name='delete_directory'
 						value='$day'
-						style='width: 90px; text-align: center, color:white'>
-					<i class='fa fa-trash text-danger' style='color:white'></i> Delete</button>
+						style='text-align: center, color:white'>
+					<i class='fa fa-trash text-danger' style='color:white'></i> <span class='hidden-xs'>Delete</span></button>
 				</td>
 			</tr>";
 }

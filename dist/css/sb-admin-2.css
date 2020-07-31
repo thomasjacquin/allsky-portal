@@ -14,7 +14,7 @@ body {
 
 #page-wrapper {
     padding: 0 15px;
-    min-height: 568px;
+    min-height: 0 !important;
     background-color: #fff;
 }
 
@@ -373,4 +373,13 @@ table.dataTable thead .sorting:after {
 
 .panel-yellow a:hover {
     color: #df8a13;
+}
+
+#editorContainer {
+    max-height: 600px;
+    overflow: auto;
+}
+
+.CodeMirror {
+    height: auto !important;
 }

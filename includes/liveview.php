@@ -15,7 +15,7 @@ function DisplayLiveView(){
 
   <div class="row">
 	<p><?php $status->showMessages(); ?></p>
-	<div id="live_container" style="background-color: black;">
+	<div id="live_container" style="background-color: black; margin-bottom: 15px;">
       	<img id="current" class="current" src="current/liveview-<?php echo $camera_settings_array['filename'] ?>" style="width:100%">
   	</div>
   </div>
