@@ -14,9 +14,11 @@ if (isset($_POST['path'])) {
 $file = str_replace('current','/home/pi/allsky', $path);
 
 file_put_contents(getcwd()."/temp", $content);
-//shell_exec("sudo mv temp $path");
+
 echo "sudo mv ".getcwd()."/temp ".$file;
+echo "sudo chmod +x ".$file;
 shell_exec("sudo mv ".getcwd()."/temp ".$file);
 shell_exec("sudo chown pi:pi ".$file);
+shell_exec("sudo chmod +x ".$file);
 
 ?>

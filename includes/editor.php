@@ -8,11 +8,11 @@ function DisplayEditor()
     ?>
 
     <script type="text/javascript">
-        $(document).ready(function () {
-            var editor = null;
 
-            $.get("current/config.sh", function (data) {
-                editor = CodeMirror(document.querySelector("#editorContainer"), {
+        $(document).ready(function () {
+	    var editor = null;
+	    $.get("current/config.sh", function (data) {
+        	editor = CodeMirror(document.querySelector("#editorContainer"), {
                     value: data,
                     mode: "shell",
                     theme: "monokai"
@@ -40,18 +40,15 @@ function DisplayEditor()
                     //alert("File not saved!");
                 }
             });
-        });
 
-        function onFileChange(e) {
-            $("#editorContainer").html("");
-            $.get(e.value, function (data) {
-                CodeMirror(document.querySelector("#editorContainer"), {
-                    value: data,
-                    mode: "shell",
-                    theme: "monokai"
-                });
+	$("#script_path").change(function(e) {
+            $.get(e.currentTarget.value, function (data) {
+                console.log(data);
+                editor.getDoc().setValue(data);
             });
-        }
+        });
+});
+
 
     </script>
 
@@ -66,7 +63,7 @@ function DisplayEditor()
                         <div style="margin-top: 15px;">
                             <select class="form-control" id="script_path"
                                     style="display: inline-block; width: auto; margin-right: 15px; margin-bottom: 5px"
-                                    onchange="onFileChange(this)">
+                                    >
                                 <option value="current/config.sh">config.sh</option>
                                 <?php
                                 $path = '/home/pi/allsky/scripts';
