@@ -61,14 +61,19 @@ function DisplayEditor()
                     <p><?php $status->showMessages(); ?></p>
                         <div id="editorContainer"></div>
                         <div style="margin-top: 15px;">
+			    <?php
+                                $path = '/home/pi/allsky/scripts';
+                                $scripts = array_filter(array_diff(scandir($path), array('.', '..')), function($item) {
+					return !is_dir('/home/pi/allsky/scripts/'.$item);
+                                });
+			    ?>
                             <select class="form-control" id="script_path"
                                     style="display: inline-block; width: auto; margin-right: 15px; margin-bottom: 5px"
                                     >
                                 <option value="current/config.sh">config.sh</option>
-                                <?php
-                                $path = '/home/pi/allsky/scripts';
-                                $scripts = array_diff(scandir($path), array('.', '..'));
+                                <option value="current/allsky.sh">allsky.sh</option>
 
+				<?php
                                 foreach ($scripts as $script) {
                                     echo "<option value='current/scripts/$script'>$script</option>";
                                 }
