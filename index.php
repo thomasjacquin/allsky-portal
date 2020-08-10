@@ -145,14 +145,6 @@ $csrf_token = $_SESSION['csrf_token'];
                 });
         }
 
-        $("#live_container").click(function () {
-            if (BigScreen.enabled) {
-                BigScreen.toggle(this, null, null, null);
-            } else {
-                console.log("Not Supported");
-            }
-        });
-
         setInterval(function () {
             getImage();
         }, <?php echo $camera_settings_array["exposure"] ?>);
@@ -310,6 +302,14 @@ $csrf_token = $_SESSION['csrf_token'];
         }
         $("body").attr("class", localStorage.getItem("theme"));
     }
+
+	$("#live_container").click(function () {
+            if (BigScreen.enabled) {
+                BigScreen.toggle(this, null, null, null);
+            } else {
+                console.log("Not Supported");
+            }
+        });
 </script>
 
 </body>
