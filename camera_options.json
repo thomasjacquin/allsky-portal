@@ -205,14 +205,14 @@
 {
 "name":"fontcolor",
 "default":"255 255 255",
-"description":"BGR value of text color. 0 to 255 for each channel",
+"description":"BGR value of text color. 0 to 255 for each channel. NOTE: When using RAW 16 only the B and G values are used i.e. 255 128 0",
 "label":"Font Color",
 "type":"text"
 },
 {
 "name":"smallfontcolor",
 "default":"0 0 255",
-"description":"BGR value of text color. 0 to 255 for each channel",
+"description":"BGR value of text color. 0 to 255 for each channel. NOTE: When using RAW 16 only the B and G values are used i.e. 255 128 0",
 "label":"Small Font Color",
 "type":"text"
 },
