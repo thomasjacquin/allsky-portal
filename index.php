@@ -145,10 +145,6 @@ $csrf_token = $_SESSION['csrf_token'];
                 });
         }
 
-        setInterval(function () {
-            getImage();
-        }, <?php echo $camera_settings_array["exposure"] ?>);
-
         // Inititalize theme to light
         if (!localStorage.getItem("theme")) {
             localStorage.setItem("theme", "light")
