@@ -12,6 +12,11 @@ function DisplayLiveView(){
   }
 
   ?>
+  <script>
+        setInterval(function () {
+            getImage();
+        }, <?php echo $camera_settings_array["exposure"] ?>);
+  </script>
 
   <div class="row">
 	<p><?php $status->showMessages(); ?></p>
