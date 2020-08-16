@@ -11,7 +11,7 @@ function DisplayEditor()
 
         $(document).ready(function () {
 	    var editor = null;
-	    $.get("current/config.sh", function (data) {
+	    $.get("current/config.sh?_ts=" + new Date().getTime(), function (data) {
         	editor = CodeMirror(document.querySelector("#editorContainer"), {
                     value: data,
                     mode: "shell",
@@ -42,7 +42,7 @@ function DisplayEditor()
             });
 
 	$("#script_path").change(function(e) {
-            $.get(e.currentTarget.value, function (data) {
+            $.get(e.currentTarget.value + "?_ts=" + new Date().getTime(), function (data) {
                 console.log(data);
                 editor.getDoc().setValue(data);
             });
