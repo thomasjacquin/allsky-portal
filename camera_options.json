@@ -230,7 +230,7 @@
 },
 {
 "name":"fontsize",
-"default":"1",
+"default":"7",
 "description":"Text Font Size",
 "label":"Font Size",
 "type":"number"
