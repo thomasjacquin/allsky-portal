@@ -16,7 +16,6 @@
 
 define('RASPI_CONFIG', '/etc/raspap');
 define('RASPI_ADMIN_DETAILS', RASPI_CONFIG . '/raspap.auth');
-define('RASPI_CAMERA_SETTINGS', RASPI_CONFIG . '/settings.json');
 
 $file = '/home/pi/allsky/config.sh';
 $searchfor = 'CAMERA=';
@@ -36,6 +35,7 @@ else{
    $cam = "ZWO";
 }
 
+define('RASPI_CAMERA_SETTINGS', RASPI_CONFIG . '/settings_'.$cam.'.json');
 define('RASPI_CAMERA_OPTIONS', RASPI_CONFIG . '/camera_options_'.$cam.'.json');
 define('RASPI_ALLSKY_DIR', 'RASPI_ALLSKY_DIR_PLACEHOLDER');
 
