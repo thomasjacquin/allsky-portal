@@ -186,7 +186,7 @@
 },
 {
 "name":"background",
-"default":"255",
+"default":"0",
 "description":"Background annotation text color in gray scale value 0 (black) - 255 (white)",
 "label":"Background Color",
 "type":"number"
