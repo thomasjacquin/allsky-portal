@@ -17,7 +17,26 @@
 define('RASPI_CONFIG', '/etc/raspap');
 define('RASPI_ADMIN_DETAILS', RASPI_CONFIG . '/raspap.auth');
 define('RASPI_CAMERA_SETTINGS', RASPI_CONFIG . '/settings.json');
-define('RASPI_CAMERA_OPTIONS', RASPI_CONFIG . '/camera_options.json');
+
+$file = '/home/pi/allsky/config.sh';
+$searchfor = 'CAMERA=';
+
+// get the file contents, assuming the file to be readable (and exist)
+$contents = file_get_contents($file);
+// escape special characters in the query
+$pattern = preg_quote($searchfor, '/');
+// finalise the regular expression, matching the whole line
+$pattern = "/^.*$pattern.*\$/m";
+// search, and store all matching occurences in $matches
+if(preg_match_all($pattern, $contents, $matches)){
+	$double_quote = '"';
+	$cam = str_replace($double_quote, '', explode( '=', implode("\n", $matches[0]))[1]);
+}
+else{
+   $cam = "ZWO";
+}
+
+define('RASPI_CAMERA_OPTIONS', RASPI_CONFIG . '/camera_options_'.$cam.'.json');
 define('RASPI_ALLSKY_DIR', 'RASPI_ALLSKY_DIR_PLACEHOLDER');
 
 // Constants for configuration file paths.
@@ -70,7 +89,6 @@ if (empty($_SESSION['csrf_token'])) {
 }
 $csrf_token = $_SESSION['csrf_token'];
 
-//$configFile = file_get_contents('./restartCapture.sh', true);
 ?>
 
 <!DOCTYPE html>
@@ -240,7 +258,7 @@ $csrf_token = $_SESSION['csrf_token'];
         <div class="row right-panel">
             <div class="col-lg-12">
                 <?php
-                // handle page actions
+
                 switch ($page) {
                     case "live_view":
                         DisplayLiveView();
