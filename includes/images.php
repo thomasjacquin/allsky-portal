@@ -21,23 +21,37 @@ asort($images);
 
 ?>
 
+<link  href="css/viewer.min.css" rel="stylesheet">
+<script src="js/viewer.min.js"></script>
+<script src="js/jquery-viewer.min.js"></script>
+
+<script>
+$( document ).ready(function() {
+        $('#images').viewer({
+		url(image) {
+                	return image.src.replace('/thumbnails', '/');
+        	},
+		transition: false
+	});
+});
+</script>
+
 <?php
 echo "<h2>$chosen_day</h2>
   <div class='row'>";
 
+echo "<div id='images'>";
 foreach ($images as $image) {
-	echo "<a href='/images/$chosen_day/$image'>
-			<div style='float: left'>";
+	echo "<div style='float: left'>";
 	if(file_exists("/home/pi/allsky/images/$chosen_day/thumbnails/$image"))
 		echo "<img src='/images/$chosen_day/thumbnails/$image' style='width: 100px;'/>";
 	else
 		echo "<img src='/images/$chosen_day/$image' style='width: 100px;'/>";
-	echo "</div>
-		</a>";
+	echo "</div>";
 }
 ?>
   </div>
+  </div>
   <?php 
 }
-
 ?>
