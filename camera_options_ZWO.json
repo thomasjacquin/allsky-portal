@@ -173,7 +173,7 @@
 },
 {
 "name":"extratext",
-"default":"none",
+"default":"",
 "description":"Extra Text File (Requires the full path to the file) If no file ensure this is set to none",
 "label":"Extra Text File",
 "type":"text"
