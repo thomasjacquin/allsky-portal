@@ -174,7 +174,7 @@
 {
 "name":"extratext",
 "default":"",
-"description":"Extra Text File (Requires the full path to the file) If no file ensure this is set to none",
+"description":"Extra Text File (Requires the full path to the file) If you are not using an extra text file ensure this field is empty",
 "label":"Extra Text File",
 "type":"text"
 },
