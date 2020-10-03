@@ -172,6 +172,27 @@
 "type":"text"
 },
 {
+"name":"extratext",
+"default":"none",
+"description":"Extra Text File (Requires the full path to the file) If no file ensure this is set to none",
+"label":"Extra Text File",
+"type":"text"
+},
+{
+"name":"extratextage",
+"default":"600",
+"description":"The maximum age of the extra text file in seconds. After this time the file will no longer be dispalyed. Set to 0 to always display",
+"label":"Max Age Of Extra",
+"type":"number"
+},
+{
+"name":"textlineheight",
+"default":"30",
+"description":"The line height of the text, if increasing the font size causes the text overlap then increase this value",
+"label":"Line Height",
+"type":"number"
+},
+{
 "name":"textx",
 "default":"15",
 "description":"Text Placement Horizontal from LEFT in Pixels",
