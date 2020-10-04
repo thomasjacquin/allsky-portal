@@ -23,7 +23,7 @@ function ListKeograms(){
 
 		foreach ($days as $day) {
 			$keograms = array();
-			foreach (glob("/home/pi/allsky/images/$day/keogram/keogram-$day.jpg") as $keogram) {
+			foreach (glob("/home/pi/allsky/images/$day/keogram/keogram-$day.*") as $keogram) {
 				$keograms[] = $keogram;
 			}
 		        foreach ($keograms as $keogram) {
@@ -38,7 +38,7 @@ function ListKeograms(){
 	        echo "</div>";
 
 	} else {
-		foreach (glob("/home/pi/allsky/images/$chosen_day/keogram/keogram-$chosen_day.jpg") as $keogram) {
+		foreach (glob("/home/pi/allsky/images/$chosen_day/keogram/keogram-$chosen_day.*") as $keogram) {
 			  $keograms[] = $keogram;
 		}
 		echo "<h2>Keogram - $chosen_day</h2>

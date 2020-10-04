@@ -23,7 +23,7 @@ function ListStartrails(){
 
 		foreach ($days as $day) {
 			$startrails = array();
-			foreach (glob("/home/pi/allsky/images/$day/startrails/startrails-$day.jpg") as $startrail) {
+			foreach (glob("/home/pi/allsky/images/$day/startrails/startrails-$day.*") as $startrail) {
 				$startrails[] = $startrail;
 			}
 		        foreach ($startrails as $startrail) {
@@ -38,7 +38,7 @@ function ListStartrails(){
 	        echo "</div>";
 
 	} else {
-		foreach (glob("/home/pi/allsky/images/$chosen_day/startrails/startrails-$chosen_day.jpg") as $startrail) {
+		foreach (glob("/home/pi/allsky/images/$chosen_day/startrails/startrails-$chosen_day.*") as $startrail) {
 			  $startrails[] = $startrail;
 		}
 		echo "<h2>Startrails - $chosen_day</h2>
