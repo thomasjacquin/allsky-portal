@@ -17,7 +17,7 @@
 define('RASPI_CONFIG', '/etc/raspap');
 define('RASPI_ADMIN_DETAILS', RASPI_CONFIG . '/raspap.auth');
 
-$file = '/home/pi/allsky/config.sh';
+$file = '/home/pi/allsky/autocam.sh';
 $searchfor = 'CAMERA=';
 
 // get the file contents, assuming the file to be readable (and exist)
