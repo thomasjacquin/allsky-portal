@@ -8,37 +8,54 @@
 
 function RPiVersion()
 {
-    // Lookup table from http://www.raspberrypi-spy.co.uk/2012/09/checking-your-raspberry-pi-board-version/
+    // Lookup table from https://www.raspberrypi.org/documentation/hardware/raspberrypi/revision-codes/README.md
+    // Last updated december 2020
     $revisions = array(
-        '0002' => 'Model B Revision 1.0',
-        '0003' => 'Model B Revision 1.0 + ECN0001',
-        '0004' => 'Model B Revision 2.0 (256 MB)',
-        '0005' => 'Model B Revision 2.0 (256 MB)',
-        '0006' => 'Model B Revision 2.0 (256 MB)',
-        '0007' => 'Model A',
-        '0008' => 'Model A',
-        '0009' => 'Model A',
-        '000d' => 'Model B Revision 2.0 (512 MB)',
-        '000e' => 'Model B Revision 2.0 (512 MB)',
-        '000f' => 'Model B Revision 2.0 (512 MB)',
-        '0010' => 'Model B+',
-        '0013' => 'Model B+',
-        '0011' => 'Compute Module',
-        '0012' => 'Model A+',
-        'a01041' => 'a01041',
-        'a21041' => 'a21041',
-        '900092' => 'PiZero 1.2',
-        '900093' => 'PiZero 1.3',
-        '9000c1' => 'PiZero W',
-        'a02082' => 'Pi 3 Model B',
-        'a22082' => 'Pi 3 Model B',
-        'a020d3' => 'Pi 3 Model B+',
-	'a03111' => 'Model 4B Revision 1.1 (1 GB)',
-    	'b03111' => 'Model 4B Revision 1.1 (2 GB)',
+	'0002' => 'Model B Revision 1.0',
+	'0003' => 'Model B Revision 1.0 + ECN0001',
+	'0004' => 'Model B Revision 2.0 (256 MB)',
+	'0005' => 'Model B Revision 2.0 (256 MB)',
+	'0006' => 'Model B Revision 2.0 (256 MB)',
+	'0007' => 'Model A',
+	'0008' => 'Model A',
+	'0009' => 'Model A',
+	'000d' => 'Model B Revision 2.0 (512 MB)',
+	'000e' => 'Model B Revision 2.0 (512 MB)',
+	'000f' => 'Model B Revision 2.0 (512 MB)',
+	'0010' => 'Model B+',
+	'0013' => 'Model B+',
+	'0011' => 'Compute Module',
+	'0012' => 'Model A+',
+	'a01040' => 'Pi 2 Model B Revision 1.0 (1 GB)',
+	'a01041' => 'Pi 2 Model B Revision 1.1 (1 GB)',
+	'a02042' => 'Pi 2 Model B (with BCM2837) Revision 1.2 (1 GB)',
+	'a21041' => 'Pi 2 Model B Revision 1.1 (1 GB)',
+	'a22042' => 'Pi 2 Model B (with BCM2837) Revision 1.2 (1 GB)',
+	'a020a0' => 'Compute Module 3 Revision 1.0 (1 GB)',
+	'a220a0' > 'Compute Module 3 Revision 1.0 (1 GB)',
+	'900021' => 'Model A+ Revision 1.1 (512 MB)',
+	'900032' => 'Model B+ Revision 1.2 (512 MB)',
+	'900061' => 'Compute Module Revision 1.1 (512 MB)',
+	'900092' => 'PiZero 1.2 (512 MB)',
+	'900093' => 'PiZero 1.3 (512 MB)',
+	'9000c1' => 'PiZero W 1.1 (512 MB)',
+	'920092' => 'PiZero Revision 1.2 (512 MB)',
+	'920093' => 'PiZero Revision 1.3 (512 MB)',
+	'9020e0' => 'Pi 3 Model A+ Revision 1.0 (512 MB)',
+	'a02082' => 'Pi 3 Model B Revision 1.2 (1 GB)',
+	'a22082' => 'Pi 3 Model B Revision 1.2 (1 GB)',
+	'a22083' => 'Pi 3 Model B Revision 1.3 (1 GB)',
+	'a020d3' => 'Pi 3 Model B+ Revision 1.3 (1 GB)',
+	'a32082' => 'Pi 3 Model B Revision 1.2 (1 GB)',
+	'a52082' => 'Pi 3 Model B Revision 1.2 (1 GB)',
+	'b03111' => 'Model 4B Revision 1.1 (2 GB)',
 	'b03112' => 'Model 4B Revision 1.2 (2 GB)',
-    	'c03111' => 'Model 4B Revision 1.1 (4 GB)',
-        'c03112' => 'Model 4B Revision 1.2 (4 GB)',
-	'd03114' => 'Model 4B Revision 1.4 (8 GB)'
+	'b03114' => 'Model 4B Revision 1.4 (2 GB)',
+	'c03111' => 'Model 4B Revision 1.1 (4 GB)',
+	'c03112' => 'Model 4B Revision 1.2 (4 GB)',
+	'c03114' => 'Model 4B Revision 1.4 (4 GB)',
+	'd03114' => 'Model 4B Revision 1.4 (8 GB)',
+	'c03130' => 'Pi 400 Revision 1.0 (4 GB)'
     );
     exec('cat /proc/cpuinfo', $cpuinfo_array);
     $rev = trim(array_pop(explode(':', array_pop(preg_grep("/^Revision/", $cpuinfo_array)))));
@@ -169,12 +186,12 @@ function DisplaySystem()
                         $result = shell_exec("sudo /sbin/shutdown -h now");
                     }
 		    if (isset($_POST['service_start'])) {
-                        echo '<div class="alert alert-warning">Allsky service started</div>';
-                        $result = shell_exec("sudo /bin/systemctl start allsky");
+                        echo '<div class="alert alert-warning">skycam service started</div>';
+                        $result = shell_exec("sudo /bin/systemctl start skycam");
                     }
 		    if (isset($_POST['service_stop'])) {
-                        echo '<div class="alert alert-warning">Allsky service stopped</div>';
-                        $result = shell_exec("sudo /bin/systemctl stop allsky");
+                        echo '<div class="alert alert-warning">skycam service stopped</div>';
+                        $result = shell_exec("sudo /bin/systemctl stop skycam");
                     }
                     ?>
 
@@ -236,8 +253,8 @@ function DisplaySystem()
 				<button type="button" class="btn btn-outline btn-primary" onclick="document.location.reload(true)"><i class="fa fa-sync-alt"></i> Refresh</button>
                         </div>
 			<div style="margin-bottom: 15px">
-				<button type="submit" class="btn btn-success" style="margin-bottom:5px" name="service_start"/><i class="fa fa-play"></i> Start Allsky</button>
-				<button type="submit" class="btn btn-danger" style="margin-bottom:5px" name="service_stop"/><i class="fa fa-stop"></i> Stop Allsky</button>
+				<button type="submit" class="btn btn-success" style="margin-bottom:5px" name="service_start"/><i class="fa fa-play"></i> Start skycam</button>
+				<button type="submit" class="btn btn-danger" style="margin-bottom:5px" name="service_stop"/><i class="fa fa-stop"></i> Stop skycam</button>
 			</div>
                         <button type="submit" class="btn btn-warning" style="margin-bottom:5px" name="system_reboot"/><i class="fa fa-power-off"></i> Reboot Raspberry Pi</button>
                         <button type="submit" class="btn btn-warning" style="margin-bottom:5px" name="system_shutdown"/><i class="fa fa-plug"></i> Shutdown Raspberry Pi</button>
