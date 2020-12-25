@@ -186,12 +186,12 @@ function DisplaySystem()
                         $result = shell_exec("sudo /sbin/shutdown -h now");
                     }
 		    if (isset($_POST['service_start'])) {
-                        echo '<div class="alert alert-warning">skycam service started</div>';
-                        $result = shell_exec("sudo /bin/systemctl start skycam");
+                        echo '<div class="alert alert-warning">allsky service started</div>';
+                        $result = shell_exec("sudo /bin/systemctl start allsky");
                     }
 		    if (isset($_POST['service_stop'])) {
-                        echo '<div class="alert alert-warning">skycam service stopped</div>';
-                        $result = shell_exec("sudo /bin/systemctl stop skycam");
+                        echo '<div class="alert alert-warning">allsky service stopped</div>';
+                        $result = shell_exec("sudo /bin/systemctl stop allsky");
                     }
                     ?>
 
@@ -253,8 +253,8 @@ function DisplaySystem()
 				<button type="button" class="btn btn-outline btn-primary" onclick="document.location.reload(true)"><i class="fa fa-sync-alt"></i> Refresh</button>
                         </div>
 			<div style="margin-bottom: 15px">
-				<button type="submit" class="btn btn-success" style="margin-bottom:5px" name="service_start"/><i class="fa fa-play"></i> Start skycam</button>
-				<button type="submit" class="btn btn-danger" style="margin-bottom:5px" name="service_stop"/><i class="fa fa-stop"></i> Stop skycam</button>
+				<button type="submit" class="btn btn-success" style="margin-bottom:5px" name="service_start"/><i class="fa fa-play"></i> Start allsky</button>
+				<button type="submit" class="btn btn-danger" style="margin-bottom:5px" name="service_stop"/><i class="fa fa-stop"></i> Stop allsky</button>
 			</div>
                         <button type="submit" class="btn btn-warning" style="margin-bottom:5px" name="system_reboot"/><i class="fa fa-power-off"></i> Reboot Raspberry Pi</button>
                         <button type="submit" class="btn btn-warning" style="margin-bottom:5px" name="system_shutdown"/><i class="fa fa-plug"></i> Shutdown Raspberry Pi</button>
@@ -268,4 +268,3 @@ function DisplaySystem()
 }
 
 ?>
-
