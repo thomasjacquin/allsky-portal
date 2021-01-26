@@ -33,7 +33,24 @@ $( document ).ready(function() {
         	},
 		transition: false
 	});
+        $('.thumb').each(function(){		
+			this.title=getTimeStamp(this.src);
+	});
 });
+
+function getTimeStamp(url)
+{
+	var filename = url.substring(url.lastIndexOf('/')+1);
+	var timeStamp = filename.substring(6);
+	var year = timeStamp.substring(0, 4);
+	var month = timeStamp.substring(4, 6);
+	var day = timeStamp.substring(6, 8);
+	var hour = timeStamp.substring(8, 10);
+	var minute = timeStamp.substring(10, 12);
+	var seconds = timeStamp.substring(12, 14);
+	var date = new Date(year, month, day, hour, minute, seconds, 0);
+	return date.toDateString() + " @ " + date.getHours() + ":"+date.getMinutes() + ":"+date.getSeconds();
+}
 </script>
 
 <?php
@@ -44,7 +61,7 @@ echo "<div id='images'>";
 foreach ($images as $image) {
 	echo "<div style='float: left'>";
 	if(file_exists("/home/pi/allsky/images/$chosen_day/thumbnails/$image"))
-		echo "<img src='/images/$chosen_day/thumbnails/$image' style='width: 100px;'/>";
+		echo "<img src='/images/$chosen_day/thumbnails/$image' style='width: 100px;' title='$image' class='thumb'/>";
 	else
 		echo "<img src='/images/$chosen_day/$image' style='width: 100px;'/>";
 	echo "</div>";
