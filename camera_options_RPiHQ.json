@@ -98,7 +98,7 @@
 {
 "name":"quality",
 "default":"95",
-"description":"Wuality range for a JPG image, range 0% - 100%",
+"description":"Quality range for a JPG image, range 0% - 100%",
 "label":"Quality",
 "type":"number"
 },
