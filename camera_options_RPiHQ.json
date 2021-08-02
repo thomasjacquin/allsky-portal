@@ -8,7 +8,7 @@
 "advanced":0
 },
 {
-"name":"exposure",
+"name":"nightexposure",
 "default":"60000",
 "description":"Time in ms (1000ms = 1 sec, range 1 - 240000 ms)",
 "label":"Exposure",
@@ -16,7 +16,7 @@
 "advanced":0
 },
 {
-"name":"gain",
+"name":"nightgain",
 "default":"4",
 "description":"Light sensitivity. Starts at 1 till 16. A high value returns a brighter image but more noise too",
 "label":"Gain",
@@ -24,7 +24,7 @@
 "advanced":0
 },
 {
-"name":"autogain",
+"name":"nightautogain",
 "default":"0",
 "description":"Activate to enable auto-gain",
 "label":"Auto-Gain",
@@ -72,7 +72,7 @@
 "advanced":0
 },
 {
-"name":"bin",
+"name":"nightbin",
 "default":"1",
 "description":"1 = binning OFF (1x1), 2x2 binning, 4 = 4x4 binning",
 "label":"Binning",
@@ -85,7 +85,7 @@
 "advanced":0
 },
 {
-"name":"delay",
+"name":"nightdelay",
 "default":"10",
 "description":"Delay between images in milliseconds. 1000ms = 1 sec.",
 "label":"Delay",
@@ -93,7 +93,7 @@
 "advanced":0
 },
 {
-"name":"daytimeDelay",
+"name":"daydelay",
 "default":"15000",
 "description":"Delay between images during daytime in milliseconds. 1000ms = 1 sec.",
 "label":"Daytime Delay",
