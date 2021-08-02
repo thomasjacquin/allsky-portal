@@ -436,4 +436,132 @@ function SaveTORAndVPNConfig(){
     }
   }
 }
+
+/**
+*
+* Get a variable from a file and return its value; if not there, return the default.
+*/
+function get_variable($file, $searchfor, $default)
+{
+	// get the file contents
+	$contents = file_get_contents($file);
+	if ("$contents" == "") return($default);	// file not found or not readable
+
+	// escape special characters in the query
+	$pattern = preg_quote($searchfor, '/');
+	// finalise the regular expression, matching the whole line
+	$pattern = "/^.*$pattern.*\$/m";
+	// search, and store all matching occurences in $matches
+	if(preg_match_all($pattern, $contents, $matches)){
+		$double_quote = '"';
+		return(str_replace($double_quote, '', explode( '=', implode("\n", $matches[0]))[1]));
+	}
+	else{
+   		return($default);
+	}
+}
+
+/**
+* 
+* List a type of file - either "All" (case sensitive) for all days, or only for the specified day.
+*/
+function ListFileType($dir, $imageFileName, $formalImageTypeName, $type) {	// if $dir is not null, it ends in "/"
+	$num = 0;	// Let the user know when there are no images for the specified day
+	$topDir = "/home/pi/allsky/images/";
+	$chosen_day = $_GET['day'];
+	if ($chosen_day === 'All'){
+
+		if ($handle = opendir($topDir)) {
+		    $blacklist = array('.', '..', 'somedir', 'somefile.php');
+		    while (false !== ($day = readdir($handle))) {
+		        if (!in_array($day, $blacklist)) {
+		            $days[] = $day;
+			    $num += 1;
+		        }
+		    }
+		    closedir($handle);
+		}
+
+		if ($num == 0) {
+			// This could indicate an error, or the user just installed allsky
+			echo "<span class='alert-warning'>There are no image directories.</span>";
+		} else {
+			rsort($days);
+
+			echo "<h2>$formalImageTypeName - $chosen_day</h2>
+			<div class='row'>";
+			$num = 0;
+			foreach ($days as $day) {
+				$imageTypes = array();
+				foreach (glob($topDir . "$day/$dir$imageFileName-$day.*") as $imageType) {
+					$imageTypes[] = $imageType;
+					$num += 1;
+				}
+				foreach ($imageTypes as $imageType) {
+					$imageType_name = basename($imageType);
+					// "/images" is an alias for $topDir.
+					$fullFilename = "/images/$day/$dir$imageType_name";
+					if ($type == "picture") {
+					    echo "<a href='$fullFilename'>
+						<div style='float: left; width: 100%; margin-bottom: 2px;'>
+						<label>$day</label>
+						<img src='$fullFilename' style='margin-left: 10px; max-width: 50%; max-height:100px'/>
+						</div></a>";
+					} else {	// video
+					    // echo "<video width='640' height='480' controls>
+					    // xxxx Would be nice to show a thumbnail since loading all the videos
+					    // is bandwidth intensive.  How do you make a thumbnail from a video?
+					    echo "<a href='$fullFilename'>";
+					    echo "<div style='float: left; width: 100%; margin-bottom: 2px;'>
+						<label style='vertical-align: middle'>$day &nbsp; &nbsp;</label>
+						<video width='85%' height='85%' controls style='vertical-align: middle'>
+							<source src='$fullFilename' type='video/mp4'>
+							<source src='movie.ogg' type='video/ogg'>
+							Your browser does not support the video tag.
+						</video>
+						</div></a>";
+					}
+				}
+			}
+			if ($num == 0) {
+				echo "<span class='alert-warning'>There are no $formalImageTypeName.</span>";
+			}
+		}
+	        echo "</div>";
+
+	} else {
+		foreach (glob($topDir . "$chosen_day/$dir$imageFileName-$chosen_day.*") as $imageType) {
+			  $imageTypes[] = $imageType;
+			  $num += 1;
+		}
+		echo "<h2>$formalImageTypeName - $chosen_day</h2>
+		<div class='row'>";
+		if ($num == 0) {
+			echo "<span class='alert-warning'>There are no $formalImageTypeName for this day.</span>";
+		} else {
+			foreach ($imageTypes as $imageType) {
+				$imageType_name = basename($imageType);
+				$fullFilename = "/images/$chosen_day/$dir$imageType_name";
+				if ($type == "picture") {
+				    echo "<a href='$fullFilename'>
+					<div style='float: left'>
+					<img src='$fullFilename' style='max-width: 100%;max-height:400px'/>
+					</div></a>";
+				} else {	//video
+				    echo "<a href='$fullFilename'>";
+				    echo "<div style='float: left; width: 100%'>
+					<video width='85%' height='85%' controls>
+						<source src='$fullFilename' type='video/mp4'>
+						<source src='movie.ogg' type='video/ogg'>
+						Your browser does not support the video tag.
+					</video>
+					</div></a>";
+				}
+			}
+		}
+	        echo "</div>";
+
+	}
+}
+
 ?>
