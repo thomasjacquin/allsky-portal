@@ -4,6 +4,7 @@ function ListImages(){
 
 $images = array();
 $chosen_day = $_GET['day'];
+$num = 0;	// Keep track of count so we can tell user when no files exist.
 
 
 if ($handle = opendir('/home/pi/allsky/images/'.$chosen_day)) {
@@ -12,12 +13,13 @@ if ($handle = opendir('/home/pi/allsky/images/'.$chosen_day)) {
 	$ext = explode(".",$image);
         if (!in_array($image, $blacklist) && $ext[1]!='mp4') {
             $images[] = $image;
+	    $num += 1;
         }
     }
     closedir($handle);
 }
 
-asort($images);
+if ($num > 0) asort($images);
 
 ?>
 
@@ -58,13 +60,19 @@ echo "<h2>$chosen_day</h2>
   <div class='row'>";
 
 echo "<div id='images'>";
-foreach ($images as $image) {
-	echo "<div style='float: left'>";
-	if(file_exists("/home/pi/allsky/images/$chosen_day/thumbnails/$image"))
-		echo "<img src='/images/$chosen_day/thumbnails/$image' style='width: 100px;' title='$image' class='thumb'/>";
-	else
-		echo "<img src='/images/$chosen_day/$image' style='width: 100px;'/>";
-	echo "</div>";
+if ($num == 0) {
+	echo "<span class='alert-warning'>There are no images for this day.</span>";
+} else {
+	foreach ($images as $image) {
+		echo "<div style='float: left'>";
+		if(file_exists("/home/pi/allsky/images/$chosen_day/thumbnails/$image"))
+			// "/images/" is an alias for /home/pi/allsky/images in lighttpd
+			echo "<img src='/images/$chosen_day/thumbnails/$image' style='width: 100px;' title='$image' class='thumb'/>";
+		else
+			echo "<img src='/images/$chosen_day/$image' style='width: 100px;'/>";
+		echo "</a>";
+		echo "</div>";
+	}
 }
 ?>
 	</div>
