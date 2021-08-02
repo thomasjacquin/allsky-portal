@@ -266,7 +266,7 @@
 "advanced":0
 },
 {
-"name":"time",
+"name":"showTime",
 "default":"1",
 "description":"Activate to display the time on the image overlay.<br>Combine with Text X and Text Y for placement.",
 "label":"Time",
