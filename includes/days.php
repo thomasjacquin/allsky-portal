@@ -62,10 +62,10 @@ echo "<tr>
                                 <td style='font-weight:bold'>All
                                 </td>
                                 <td></td>
-				<td></td>
-                                <td><a href='index.php?page=list_keograms&day=all' title='All Keograms'><i class='fa fa-barcode fa-lg fa-fw'></i></a>
+                                <td><a href='index.php?page=list_videos&day=All' title='All Timelapse (CAN BE SLOW TO LOAD)'><i class='fa fa-film fa-lg fa-fw'></i></a>
+                                <td><a href='index.php?page=list_keograms&day=All' title='All Keograms'><i class='fa fa-barcode fa-lg fa-fw'></i></a>
                                 </td>
-                                <td><a href='index.php?page=list_startrails&day=all' title='All Startrails'><i class='fa fa-circle-notch fa-lg fa-fw'></i></a>
+                                <td><a href='index.php?page=list_startrails&day=All' title='All Startrails'><i class='fa fa-circle-notch fa-lg fa-fw'></i></a>
                                 </td>
                                 <td style='padding: 22px 0'></td>
                         </tr>";
@@ -105,5 +105,3 @@ foreach ($days as $day) {
 }
 
 ?>
-
-
