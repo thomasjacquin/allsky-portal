@@ -271,3 +271,23 @@ body.dark {
         display: none;
     }
 }
+
+/* Headers in camera options */
+.settingsHeader {
+    background-color: #aaa;
+    text-align: center;
+    font-weight: bold;
+    font-size: 125%;
+    padding: 3px 0 3px 0;
+}
+.dark .settingsHeader {
+    background-color: #444;
+}
+
+/* "advanced" options are highlighted */
+.advanced {
+    background-color: #FFFCC0;
+}
+.dark .advanced {
+    background-color: #999967;
+}
