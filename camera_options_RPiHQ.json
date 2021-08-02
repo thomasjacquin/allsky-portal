@@ -178,7 +178,7 @@
 "advanced":0
 },
 {
-"name":"time",
+"name":"showTime",
 "default":"1",
 "description":"Show the current date and time at the top center at the image",
 "label":"Show Time",
