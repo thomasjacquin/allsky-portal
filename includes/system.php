@@ -62,6 +62,11 @@ function formatSize($bytes)
  */
 function DisplaySystem()
 {
+    $camera_settings_str = file_get_contents(RASPI_CAMERA_SETTINGS, true);
+    $camera_settings_array = json_decode($camera_settings_str, true);
+    $temp_type = $camera_settings_array['temptype'];
+    if ($temp_type == "") $temp_type = "C";
+
 
     // hostname
     exec("hostname -f", $hostarray);
@@ -142,6 +147,26 @@ function DisplaySystem()
     } else {
         $temperature_status = "success";
     }
+    $display_temperature = "";
+    if ($temp_type == "C" || $temp_type == "B")
+        $display_temperature = number_format($temperature, 1, '.', '') . "&deg;C";
+    if ($temp_type == "F" || $temp_type == "B")
+        $display_temperature = $display_temperature . "&nbsp; &nbsp;" . number_format((($temperature * 1.8) + 32), 1, '.', '') . "&deg;F";
+
+    // fan speed.  Should probably put the path in config.sh...
+    $fan_data = "/home/pi/fan/fandata.txt";
+    if (file_exists($fan_data)) {	// fanspeed is $1, we want percent
+        $fanpercent = exec("awk '{print $2}' ".$fan_data);
+        if ($fanpercent >= 90) {
+	        $fan_status = "danger";
+        } elseif ($fanpercent >= 75) {
+	        $fan_status = "warning";
+        } else {
+	        $fan_status = "success";
+        }
+    } else {
+        $fanpercent = "";
+    }
 
     // disk usage
     if ($dp > 90) {
@@ -193,7 +218,7 @@ function DisplaySystem()
                                     <?php echo "$dt ($df free)" ?></br></br>
                                     <div class="info-item">Memory Used</div>
                                     <div class="progress">
-                                        <div class="progress-bar progress-bar-<?php echo $memused_status ?> progress-bar-striped active"
+                                        <div class="progress-bar progress-bar-<?php echo $memused_status ?> ECCprogress-bar-striped active"
                                              role="progressbar"
                                              aria-valuenow="<?php echo $memused ?>" aria-valuemin="0"
                                              aria-valuemax="100"
@@ -202,7 +227,7 @@ function DisplaySystem()
                                     </div>
                                     <div class="info-item">CPU Load</div>
                                     <div class="progress">
-                                        <div class="progress-bar progress-bar-<?php echo $cpuload_status ?> progress-bar-striped active"
+                                        <div class="progress-bar progress-bar-<?php echo $cpuload_status ?> ECCprogress-bar-striped active"
                                              role="progressbar"
                                              aria-valuenow="<?php echo $cpuload ?>" aria-valuemin="0"
                                              aria-valuemax="100"
@@ -211,16 +236,26 @@ function DisplaySystem()
                                     </div>
                                     <div class="info-item">CPU Temperature</div>
                                     <div class="progress">
-                                        <div class="progress-bar progress-bar-<?php echo $temperature_status ?> progress-bar-striped active"
+                                        <div class="progress-bar progress-bar-<?php echo $temperature_status ?> ECCprogress-bar-striped active"
                                              role="progressbar"
                                              aria-valuenow="<?php echo $temperature ?>" aria-valuemin="0"
                                              aria-valuemax="100"
-                                             style="width: <?php echo $temperature ?>%;"><?php echo $temperature ?>&deg;C
+                                             style="width: <?php echo $temperature ?>%;"><?php echo $display_temperature ?>
                                         </div>
                                     </div>
+                                    <?php if ($fanpercent != "") { ?>
+                                        <div class="info-item">Fan speed</div>
+                                        <div class="progress">
+                                            <div class="progress-bar progress-bar-<?php echo $fan_status ?> ECCprogress-bar-striped active"
+                                                 role="progressbar"
+                                                 aria-valuenow="<?php echo $fanpercent ?>" aria-valuemin="0" aria-valuemax="100"
+                                                 style="width: <?php echo $fanpercent ?>%;"><?php echo $fanpercent ?>%
+                                            </div>
+                                        </div>
+                                    <?php } ?>
                                     <div class="info-item">Disk Usage</div>
                                     <div class="progress">
-                                        <div class="progress-bar progress-bar-<?php echo $disk_usage_status ?> progress-bar-striped active"
+                                        <div class="progress-bar progress-bar-<?php echo $disk_usage_status ?> ECCprogress-bar-striped active"
                                              role="progressbar"
                                              aria-valuenow="<?php echo $dp ?>" aria-valuemin="0" aria-valuemax="100"
                                              style="width: <?php echo $dp ?>%;"><?php echo $dp ?>%
@@ -251,4 +286,3 @@ function DisplaySystem()
 }
 
 ?>
-
