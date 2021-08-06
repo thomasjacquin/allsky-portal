@@ -1,160 +1,250 @@
 [
 {
+"name":"",
+"default":"",
+"description":"Daytime settings",
+"label":"",
+"type":"header",
+"advanced":0
+},
+{
+"name":"dayautoexposure",
+"default":"1",
+"description":"Activate to enable daytime auto-exposure.<br>NOTE: since daytime exposures are short, there is no daytime max auto-exposure.",
+"label":"Auto-Exposure",
+"type":"checkbox",
+"advanced":1
+},
+{
+"name":"dayexposure",
+"default":"0.5",
+"description":"Daytime manual exposure time in ms (1000ms = 1 sec).<br>If using auto-exposure, this number is used as a starting point.",
+"label":"Manual Exposure",
+"type":"text",
+"advanced":1
+},
+{
+"name":"daybrightness",
+"default":"50",
+"description":"0 to 600. Changes the amount of light in the image.<br>Low value = dark; high value = bright.",
+"label":"Brightness",
+"type":"number",
+"advanced":0
+},
+{
+"name":"daydelay",
+"default":"5000",
+"description":"Delay between daytime images in milliseconds. 1000ms = 1 sec.",
+"label":"Delay",
+"type":"number",
+"advanced":0
+},
+{
+"name":"daybin",
+"default":"1",
+"description":"1 = binning OFF (1x1), 2 = 2x2 binning, 4 = 4x4 binning.<br>Check available binning modes for your camera.",
+"label":"Binning",
+"type":"number",
+"advanced":1
+},
+
+{
+"name":"",
+"default":"",
+"description":"Nightime settings",
+"label":"",
+"type":"header",
+"advanced":0
+},
+{
+"name":"nightautoexposure",
+"default":"1",
+"description":"Activate to enable nightime auto-exposure.",
+"label":"Auto-Exposure",
+"type":"checkbox",
+"advanced":0
+},
+{
+"name":"nightmaxexposure",
+"default":"20000",
+"description":"Max nightime auto-exposure time in ms (1000ms = 1 sec).<br>Only applies if 'Manual Exposure' is enabled.",
+"label":"Max Auto-Exposure",
+"type":"number",
+"advanced":0
+},
+{
+"name":"nightexposure",
+"default":10000,
+"description":"Manual nightime exposure time in ms (1000ms = 1 sec).<br>If using auto-exposure, this number is used as a starting point.",
+"label":"Manual Exposure",
+"type":"number",
+"advanced":0
+},
+{
+"name":"nightbrightness",
+"default":"50",
+"description":"0 to 600. Changes the amount of light in the image.<br>Low value = dark; high value = bright.",
+"label":"Brightness",
+"type":"number",
+"advanced":0
+},
+{
+"name":"nightdelay",
+"default":"10",
+"description":"Delay between nighttime images in milliseconds.<br>1000ms = 1 sec.",
+"label":"Delay",
+"type":"number",
+"advanced":0
+},
+{
+"name":"nightautogain",
+"default":"0",
+"description":"Activate to enable nightime auto-gain.",
+"label":"Auto-Gain",
+"type":"checkbox",
+"advanced":1
+},
+{
+"name":"nightmaxgain",
+"default":"200",
+"description":"Upper gain limit when using auto-gain.",
+"label":"Max Gain",
+"type":"number",
+"advanced":1
+},
+{
+"name":"nightgain",
+"default":"50",
+"description":"Manually set the gain (light sensitivity).<br>Starts at 0. A high value returns a brighter image but more noise too. Not used for daytime (is 0).",
+"label":"Gain",
+"type":"number",
+"advanced":0
+},
+{
+"name":"gaintransitiontime",
+"default":"30",
+"description":"Number of minutes over which to increase or decrease the gain when going from day-to-night or night-to-day images.<br>This helps smooth brightness differences.  Only works if both gains are set to manual and are different. 0 disables transitions.",
+"label":"Gain Transition Time",
+"type":"number",
+"advanced":1
+},
+{
+"name":"nightbin",
+"default":"1",
+"description":"1 = binning OFF (1x1), 2 = 2x2 binning, 4 = 4x4 binning.<br>Check available binning modes for your camera.",
+"label":"Binning",
+"type":"number",
+"advanced":0
+},
+
+
+{
+"name":"",
+"default":"",
+"description":"Both daytime and nightime settings",
+"label":"",
+"type":"header",
+"advanced":0
+},
+{
 "name":"width",
 "default":0,
-"description":"Image width. 0 = max width",
-"label":"Width",
-"type":"number"
+"description":"Image width in pixels. 0 = max width.",
+"label":"Image width",
+"type":"number",
+"advanced":0
 },
 {
 "name":"height",
 "default":0,
-"description":"Image height. 0 = max height",
-"label":"Height",
-"type":"number"
-},
-{
-"name":"exposure",
-"default":10000,
-"description":"Time in ms (1000ms = 1 sec)",
-"label":"Exposure",
-"type":"number"
-},
-{
-"name":"maxexposure",
-"default":20000,
-"description":"Max exposure time in ms (1000ms = 1 sec)",
-"label":"Max Exposure",
-"type":"number"
-},
-{
-"name":"autoexposure",
-"default":"1",
-"description":"Activate to enable auto-exposure",
-"label":"Auto-Exposure",
-"type":"checkbox"
-},
-{
-"name":"gain",
-"default":"50",
-"description":"Light sensitivity. Starts at 0. A high value returns a brighter image but more noise too",
-"label":"Gain",
-"type":"number"
-},
-{
-"name":"maxgain",
-"default":200,
-"description":"Upper gain limit when using auto-gain",
-"label":"Max Gain",
-"type":"number"
-},
-{
-"name":"autogain",
-"default":"0",
-"description":"Activate to enable auto-gain",
-"label":"Auto-Gain",
-"type":"checkbox"
-},
-{
-"name":"coolerEnabled",
-"default":"0",
-"description":"Activate to use cooling (works only on cooled cameras)",
-"label":"Cooling",
-"type":"checkbox"
-},
-{
-"name":"targetTemp",
-"default":"0",
-"description":"Sensor's target temperature when cooler is enabled (degrees Celsius)",
-"label":"Target Temp.",
-"type":"number"
-},
-{
-"name":"gamma",
-"default":"50",
-"description":"0 to 100. Changes the difference between light and dark areas. A hight value increases contrast",
-"label":"Gamma",
-"type":"number"
-},
-{
-"name":"brightness",
-"default":"50",
-"description":"0 to 100. Changes the amount of light in the image. Low value = dark. high value = bright",
-"label":"Brightness",
-"type":"number"
-},
-{
-"name":"wbr",
-"default":"53",
-"description":"Red component for the White Balance",
-"label":"Red balance",
-"type":"number"
-},
-{
-"name":"wbb",
-"default":"90",
-"description":"Blue component for the White Balance",
-"label":"Blue balance",
-"type":"number"
-},
-{
-"name":"bin",
-"default":"1",
-"description":"1 = binning OFF (1x1), 2 = 2x2 binning, 4 = 4x4 binning. Check available binning mode for your camera",
-"label":"Binning",
-"type":"number"
-},
-{
-"name":"delay",
-"default":"10",
-"description":"Delay between images in milliseconds. 1000ms = 1 sec.",
-"label":"Delay",
-"type":"number"
-},
-{
-"name":"daytimeDelay",
-"default":"5000",
-"description":"Delay between images during daytime in milliseconds. 1000ms = 1 sec.",
-"label":"Daytime Delay",
-"type":"number"
+"description":"Image height in pixels. 0 = max height.",
+"label":"Image height",
+"type":"number",
+"advanced":0
 },
 {
 "name":"type",
 "default":"1",
-"description":"Choose between Color (RGB24) or Grayscale (RAW8, RAW16). 16 bits only works with PNG extension",
+"description":"Choose between auto, color (RGB24 or Y8) or grayscale (RAW8, RAW16).<br>16 bits only works with PNG extension. 'auto' tries color first, then RAW16, then RAW8.",
 "label":"Image Type",
 "type":"select",
 "options": [
+	{"value": "99", "label": "auto"},
 	{"value": "0", "label": "RAW8"},
 	{"value": "1", "label": "RGB24"},
-	{"value": "2", "label": "RAW16"}
-]
+	{"value": "2", "label": "RAW16"},
+	{"value": "3", "label": "Y8"}
+],
+"advanced":1
+},
+{
+"name":"gamma",
+"default":"50",
+"description":"0 to 100. Changes the difference between light and dark areas.<br>A high value increases contrast. <i>Not supported on all cameras</i>.",
+"label":"Gamma",
+"type":"number",
+"advanced":0
+},
+{
+"name":"autowhitebalance",
+"default":"0",
+"description":"Sets Auto White Balance.",
+"label":"Auto White Balance",
+"type":"checkbox",
+"advanced":0
+},
+{
+"name":"wbr",
+"default":"53",
+"description":"Red component for the white balance.<br>When using auto white balance, this number is a starting point.",
+"label":"Red balance",
+"type":"number",
+"advanced":0
+},
+{
+"name":"wbb",
+"default":"90",
+"description":"Blue component for the white balance.<br>When using auto white balance, this number is a starting point.",
+"label":"Blue balance",
+"type":"number",
+"advanced":0
 },
 {
 "name":"quality",
 "default":"95",
-"description":"Range for a PNG image: 0-9. Range for a JPG image: 0-100",
+"description":"Range for a PNG image: 0-9. Range for a JPG image: 0-100.<br>Higher numbers produce larger, clearer files.",
 "label":"Quality",
-"type":"number"
+"type":"number",
+"advanced":0
+},
+{
+"name":"autousb",
+"default":"0",
+"description":"Auto BandwidthOverload",
+"label":"Auto USB bandwidth",
+"type":"checkbox",
+"advanced":1
 },
 {
 "name":"usb",
 "default":"40",
-"description":"Values between 40-100. This is BandwidthOverload",
+"description":"Values between 40-100. This is BandwidthOverload.",
 "label":"USB bandwidth",
-"type":"number"
+"type":"number",
+"advanced":1
 },
 {
 "name":"filename",
 "default":"image.jpg",
-"description":"No whitespaces in filename. Extensions allowed: .jpg or .png",
+"description":"No whitespaces in filename. Extensions allowed: .jpg or .png.",
 "label":"Filename",
-"type":"text"
+"type":"text",
+"advanced":1
 },
 {
 "name":"flip",
 "default":"0",
-"description":"Select a flipping option if you want to reverse the image along an axis",
+"description":"Select a flipping option if you want to reverse the image along an axis.",
 "label":"Flip",
 "type":"select",
 "options": [
@@ -162,54 +252,140 @@
 	{"value": "1", "label": "Horizontal"},
 	{"value": "2", "label": "Vertical"},
 	{"value": "3", "label": "Both"}
-]
+],
+"advanced":0
+},
+
+
+{
+"name":"",
+"default":"",
+"description":"Image overlay settings",
+"label":"",
+"type":"header",
+"advanced":0
+},
+{
+"name":"showTime",
+"default":"1",
+"description":"Activate to display the time on the image overlay.<br>Combine with Text X and Text Y for placement.",
+"label":"Time",
+"type":"checkbox",
+"advanced":0
+},
+{
+"name":"timeformat",
+"default":"%Y%m%d %H:%M:%S",
+"description":"Determines the format of the displayed time. See strftime(3).",
+"label":"Time Format",
+"type":"text",
+"advanced":0
+},
+{
+"name":"showTemp",
+"default":"1",
+"description":"Activate to display the camera sensor temperature on the overlay.",
+"label":"Show Temperature",
+"type":"checkbox",
+"advanced":0
+},
+{
+"name":"temptype",
+"default":"C",
+"description":"Unit(s) to display temperature in.",
+"label":"Temperature Units",
+"type":"select",
+"options": [
+	{"value": "C", "label": "Celcius"},
+	{"value": "F", "label": "Fahrenheit"},
+	{"value": "B", "label": "Both"}
+],
+"advanced":0
+},
+{
+"name":"showExposure",
+"default":"1",
+"description":"Activate to display the exposure length on the overlay.<br>If auto-exposure is set '(auto)' will appear after the exposure time.",
+"label":"Show Exposure",
+"type":"checkbox",
+"advanced":0
+},
+{
+"name":"showGain",
+"default":"1",
+"description":"Activate to display the camera gain on the overlay.<br>If auto-gain is set '(auto)' will appear after the gain setting.",
+"label":"Show Gain",
+"type":"checkbox",
+"advanced":0
+},
+{
+"name":"showBrightness",
+"default":"1",
+"description":"Activate to display the Brightness value on the overlay.",
+"label":"Show Brightness",
+"type":"checkbox",
+"advanced":0
+},
+{
+"name":"showHistogram",
+"default":"0",
+"description":"Activate to display the histogram mean on the overlay.<br>This is mostly for testing.",
+"label":"Show Histogram",
+"type":"checkbox",
+"advanced":1
 },
 {
 "name":"text",
 "default":"",
-"description":"Text Overlay",
+"description":"Text that appears below the optional time with the same color and size.",
 "label":"Text Overlay",
-"type":"text"
+"type":"text",
+"advanced":0
 },
 {
 "name":"extratext",
 "default":"",
-"description":"Extra Text File (Requires the full path to the file) If you are not using an extra text file ensure this field is empty",
+"description":"Extra Text File (requires the full path to the file).<br>Leave blank if NOT using an extra text file.",
 "label":"Extra Text File",
-"type":"text"
+"type":"text",
+"advanced":0
 },
 {
 "name":"extratextage",
-"default":"600",
-"description":"The maximum age of the extra text file in seconds. After this time the file will no longer be dispalyed. Set to 0 to always display",
+"default":"0",
+"description":"The maximum age of the extra text file in seconds.<br>After this time the file will no longer be displayed. Set to 0 to always display.",
 "label":"Max Age Of Extra",
-"type":"number"
+"type":"number",
+"advanced":0
 },
 {
 "name":"textlineheight",
 "default":"30",
-"description":"The line height of the text, if increasing the font size causes the text overlap then increase this value",
+"description":"The line height of the text. If increasing the font size causes the text to overlap then increase this value.",
 "label":"Line Height",
-"type":"number"
+"type":"number",
+"advanced":0
 },
 {
 "name":"textx",
 "default":"15",
-"description":"Text Placement Horizontal from LEFT in Pixels",
+"description":"Text placement horizontal from LEFT in pixels.",
 "label":"Text X",
-"type":"number"
+"type":"number",
+"advanced":0
 },
 {
 "name":"texty",
 "default":"35",
-"description":"Text Placement Vertical from TOP in Pixels",
+"description":"Text placement vertical from TOP in pixels.",
 "label":"Text Y",
-"type":"number"
+"type":"number",
+"advanced":0
 },
 {
 "name":"fontname",
 "default":"0",
-"description":"Font Types for the text overlay",
+"description":"Font name for the text overlay. Used for both large and small text.",
 "label":"Font Name",
 "type":"select",
 "options": [
@@ -221,96 +397,172 @@
 	{"value": "5", "label": "Complex Small"},
 	{"value": "6", "label": "Script Simplex"},
 	{"value": "7", "label": "Script Complex"}
-]
+],
+"advanced":0
 },
 {
 "name":"fontcolor",
 "default":"255 255 255",
-"description":"BGR value of text color. 0 to 255 for each channel. NOTE: When using RAW 16 only the B and G values are used i.e. 255 128 0",
+"description":"BGR value of text color. 0 to 255 for each channel.<br>NOTE: When using RAW 16 only the B and G values are used i.e., 255 128 0.",
 "label":"Font Color",
-"type":"text"
+"type":"text",
+"advanced":0
 },
 {
 "name":"smallfontcolor",
 "default":"0 0 255",
-"description":"BGR value of text color. 0 to 255 for each channel. NOTE: When using RAW 16 only the B and G values are used i.e. 255 128 0",
+"description":"BGR value of text color. 0 to 255 for each channel.<br>NOTE: When using RAW 16 only the B and G values are used i.e., 255 128 0.",
 "label":"Small Font Color",
-"type":"text"
+"type":"text",
+"advanced":0
 },
 {
 "name":"fonttype",
 "default":"0",
-"description":"Choose between smooth font lines (antialiased), 8-pixel or 4 pixel connectivity (harder edges)",
+"description":"Choose between smooth font lines (antialiased), 8-pixel, or 4 pixel connectivity (harder edges).",
 "label":"Font Smoothness",
 "type":"select",
 "options": [
-        {"value": "0", "label": "Antialiased"},
-        {"value": "1", "label": "8 connected"},
-        {"value": "2", "label": "4 connected"}
-]
+	{"value": "0", "label": "Antialiased"},
+	{"value": "1", "label": "8 connected"},
+	{"value": "2", "label": "4 connected"}
+],
+"advanced":0
 },
 {
 "name":"fontsize",
 "default":"7",
-"description":"Text Font Size",
+"description":"Text Font Size. The time, if displayed, will use this size; other text displayed will be about 20% smaller.",
 "label":"Font Size",
-"type":"number"
+"type":"number",
+"advanced":0
 },
 {
 "name":"fontline",
 "default":"1",
-"description":"Text Font Line Thickness",
+"description":"Text Font Line Thickness.",
 "label":"Font Weight",
-"type":"number"
+"type":"number",
+"advanced":0
 },
 {
 "name":"outlinefont",
 "default":"0",
-"description":"Adds an outline to the text overlay to improve contrast",
+"description":"Adds an outline to the text overlay to improve contrast.",
 "label":"Use Outline Font",
-"type":"checkbox"
+"type":"checkbox",
+"advanced":0
+},
+
+
+{
+"name":"",
+"default":"",
+"description":"Other settings",
+"label":"",
+"type":"header",
+"advanced":0
+},
+{
+"name":"notificationimages",
+"default":"1",
+"description":"Activate to display notification images, e.g., 'Camera is off during the day'.",
+"label":"Notification Images",
+"type":"checkbox",
+"advanced":0
+},
+{
+"name":"coolerEnabled",
+"default":"0",
+"description":"Activate to use cooling (works only on cooled cameras).",
+"label":"Cooling",
+"type":"checkbox",
+"advanced":0
+},
+{
+"name":"targetTemp",
+"default":"0",
+"description":"Sensor's target temperature <i>when cooler is enabled</i> (degrees Celsius).",
+"label":"Target Temp.",
+"type":"number",
+"advanced":0
 },
 {
 "name":"latitude",
 "default":"60.7N",
-"description":"Latitude of the camera. Needs a number (0 to 90) and direction (N or S). Ex: 60.7N",
+"description":"Latitude of the camera. Needs a number (0 to 90) and direction (N or S). Ex: 60.7N.",
 "label":"Latitude",
-"type":"text"
+"type":"text",
+"advanced":0
 },
 {
 "name":"longitude",
 "default":"135.05W",
-"description":"Longitude of the camera. Needs a number (0 to 180) and direction (E or W). Ex: 135.05W",
+"description":"Longitude of the camera. Needs a number (0 to 180) and direction (E or W). Ex: 135.05W.",
 "label":"Longitude",
-"type":"text"
+"type":"text",
+"advanced":0
 },
 {
 "name":"angle",
 "default":"-6",
-"description":"Altitude of the sun in degrees relative to the horizon at which to start/stop capture",
+"description":"Altitude of the sun in degrees relative to the horizon at which to start/stop capture.",
 "label":"Angle",
-"type":"text"
+"type":"text",
+"advanced":0
 },
 {
-"name":"time",
-"default":"1",
-"description":"Adds the time to the image. Combine with Text X and Text Y for placement",
-"label":"Time",
-"type":"checkbox"
+"name":"histogrambox",
+"default":"500 500 50 50",
+"description":"Size of the histogram box (X and Y in pixels) and offset from left and top (0-100 percent). Sizes must be even numbers.",
+"label":"Histogram Box",
+"type":"text",
+"advanced":1
+},
+{
+"name":"showhistogrambox",
+"default":0,
+"description":"Enable to show an outline of the histogram box, useful for determining what the 'Histogram Box' numbers should be.",
+"label":"Show Histogram Box",
+"type":"checkbox",
+"advanced":1
 },
 {
 "name":"darkframe",
 "default":"0",
-"description":"Activate to capture a dark frame. This mode hides text and time overlays",
+"description":"Activate to capture a dark frame. This mode hides text and time overlays.",
 "label":"Dark Frame",
-"type":"checkbox"
+"type":"checkbox",
+"advanced":0
 },
 {
-"name":"showDetails",
-"default":"1",
-"description":"Activate to display the image metadata on the overlay",
-"label":"Show Details",
-"type":"checkbox"
+"name":"locale",
+"default":"en_US.UTF-8",
+"description":"Your locale, used to determine what the thousands and decimal separators are.<br>Type 'locale' at a command prompt to see your choices (use the LC_NUMERIC entry).",
+"label":"Locale",
+"type":"text",
+"advanced":0
+},
+{
+"name":"debuglevel",
+"default":"0",
+"description":"Debug level, 0 is lowest level.",
+"label":"Debug Level",
+"type":"select",
+"options": [
+	{"value": "0", "label": "0"},
+	{"value": "1", "label": "1"},
+	{"value": "2", "label": "2"},
+	{"value": "3", "label": "3"}
+],
+"advanced":1
+},
+{
+"name":"alwaysshowadvanced",
+"default":"0",
+"description":"Activate to always show the advanced options.",
+"label":"Always Show Advanced",
+"type":"checkbox",
+"advanced":1
 }
-
 ]

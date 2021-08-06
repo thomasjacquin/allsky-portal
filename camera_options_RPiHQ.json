@@ -1,76 +1,78 @@
 [
 {
-"name":"width",
-"default":"0",
-"description":"Image width. 0 = max width",
-"label":"Width",
-"type":"number"
+"name":"",
+"default":"",
+"description":"Exposure settings",
+"label":"",
+"type":"header",
+"advanced":0
 },
 {
-"name":"height",
-"default":"0",
-"description":"Image height. 0 = max height",
-"label":"Height",
-"type":"number"
-},
-{
-"name":"exposure",
+"name":"nightexposure",
 "default":"60000",
 "description":"Time in ms (1000ms = 1 sec, range 1 - 240000 ms)",
 "label":"Exposure",
-"type":"number"
+"type":"number",
+"advanced":0
 },
 {
-"name":"gain",
+"name":"nightgain",
 "default":"4",
 "description":"Light sensitivity. Starts at 1 till 16. A high value returns a brighter image but more noise too",
 "label":"Gain",
-"type":"number"
+"type":"number",
+"advanced":0
 },
 {
-"name":"autogain",
+"name":"nightautogain",
 "default":"0",
 "description":"Activate to enable auto-gain",
 "label":"Auto-Gain",
-"type":"checkbox"
+"type":"checkbox",
+"advanced":0
 },
 {
 "name":"gamma",
 "default":"50",
 "description":"-100 to 100. Changes the difference between light and dark areas. A hight value increases contrast",
 "label":"Gamma",
-"type":"number"
+"type":"number",
+"advanced":0
 },
 {
 "name":"brightness",
 "default":"50",
 "description":"0 to 100. Changes the amount of light in the image. Low value = dark. high value = bright",
 "label":"Brightness",
-"type":"number"
+"type":"number",
+"advanced":0
 },
 {
 "name":"awb",
 "default":"0",
 "description":"Auto White Balance",
 "label":"AWB",
-"type":"checkbox"
+"type":"checkbox",
+"advanced":0
 },
 {
 "name":"wbr",
 "default":"2.5",
 "description":"Red component for the White Balance, range 0 - 10",
 "label":"Red balance",
-"type":"text"
+"type":"text",
+"advanced":0
 },
 {
 "name":"wbb",
 "default":"2",
 "description":"Blue component for the White Balance, range 0 - 10",
 "label":"Blue balance",
-"type":"text"
+"type":"text",
+"advanced":0
 },
 {
-"name":"bin",
+"name":"nightbin",
 "default":"1",
 "description":"1 = binning OFF (1x1), 2x2 binning, 4 = 4x4 binning",
 "label":"Binning",
@@ -79,35 +81,56 @@
 		{"value": "1", "label": "1x1 binning"},
 		{"value": "2", "label": "2x2 binning"},
 		{"value": "4", "label": "4x4 binning"}
-]
+],
+"advanced":0
 },
 {
-"name":"delay",
+"name":"nightdelay",
 "default":"10",
 "description":"Delay between images in milliseconds. 1000ms = 1 sec.",
 "label":"Delay",
-"type":"number"
+"type":"number",
+"advanced":0
 },
 {
-"name":"daytimeDelay",
+"name":"daydelay",
 "default":"15000",
 "description":"Delay between images during daytime in milliseconds. 1000ms = 1 sec.",
 "label":"Daytime Delay",
-"type":"number"
+"type":"number",
+"advanced":0
 },
 {
 "name":"quality",
 "default":"95",
 "description":"Quality range for a JPG image, range 0% - 100%",
 "label":"Quality",
-"type":"number"
+"type":"number",
+"advanced":0
+},
+{
+"name":"width",
+"default":"0",
+"description":"Image width. 0 = max width",
+"label":"Width",
+"type":"number",
+"advanced":0
+},
+{
+"name":"height",
+"default":"0",
+"description":"Image height. 0 = max height",
+"label":"Height",
+"type":"number",
+"advanced":0
 },
 {
 "name":"filename",
 "default":"image.jpg",
 "description":"No whitespaces in filename. Extensions allowed: .jpg",
 "label":"Filename",
-"type":"text"
+"type":"text",
+"advanced":0
 },
 {
 "name":"rotation",
@@ -120,7 +143,8 @@
 		{"value": "90", "label": "90 degrees"},
 		{"value": "180", "label": "180 degrees"},
 		{"value": "270", "label": "270 degrees"}
-]
+],
+"advanced":0
 },
 {
 "name":"flip",
@@ -133,84 +157,130 @@
         {"value": "1", "label": "Horizontal"},
         {"value": "2", "label": "Vertical"},
         {"value": "3", "label": "Both"}
-]
+],
+"advanced":0
 },
+
 {
-"name":"autofocus",
-"default":"0",
-"description":"Auto Focus",
-"label":"Auto Focus",
-"type":"checkbox"
-},
-{
-"name":"darkframe",
-"default":"0",
-"description":"Capture dark frames",
-"label":"Dark Frame",
-"type":"checkbox"
+"name":"",
+"default":"",
+"description":"Image overlay settings",
+"label":"",
+"type":"header",
+"advanced":0
 },
 {
 "name":"text",
 "default":"",
 "description":"Default text to position at the top center at the image",
 "label":"Image Title",
-"type":"text"
+"type":"text",
+"advanced":0
 },
 {
-"name":"time",
+"name":"showTime",
 "default":"1",
 "description":"Show the current date and time at the top center at the image",
 "label":"Show Time",
-"type":"checkbox"
+"type":"checkbox",
+"advanced":0
 },
 {
 "name":"showDetails",
 "default":"1",
 "description":"Show image details at the top center at the image",
 "label":"Image Details",
-"type":"checkbox"
+"type":"checkbox",
+"advanced":0
 },
 {
 "name":"fontsize",
 "default":"32",
 "description":"Font size 6 - 160, default value 32",
 "label":"Font Size",
-"type":"number"
+"type":"number",
+"advanced":0
 },
 {
 "name":"fontcolor",
 "default":"255",
 "description":"Annotation text font color in gray scale value 0 (black) - 255 (white)",
 "label":"Font Color",
-"type":"number"
+"type":"number",
+"advanced":0
 },
 {
 "name":"background",
 "default":"0",
 "description":"Background annotation text color in gray scale value 0 (black) - 255 (white)",
 "label":"Background Color",
-"type":"number"
+"type":"number",
+"advanced":0
+},
+
+{
+"name":"",
+"default":"",
+"description":"Other settings",
+"label":"",
+"type":"header",
+"advanced":0
+},
+{
+"name":"notificationimages",
+"default":"1",
+"description":"Activate to display notification images, e.g., 'Camera is off during the day'.",
+"label":"Notification Images",
+"type":"checkbox",
+"advanced":0
 },
 {
 "name":"latitude",
 "default":"60.7N",
 "description":"Latitude of the camera. Needs a number (0 to 90) and direction (N or S). Ex: 60.7N",
 "label":"Latitude",
-"type":"text"
+"type":"text",
+"advanced":0
 },
 {
 "name":"longitude",
 "default":"135.05W",
 "description":"Longitude of the camera. Needs a number (0 to 180) and direction (E or W). Ex: 135.05W",
 "label":"Longitude",
-"type":"text"
+"type":"text",
+"advanced":0
 },
 {
 "name":"angle",
 "default":"-6",
 "description":"Altitude of the sun in degrees relative to the horizon at which to start/stop capture",
 "label":"Angle",
-"type":"text"
+"type":"text",
+"advanced":0
+},
+{
+"name":"autofocus",
+"default":"0",
+"description":"Auto Focus",
+"label":"Auto Focus",
+"type":"checkbox",
+"advanced":0
+},
+{
+"name":"darkframe",
+"default":"0",
+"description":"Capture dark frames",
+"label":"Dark Frame",
+"type":"checkbox",
+"advanced":0
+},
+{
+"name":"alwaysshowadvanced",
+"default":"0",
+"description":"Activate to always show the advanced options.",
+"label":"Always Show Advanced",
+"type":"checkbox",
+"advanced":1
 }
 
 ]
