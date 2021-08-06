@@ -124,10 +124,14 @@ function toggle_advanced()
 				$name = $option['name'];
 				$default = $option['default'];
 				$type = $option['type'];
-				$value = $camera_settings_array[$option['name']] != null ? $camera_settings_array[$option['name']] : $default;
-				// Allow single quotes in values (primarily string values) and descriptions).
-				// &apos; isn't supported by all browsers so use &#x27; instead for single quote.
-				$value = str_replace("'", "&#x27;", $value);
+				if ($type == "header") {
+					$value = "";
+				} else {
+					$value = $camera_settings_array[$name] != null ? $camera_settings_array[$name] : $default;
+					// Allow single quotes in values (primarily string values) and descriptions).
+					// &apos; isn't supported by all browsers so use &#x27; instead for single quote.
+					$value = str_replace("'", "&#x27;", $value);
+				}
 				$description = str_replace("'", "&#x27;", $option['description']);
 				// If in "advanced" mode, show the default if it's not the current value.
 				if ($value != $default) {
