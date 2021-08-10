@@ -43,7 +43,7 @@ define('RASPI_TORPROXY_ENABLED', false);
 
 include_once(RASPI_CONFIG . '/raspap.php');
 include_once('includes/dashboard.php');
-define('useEth0', false);	// MAY need more testing, especially the "Stop eth0" button.
+define('useEth0', true);	// MAY need more testing, especially the "Stop eth0" button.
 if (useEth0) :
 	include_once('includes/dashboard_eth0.php');
 endif;
