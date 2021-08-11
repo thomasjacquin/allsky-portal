@@ -18,7 +18,7 @@
 {
 "name":"dayexposure",
 "default":"0.5",
-"description":"Daytime manual exposure time in ms (1000ms = 1 sec).<br>If using auto-exposure, this number is used as a starting point.",
+"description":"Daytime manual exposure time in ms (1000ms = 1 sec). Can be a fraction.<br>If using auto-exposure, this number is used as a starting point.",
 "label":"Manual Exposure",
 "type":"text",
 "advanced":1
@@ -26,7 +26,7 @@
 {
 "name":"daybrightness",
 "default":"50",
-"description":"0 to 600. Changes the amount of light in the image.<br>Low value = dark; high value = bright.",
+"description":"0 to 600. Changes the amount of light in the image.<br>Low value = dark; high value = bright. Also called 'offset'.",
 "label":"Brightness",
 "type":"number",
 "advanced":0
@@ -67,7 +67,7 @@
 {
 "name":"nightmaxexposure",
 "default":"20000",
-"description":"Max nightime auto-exposure time in ms (1000ms = 1 sec).<br>Only applies if 'Manual Exposure' is enabled.",
+"description":"Maximum nightime auto-exposure time in ms (1000ms = 1 sec).<br>Only applies if 'Auto-Exposure' is enabled.",
 "label":"Max Auto-Exposure",
 "type":"number",
 "advanced":0
@@ -91,7 +91,7 @@
 {
 "name":"nightdelay",
 "default":"10",
-"description":"Delay between nighttime images in milliseconds.<br>1000ms = 1 sec.",
+"description":"Delay between nighttime images in milliseconds (1000ms = 1 sec).",
 "label":"Delay",
 "type":"number",
 "advanced":0
@@ -123,7 +123,7 @@
 {
 "name":"gaintransitiontime",
 "default":"30",
-"description":"Number of minutes over which to increase or decrease the gain when going from day-to-night or night-to-day images.<br>This helps smooth brightness differences.  Only works if both gains are set to manual and are different. 0 disables transitions.",
+"description":"Number of <b>minutes</b> over which to increase or decrease the gain when going from day-to-night or night-to-day images.<br>This helps smooth brightness differences.  Only works if nighttime Auto-Gain is off. 0 disables transitions.",
 "label":"Gain Transition Time",
 "type":"number",
 "advanced":1
@@ -150,7 +150,7 @@
 "name":"width",
 "default":0,
 "description":"Image width in pixels. 0 = max width.",
-"label":"Image width",
+"label":"Image Width",
 "type":"number",
 "advanced":0
 },
@@ -158,14 +158,14 @@
 "name":"height",
 "default":0,
 "description":"Image height in pixels. 0 = max height.",
-"label":"Image height",
+"label":"Image Height",
 "type":"number",
 "advanced":0
 },
 {
 "name":"type",
 "default":"1",
-"description":"Choose between auto, color (RGB24 or Y8) or grayscale (RAW8, RAW16).<br>16 bits only works with PNG extension. 'auto' tries color first, then RAW16, then RAW8.",
+"description":"Choose between auto, color (RGB24) or grayscale (RAW8 or RAW16 for mono cameras, Y8 for color cameras).<br>16 bits only works with PNG extension. 'auto' tries color first, then RAW16, then RAW8.",
 "label":"Image Type",
 "type":"select",
 "options": [
@@ -197,7 +197,7 @@
 "name":"wbr",
 "default":"53",
 "description":"Red component for the white balance.<br>When using auto white balance, this number is a starting point.",
-"label":"Red balance",
+"label":"Red Balance",
 "type":"number",
 "advanced":0
 },
@@ -205,7 +205,7 @@
 "name":"wbb",
 "default":"90",
 "description":"Blue component for the white balance.<br>When using auto white balance, this number is a starting point.",
-"label":"Blue balance",
+"label":"Blue Balance",
 "type":"number",
 "advanced":0
 },
@@ -219,17 +219,17 @@
 },
 {
 "name":"autousb",
-"default":"0",
-"description":"Auto BandwidthOverload",
-"label":"Auto USB bandwidth",
+"default":"1",
+"description":"Automatically set the USB bandwidth.",
+"label":"Auto USB Bandwidth",
 "type":"checkbox",
 "advanced":1
 },
 {
 "name":"usb",
-"default":"40",
-"description":"Values between 40-100. This is BandwidthOverload.",
-"label":"USB bandwidth",
+"default":"80",
+"description":"USB bandwidth.  Values between 40-100.<br>If you get ASI TIMEOUT errors in the log file, try chaning this value.",
+"label":"USB Bandwidth",
 "type":"number",
 "advanced":1
 },
@@ -248,7 +248,7 @@
 "label":"Flip",
 "type":"select",
 "options": [
-	{"value": "0", "label": "Original"},
+	{"value": "0", "label": "No flipping"},
 	{"value": "1", "label": "Horizontal"},
 	{"value": "2", "label": "Vertical"},
 	{"value": "3", "label": "Both"}
@@ -268,7 +268,7 @@
 {
 "name":"showTime",
 "default":"1",
-"description":"Activate to display the time on the image overlay.<br>Combine with Text X and Text Y for placement.",
+"description":"Activate to display the time on the overlay.<br>Combine with Text X and Text Y for placement of ALL overlay options.",
 "label":"Time",
 "type":"checkbox",
 "advanced":0
@@ -276,7 +276,7 @@
 {
 "name":"timeformat",
 "default":"%Y%m%d %H:%M:%S",
-"description":"Determines the format of the displayed time. See strftime(3).",
+"description":"Determines the format of the displayed time. Run 'man 3 strftime' to see the options.",
 "label":"Time Format",
 "type":"text",
 "advanced":0
@@ -305,7 +305,7 @@
 {
 "name":"showExposure",
 "default":"1",
-"description":"Activate to display the exposure length on the overlay.<br>If auto-exposure is set '(auto)' will appear after the exposure time.",
+"description":"Activate to display the exposure length on the overlay.<br>If Auto-Exposure is set, '(auto)' will appear after the exposure time.",
 "label":"Show Exposure",
 "type":"checkbox",
 "advanced":0
@@ -313,7 +313,7 @@
 {
 "name":"showGain",
 "default":"1",
-"description":"Activate to display the camera gain on the overlay.<br>If auto-gain is set '(auto)' will appear after the gain setting.",
+"description":"Activate to display the camera gain on the overlay.<br>If Auto-Gain is set, '(auto)' will appear after the gain value.",
 "label":"Show Gain",
 "type":"checkbox",
 "advanced":0
@@ -345,7 +345,7 @@
 {
 "name":"extratext",
 "default":"",
-"description":"Extra Text File (requires the full path to the file).<br>Leave blank if NOT using an extra text file.",
+"description":"Extra Text File (enter full path to the file).<br>Leave blank if NOT using an extra text file.",
 "label":"Extra Text File",
 "type":"text",
 "advanced":0
@@ -353,7 +353,7 @@
 {
 "name":"extratextage",
 "default":"0",
-"description":"The maximum age of the extra text file in seconds.<br>After this time the file will no longer be displayed. Set to 0 to always display.",
+"description":"The maximum age of the extra text file in seconds.<br>After this time the contents of the file will no longer be displayed. Set to 0 to always display.",
 "label":"Max Age Of Extra",
 "type":"number",
 "advanced":0
@@ -361,7 +361,7 @@
 {
 "name":"textlineheight",
 "default":"30",
-"description":"The line height of the text. If increasing the font size causes the text to overlap then increase this value.",
+"description":"The line height of the text in pixels. If increasing the font size causes the text to overlap then increase this value.",
 "label":"Line Height",
 "type":"number",
 "advanced":0
@@ -403,7 +403,7 @@
 {
 "name":"fontcolor",
 "default":"255 255 255",
-"description":"BGR value of text color. 0 to 255 for each channel.<br>NOTE: When using RAW 16 only the B and G values are used i.e., 255 128 0.",
+"description":"Blue, Green, and Red (BGR) values of text color. 0 to 255 for each channel.<br>NOTE: When using RAW 16 only the first two values are used i.e., 255 128 0.",
 "label":"Font Color",
 "type":"text",
 "advanced":0
@@ -411,7 +411,7 @@
 {
 "name":"smallfontcolor",
 "default":"0 0 255",
-"description":"BGR value of text color. 0 to 255 for each channel.<br>NOTE: When using RAW 16 only the B and G values are used i.e., 255 128 0.",
+"description":"BGR value of text color. 0 to 255 for each channel.<br>NOTE: When using RAW 16 only the first two values are used i.e., 255 128 0.",
 "label":"Small Font Color",
 "type":"text",
 "advanced":0
@@ -448,7 +448,7 @@
 {
 "name":"outlinefont",
 "default":"0",
-"description":"Adds an outline to the text overlay to improve contrast.",
+"description":"Adds a black outline to the text overlay to improve contrast.",
 "label":"Use Outline Font",
 "type":"checkbox",
 "advanced":0
@@ -506,7 +506,7 @@
 {
 "name":"angle",
 "default":"-6",
-"description":"Altitude of the sun in degrees relative to the horizon at which to start/stop capture.",
+"description":"Altitude of the Sun in degrees relative to the horizon at which to switch between day and night.",
 "label":"Angle",
 "type":"text",
 "advanced":0
@@ -530,7 +530,7 @@
 {
 "name":"darkframe",
 "default":"0",
-"description":"Activate to capture a dark frame. This mode hides text and time overlays.",
+"description":"Activate to capture dark frames. This mode hides text and time overlays.<br>Will continually take dark frames until restarted.",
 "label":"Dark Frame",
 "type":"checkbox",
 "advanced":0
