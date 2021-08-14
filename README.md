@@ -1,5 +1,5 @@
 ![](http://www.thomasjacquin.com/allsky-portal/images/liveview.jpg)
-# `$ allsky-portal` ![Release 0.6](https://img.shields.io/badge/Release-0.6-green.svg)
+# `$ allsky-portal` ![Release 0.7](https://img.shields.io/badge/Release-0.7-green.svg)
 A simple, responsive web interface to control an allsky camera built with a Raspberry Pi and ZWO astronomy camera.
 
 This project is a graphical interface for the [**allsky camera**](https://github.com/thomasjacquin/allsky) project. The GUI is based on [**RaspAP**](https://github.com/billz/raspap-webgui).
@@ -19,6 +19,11 @@ Here are some screenshots:
 ![](http://www.thomasjacquin.com/allsky-portal/screenshots/days-list.jpg)
 ![](http://www.thomasjacquin.com/allsky-portal/screenshots/images-list.jpg)
 ![](http://www.thomasjacquin.com/allsky-portal/screenshots/system-info.jpg)
+
+
+## Update
+Version 0.7 added many new settings and changed the names of many others.  Please do NOT upgrade to this version until AFTER you have upgraded the AllSky camera software to version 0.8.
+Prior to upgrading, make sure you save your settings so you can refer to them as you update the new settings.
 
 ## Installation
 This project adds a GUI layer to the allsky camera software. The installation script is documented on the main project which you can access here: [**allsky camera installation**](https://github.com/thomasjacquin/allsky)
