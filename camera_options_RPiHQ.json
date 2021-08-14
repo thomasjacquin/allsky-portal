@@ -139,7 +139,7 @@
 "label":"Orientation",
 "type":"select",
 "options": [
-		{"value": "0", "label": "Original"},
+		{"value": "0", "label": "No rotation"},
 		{"value": "90", "label": "90 degrees"},
 		{"value": "180", "label": "180 degrees"},
 		{"value": "270", "label": "270 degrees"}
@@ -153,7 +153,7 @@
 "label":"Flip",
 "type":"select",
 "options": [
-        {"value": "0", "label": "Original"},
+        {"value": "0", "label": "No flip"},
         {"value": "1", "label": "Horizontal"},
         {"value": "2", "label": "Vertical"},
         {"value": "3", "label": "Both"}
@@ -265,6 +265,20 @@
 "label":"Auto Focus",
 "type":"checkbox",
 "advanced":0
+},
+{
+"name":"debuglevel",
+"default":"0",
+"description":"Debug level, 0 is lowest level.",
+"label":"Debug Level",
+"type":"select",
+"options": [
+	{"value": "0", "label": "0"},
+	{"value": "1", "label": "1"},
+	{"value": "2", "label": "2"},
+	{"value": "3", "label": "3"}
+],
+"advanced":1
 },
 {
 "name":"darkframe",
