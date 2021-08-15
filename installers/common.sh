@@ -144,6 +144,8 @@ function patch_system_files() {
     install_log "Patching system sudoers file"
     sudo_add '/sbin/ifdown wlan0'
     sudo_add '/sbin/ifup wlan0'
+    sudo_add '/sbin/ifdown eth0'
+    sudo_add '/sbin/ifup eth0'
     sudo_add '/bin/cat /etc/wpa_supplicant/wpa_supplicant.conf'
     sudo_add '/bin/cp /tmp/wifidata /etc/wpa_supplicant/wpa_supplicant.conf'
     sudo_add '/sbin/wpa_cli scan_results'
