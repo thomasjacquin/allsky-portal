@@ -9,7 +9,7 @@
 },
 {
 "name":"dayautoexposure",
-"default":"1",
+"default":1,
 "description":"Activate to enable daytime auto-exposure.<br>NOTE: since daytime exposures are short, there is no daytime max auto-exposure.",
 "label":"Auto-Exposure",
 "type":"checkbox",
@@ -17,7 +17,7 @@
 },
 {
 "name":"dayexposure",
-"default":"0.5",
+"default":0.5,
 "description":"Daytime manual exposure time in ms (1000ms = 1 sec). Can be a fraction.<br>If using auto-exposure, this number is used as a starting point.",
 "label":"Manual Exposure",
 "type":"text",
@@ -25,7 +25,7 @@
 },
 {
 "name":"daybrightness",
-"default":"50",
+"default":50,
 "description":"0 to 600. Changes the amount of light in the image.<br>Low value = dark; high value = bright. Also called 'offset'.",
 "label":"Brightness",
 "type":"number",
@@ -33,7 +33,7 @@
 },
 {
 "name":"daydelay",
-"default":"5000",
+"default":5000,
 "description":"Delay between daytime images in milliseconds. 1000ms = 1 sec.",
 "label":"Delay",
 "type":"number",
@@ -41,7 +41,7 @@
 },
 {
 "name":"daybin",
-"default":"1",
+"default":1,
 "description":"1 = binning OFF (1x1), 2 = 2x2 binning, 4 = 4x4 binning.<br>Check available binning modes for your camera.",
 "label":"Binning",
 "type":"number",
@@ -58,7 +58,7 @@
 },
 {
 "name":"nightautoexposure",
-"default":"1",
+"default":1,
 "description":"Activate to enable nightime auto-exposure.",
 "label":"Auto-Exposure",
 "type":"checkbox",
@@ -66,7 +66,7 @@
 },
 {
 "name":"nightmaxexposure",
-"default":"20000",
+"default":20000,
 "description":"Maximum nightime auto-exposure time in ms (1000ms = 1 sec).<br>Only applies if 'Auto-Exposure' is enabled.",
 "label":"Max Auto-Exposure",
 "type":"number",
@@ -82,7 +82,7 @@
 },
 {
 "name":"nightbrightness",
-"default":"50",
+"default":50,
 "description":"0 to 600. Changes the amount of light in the image.<br>Low value = dark; high value = bright.",
 "label":"Brightness",
 "type":"number",
@@ -90,7 +90,7 @@
 },
 {
 "name":"nightdelay",
-"default":"10",
+"default":10,
 "description":"Delay between nighttime images in milliseconds (1000ms = 1 sec).",
 "label":"Delay",
 "type":"number",
@@ -98,7 +98,7 @@
 },
 {
 "name":"nightautogain",
-"default":"0",
+"default":0,
 "description":"Activate to enable nightime auto-gain.",
 "label":"Auto-Gain",
 "type":"checkbox",
@@ -106,7 +106,7 @@
 },
 {
 "name":"nightmaxgain",
-"default":"200",
+"default":200,
 "description":"Upper gain limit when using auto-gain.",
 "label":"Max Gain",
 "type":"number",
@@ -114,7 +114,7 @@
 },
 {
 "name":"nightgain",
-"default":"50",
+"default":50,
 "description":"Manually set the gain (light sensitivity).<br>Starts at 0. A high value returns a brighter image but more noise too. Not used for daytime (is 0).",
 "label":"Gain",
 "type":"number",
@@ -122,7 +122,7 @@
 },
 {
 "name":"gaintransitiontime",
-"default":"30",
+"default":30,
 "description":"Number of <b>minutes</b> over which to increase or decrease the gain when going from day-to-night or night-to-day images.<br>This helps smooth brightness differences.  Only works if nighttime Auto-Gain is off. 0 disables transitions.",
 "label":"Gain Transition Time",
 "type":"number",
@@ -130,7 +130,7 @@
 },
 {
 "name":"nightbin",
-"default":"1",
+"default":1,
 "description":"1 = binning OFF (1x1), 2 = 2x2 binning, 4 = 4x4 binning.<br>Check available binning modes for your camera.",
 "label":"Binning",
 "type":"number",
@@ -164,7 +164,7 @@
 },
 {
 "name":"type",
-"default":"1",
+"default":99,
 "description":"Choose between auto, color (RGB24) or grayscale (RAW8 or RAW16 for mono cameras, Y8 for color cameras).<br>16 bits only works with PNG extension. 'auto' tries color first, then RAW16, then RAW8.",
 "label":"Image Type",
 "type":"select",
@@ -179,7 +179,7 @@
 },
 {
 "name":"gamma",
-"default":"50",
+"default":50,
 "description":"0 to 100. Changes the difference between light and dark areas.<br>A high value increases contrast. <i>Not supported on all cameras</i>.",
 "label":"Gamma",
 "type":"number",
@@ -187,7 +187,7 @@
 },
 {
 "name":"autowhitebalance",
-"default":"0",
+"default":0,
 "description":"Sets Auto White Balance.",
 "label":"Auto White Balance",
 "type":"checkbox",
@@ -195,7 +195,7 @@
 },
 {
 "name":"wbr",
-"default":"53",
+"default":53,
 "description":"Red component for the white balance.<br>When using auto white balance, this number is a starting point.",
 "label":"Red Balance",
 "type":"number",
@@ -203,7 +203,7 @@
 },
 {
 "name":"wbb",
-"default":"90",
+"default":90,
 "description":"Blue component for the white balance.<br>When using auto white balance, this number is a starting point.",
 "label":"Blue Balance",
 "type":"number",
@@ -211,7 +211,7 @@
 },
 {
 "name":"quality",
-"default":"95",
+"default":95,
 "description":"Range for a PNG image: 0-9. Range for a JPG image: 0-100.<br>Higher numbers produce larger, clearer files.",
 "label":"Quality",
 "type":"number",
@@ -219,7 +219,7 @@
 },
 {
 "name":"autousb",
-"default":"1",
+"default":1,
 "description":"Automatically set the USB bandwidth.",
 "label":"Auto USB Bandwidth",
 "type":"checkbox",
@@ -227,7 +227,7 @@
 },
 {
 "name":"usb",
-"default":"80",
+"default":80,
 "description":"USB bandwidth.  Values between 40-100.<br>If you get ASI TIMEOUT errors in the log file, try chaning this value.",
 "label":"USB Bandwidth",
 "type":"number",
@@ -243,7 +243,7 @@
 },
 {
 "name":"flip",
-"default":"0",
+"default":0,
 "description":"Select a flipping option if you want to reverse the image along an axis.",
 "label":"Flip",
 "type":"select",
@@ -267,7 +267,7 @@
 },
 {
 "name":"showTime",
-"default":"1",
+"default":1,
 "description":"Activate to display the time on the overlay.<br>Combine with Text X and Text Y for placement of ALL overlay options.",
 "label":"Time",
 "type":"checkbox",
@@ -283,7 +283,7 @@
 },
 {
 "name":"showTemp",
-"default":"1",
+"default":1,
 "description":"Activate to display the camera sensor temperature on the overlay.",
 "label":"Show Temperature",
 "type":"checkbox",
@@ -304,7 +304,7 @@
 },
 {
 "name":"showExposure",
-"default":"1",
+"default":1,
 "description":"Activate to display the exposure length on the overlay.<br>If Auto-Exposure is set, '(auto)' will appear after the exposure time.",
 "label":"Show Exposure",
 "type":"checkbox",
@@ -312,7 +312,7 @@
 },
 {
 "name":"showGain",
-"default":"1",
+"default":1,
 "description":"Activate to display the camera gain on the overlay.<br>If Auto-Gain is set, '(auto)' will appear after the gain value.",
 "label":"Show Gain",
 "type":"checkbox",
@@ -320,7 +320,7 @@
 },
 {
 "name":"showBrightness",
-"default":"1",
+"default":1,
 "description":"Activate to display the Brightness value on the overlay.",
 "label":"Show Brightness",
 "type":"checkbox",
@@ -328,7 +328,7 @@
 },
 {
 "name":"showHistogram",
-"default":"0",
+"default":0,
 "description":"Activate to display the histogram mean on the overlay.<br>This is mostly for testing.",
 "label":"Show Histogram",
 "type":"checkbox",
@@ -352,7 +352,7 @@
 },
 {
 "name":"extratextage",
-"default":"0",
+"default":0,
 "description":"The maximum age of the extra text file in seconds.<br>After this time the contents of the file will no longer be displayed. Set to 0 to always display.",
 "label":"Max Age Of Extra",
 "type":"number",
@@ -360,7 +360,7 @@
 },
 {
 "name":"textlineheight",
-"default":"30",
+"default":30,
 "description":"The line height of the text in pixels. If increasing the font size causes the text to overlap then increase this value.",
 "label":"Line Height",
 "type":"number",
@@ -368,7 +368,7 @@
 },
 {
 "name":"textx",
-"default":"15",
+"default":15,
 "description":"Text placement horizontal from LEFT in pixels.",
 "label":"Text X",
 "type":"number",
@@ -376,7 +376,7 @@
 },
 {
 "name":"texty",
-"default":"35",
+"default":35,
 "description":"Text placement vertical from TOP in pixels.",
 "label":"Text Y",
 "type":"number",
@@ -418,7 +418,7 @@
 },
 {
 "name":"fonttype",
-"default":"0",
+"default":0,
 "description":"Choose between smooth font lines (antialiased), 8-pixel, or 4 pixel connectivity (harder edges).",
 "label":"Font Smoothness",
 "type":"select",
@@ -431,7 +431,7 @@
 },
 {
 "name":"fontsize",
-"default":"7",
+"default":7,
 "description":"Text Font Size. The time, if displayed, will use this size; other text displayed will be about 20% smaller.",
 "label":"Font Size",
 "type":"number",
@@ -439,7 +439,7 @@
 },
 {
 "name":"fontline",
-"default":"1",
+"default":1,
 "description":"Text Font Line Thickness.",
 "label":"Font Weight",
 "type":"number",
@@ -447,7 +447,7 @@
 },
 {
 "name":"outlinefont",
-"default":"0",
+"default":0,
 "description":"Adds a black outline to the text overlay to improve contrast.",
 "label":"Use Outline Font",
 "type":"checkbox",
@@ -465,7 +465,7 @@
 },
 {
 "name":"notificationimages",
-"default":"1",
+"default":1,
 "description":"Activate to display notification images, e.g., 'Camera is off during the day'.",
 "label":"Notification Images",
 "type":"checkbox",
@@ -473,7 +473,7 @@
 },
 {
 "name":"coolerEnabled",
-"default":"0",
+"default":0,
 "description":"Activate to use cooling (works only on cooled cameras).",
 "label":"Cooling",
 "type":"checkbox",
@@ -481,7 +481,7 @@
 },
 {
 "name":"targetTemp",
-"default":"0",
+"default":0,
 "description":"Sensor's target temperature <i>when cooler is enabled</i> (degrees Celsius).",
 "label":"Target Temp.",
 "type":"number",
@@ -529,7 +529,7 @@
 },
 {
 "name":"darkframe",
-"default":"0",
+"default":0,
 "description":"Activate to capture dark frames. This mode hides text and time overlays.<br>Will continually take dark frames until restarted.",
 "label":"Dark Frame",
 "type":"checkbox",
@@ -545,7 +545,7 @@
 },
 {
 "name":"debuglevel",
-"default":"0",
+"default":0,
 "description":"Debug level, 0 is lowest level.",
 "label":"Debug Level",
 "type":"select",
@@ -559,7 +559,7 @@
 },
 {
 "name":"alwaysshowadvanced",
-"default":"0",
+"default":0,
 "description":"Activate to always show the advanced options.",
 "label":"Always Show Advanced",
 "type":"checkbox",
