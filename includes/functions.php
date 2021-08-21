@@ -90,11 +90,17 @@ function ParseConfig( $arrConfig ) {
 * @return $channel
 */
 function ConvertToChannel( $freq ) {
-  $channel = ($freq - 2407)/5;
-  if ($channel > 0 && $channel < 14) {
-    return $channel;
-  } else {
-    return 'Invalid Channel';
+  $channel = ($freq - 2407)/5;	// check for 2.4 GHz
+  if ($channel > 0 && $channel <= 14) {
+    return $channel . " / 2.4GHz";
+  } else {	// check for 5 GHz
+    $channel = ($freq - 5030)/5;
+    if ($channel >= 7 && $channel <= 165) {
+      // There are also some channels in the 4915 - 4980 range...
+      return $channel . " / 5GHz";
+    } else {
+      return 'Invalid&nbsp;Channel, Hz=' . $freq;
+    }
   }
 }
 
@@ -560,7 +566,6 @@ function ListFileType($dir, $imageFileName, $formalImageTypeName, $type) {	// if
 			}
 		}
 	        echo "</div>";
-
 	}
 }
 
