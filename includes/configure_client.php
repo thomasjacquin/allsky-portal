@@ -22,7 +22,7 @@ function DisplayWPAConfig(){
         $networks[$ssid] = $network;
         $network = null;
         $ssid = null;
-        } elseif ($lineArr = preg_split('/\s*=\s*/', trim($line))) {
+      } elseif ($lineArr = preg_split('/\s*=\s*/', trim($line))) {
         switch(strtolower($lineArr[0])) {
           case 'ssid':
             $ssid = trim($lineArr[1], '"');
