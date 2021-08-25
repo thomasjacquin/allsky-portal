@@ -19,29 +19,29 @@ function DisplayWPAConfig(){
       $network = array('visible' => false, 'configured' => true, 'connected' => false);
     } elseif ($network !== null) {
       if (preg_match('/^\s*}\s*$/', $line)) {
-	$networks[$ssid] = $network;
-	$network = null;
-	$ssid = null;
-      } elseif ($lineArr = preg_split('/\s*=\s*/', trim($line))) {
-	switch(strtolower($lineArr[0])) {
-	  case 'ssid':
-	    $ssid = trim($lineArr[1], '"');
-	    break;
-	  case 'psk':
-	    if (array_key_exists('passphrase', $network)) {
-	      break;
-	    }
-	  case '#psk':
-	    $network['protocol'] = 'WPA';
-	  case 'wep_key0': // Untested
-	    $network['passphrase'] = trim($lineArr[1], '"');
-	    break;
-	  case 'key_mgmt':
-	    if (! array_key_exists('passphrase', $network) && $lineArr[1] === 'NONE') {
-	      $network['protocol'] = 'Open';
-	    }
-	    break;
-	}
+        $networks[$ssid] = $network;
+        $network = null;
+        $ssid = null;
+        } elseif ($lineArr = preg_split('/\s*=\s*/', trim($line))) {
+        switch(strtolower($lineArr[0])) {
+          case 'ssid':
+            $ssid = trim($lineArr[1], '"');
+            break;
+          case 'psk':
+            if (array_key_exists('passphrase', $network)) {
+              break;
+            }
+          case '#psk':
+            $network['protocol'] = 'WPA';
+          case 'wep_key0': // Untested
+            $network['passphrase'] = trim($lineArr[1], '"');
+            break;
+          case 'key_mgmt':
+            if (! array_key_exists('passphrase', $network) && $lineArr[1] === 'NONE') {
+              $network['protocol'] = 'Open';
+            }
+            break;
+        }
       }
     }
   }
@@ -53,56 +53,56 @@ function DisplayWPAConfig(){
       fwrite($wpa_file, 'update_config=1' . PHP_EOL);
 
       foreach(array_keys($_POST) as $post) {
-	if (preg_match('/delete(\d+)/', $post, $post_match)) {
-	  unset($tmp_networks[$_POST['ssid' . $post_match[1]]]);
-	} elseif (preg_match('/update(\d+)/', $post, $post_match)) {
-	  // NB, at the moment, the value of protocol from the form may
-	  // contain HTML line breaks
-	  $tmp_networks[$_POST['ssid' . $post_match[1]]] = array(
-	    'protocol' => ( $_POST['protocol' . $post_match[1]] === 'Open' ? 'Open' : 'WPA' ),
-	    'passphrase' => $_POST['passphrase' . $post_match[1]],
-	    'configured' => true
-	  );
-	}
+        if (preg_match('/delete(\d+)/', $post, $post_match)) {
+          unset($tmp_networks[$_POST['ssid' . $post_match[1]]]);
+        } elseif (preg_match('/update(\d+)/', $post, $post_match)) {
+          // NB, at the moment, the value of protocol from the form may
+          // contain HTML line breaks
+          $tmp_networks[$_POST['ssid' . $post_match[1]]] = array(
+            'protocol' => ( $_POST['protocol' . $post_match[1]] === 'Open' ? 'Open' : 'WPA' ),
+            'passphrase' => $_POST['passphrase' . $post_match[1]],
+            'configured' => true
+          );
+        }
       }
 
       $ok = true;
       foreach($tmp_networks as $ssid => $network) {
-	if ($network['protocol'] === 'Open') {
-	  fwrite($wpa_file, "network={".PHP_EOL);
-	  fwrite($wpa_file, "\tssid=\"".$ssid."\"".PHP_EOL);
-	  fwrite($wpa_file, "\tkey_mgmt=NONE".PHP_EOL);
-	  fwrite($wpa_file, "}".PHP_EOL);
-	} else {
-	  if (strlen($network['passphrase']) >=8 && strlen($network['passphrase']) <= 63) {
-	    unset($wpa_passphrase);
-	    unset($line);
-	    exec( 'wpa_passphrase '.escapeshellarg($ssid). ' ' . escapeshellarg($network['passphrase']),$wpa_passphrase );
-	    foreach($wpa_passphrase as $line) {
-	      fwrite($wpa_file, $line.PHP_EOL);
-	    }
-	  } else {
-	    $status->addMessage('WPA passphrase must be between 8 and 63 characters', 'danger');
-	    $ok = false;
+        if ($network['protocol'] === 'Open') {
+          fwrite($wpa_file, "network={".PHP_EOL);
+          fwrite($wpa_file, "\tssid=\"".$ssid."\"".PHP_EOL);
+          fwrite($wpa_file, "\tkey_mgmt=NONE".PHP_EOL);
+          fwrite($wpa_file, "}".PHP_EOL);
+        } else {
+          if (strlen($network['passphrase']) >=8 && strlen($network['passphrase']) <= 63) {
+            unset($wpa_passphrase);
+            unset($line);
+            exec( 'wpa_passphrase '.escapeshellarg($ssid). ' ' . escapeshellarg($network['passphrase']),$wpa_passphrase );
+            foreach($wpa_passphrase as $line) {
+              fwrite($wpa_file, $line.PHP_EOL);
+            }
+          } else {
+            $status->addMessage('WPA passphrase must be between 8 and 63 characters', 'danger');
+            $ok = false;
 
-	  }
-	}
+          }
+        }
 
       }
 
       if ($ok) {
-	system( 'sudo cp /tmp/wifidata ' . RASPI_WPA_SUPPLICANT_CONFIG, $returnval );
-	if( $returnval == 0 ) {
-	  exec('sudo wpa_cli reconfigure', $reconfigure_out, $reconfigure_return );
-	  if ($reconfigure_return == 0) {
-	    $status->addMessage('Wifi settings updated successfully', 'success');
-	    $networks = $tmp_networks;
-	  } else {
-	    $status->addMessage('Wifi settings updated but cannot restart (cannon execute "wpa_cli reconfigure")', 'danger');
-	  }
-	} else {
-	  $status->addMessage('Wifi settings failed to be updated', 'danger');
-	}
+        system( 'sudo cp /tmp/wifidata ' . RASPI_WPA_SUPPLICANT_CONFIG, $returnval );
+        if( $returnval == 0 ) {
+          exec('sudo wpa_cli reconfigure', $reconfigure_out, $reconfigure_return );
+          if ($reconfigure_return == 0) {
+            $status->addMessage('Wifi settings updated successfully', 'success');
+            $networks = $tmp_networks;
+          } else {
+            $status->addMessage('Wifi settings updated but cannot restart (cannon execute "wpa_cli reconfigure")', 'danger');
+          }
+        } else {
+          $status->addMessage('Wifi settings failed to be updated', 'danger');
+        }
       }
     } else {
       $status->addMessage('Failed to updated wifi settings', 'danger');
@@ -123,26 +123,26 @@ function DisplayWPAConfig(){
     if (isset($arrNetwork[4])) {
       $ssid = $arrNetwork[4];
       if (array_key_exists($ssid, $networks)) {
-	  $is_new = false;
-	  $networks[$ssid]['visible'] = true;
-	  // Some SSIDs may be on multiple channels in multiple bands
-	  if (! isset($networks[$ssid]['channel'])) {
-		$networks[$ssid]['channel'] = ConvertToChannel($arrNetwork[1]);
-	  } else {
-	      $have_multiple = true;
-		$networks[$ssid]['channel'] = $networks[$ssid]['channel'] . $note;
-	  }
+          $is_new = false;
+          $networks[$ssid]['visible'] = true;
+          // Some SSIDs may be on multiple channels in multiple bands
+          if (! isset($networks[$ssid]['channel'])) {
+                $networks[$ssid]['channel'] = ConvertToChannel($arrNetwork[1]);
+          } else {
+              $have_multiple = true;
+                $networks[$ssid]['channel'] = $networks[$ssid]['channel'] . $note;
+          }
 	  // TODO What if the security has changed?
-	} else {
-	  $networks[$ssid] = array(
-	    'configured' => false,
-	    'protocol' => ConvertToSecurity($arrNetwork[3]),
-	    'channel' => ConvertToChannel($arrNetwork[1]),
-	    'passphrase' => '',
-	    'visible' => true,
-	    'connected' => false
-	  );
-       }
+        } else {
+          $networks[$ssid] = array(
+            'configured' => false,
+            'protocol' => ConvertToSecurity($arrNetwork[3]),
+            'channel' => ConvertToChannel($arrNetwork[1]),
+            'passphrase' => '',
+            'visible' => true,
+            'connected' => false
+          );
+        }
     }
   }
 
@@ -157,10 +157,10 @@ function DisplayWPAConfig(){
   <div class="row">
     <div class="col-lg-12">
       <div class="panel panel-primary">           
-	<div class="panel-heading"><i class="fa fa-signal fa-fw"></i> Configure client</div>
-	<!-- /.panel-heading -->
-	<div class="panel-body">
-	  <p><?php $status->showMessages(); ?></p>
+        <div class="panel-heading"><i class="fa fa-signal fa-fw"></i> Configure client</div>
+        <!-- /.panel-heading -->
+        <div class="panel-body">
+          <p><?php $status->showMessages(); ?></p>
           <h4>Client settings</h4>
 
           <form method="POST" action="?page=wpa_conf" name="wpa_conf_form">
@@ -219,12 +219,12 @@ function DisplayWPAConfig(){
             </table>
           </form>
         </div><!-- ./ Panel body -->
-	<div class="panel-footer">
+        <div class="panel-footer">
           <?php if ($have_multiple)
-	    echo "$note SSID is in multiple channels and/or bands; only the first is listed above.";
+            echo "$note SSID is in multiple channels and/or bands; only the first is listed above.";
             echo "<br>";
           ?>
-	  <strong>Note,</strong> WEP access points appear as 'Open'. The Allsky portal does not currently support connecting to WEP.
+          <strong>Note,</strong> WEP access points appear as 'Open'. The Allsky portal does not currently support connecting to WEP.
         </div>
       </div><!-- /.panel-primary -->
     </div><!-- /.col-lg-12 -->
