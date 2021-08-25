@@ -75,9 +75,9 @@ function DisplayWPAConfig(){
           fwrite($wpa_file, "}".PHP_EOL);
         } else {
           if (strlen($network['passphrase']) >=8 && strlen($network['passphrase']) <= 63) {
-	    unset($wpa_passphrase);
+            unset($wpa_passphrase);
             unset($line);
-	    exec( 'wpa_passphrase '.escapeshellarg($ssid). ' ' . escapeshellarg($network['passphrase']),$wpa_passphrase );
+            exec( 'wpa_passphrase '.escapeshellarg($ssid). ' ' . escapeshellarg($network['passphrase']),$wpa_passphrase );
             foreach($wpa_passphrase as $line) {
               fwrite($wpa_file, $line.PHP_EOL);
             }
@@ -116,21 +116,33 @@ function DisplayWPAConfig(){
     array_shift($scan_return);
   }
   // display output
+  $have_multiple = false;
+  $note = " <span style='color: red; font-weight: bold'>*</span>";
   foreach( $scan_return as $network ) {
     $arrNetwork = preg_split("/[\t]+/",$network);
-    if (array_key_exists($arrNetwork[4], $networks)) {
-      $networks[$arrNetwork[4]]['visible'] = true;
-      $networks[$arrNetwork[4]]['channel'] = ConvertToChannel($arrNetwork[1]);
-      // TODO What if the security has changed?
-    } else {
-      $networks[$arrNetwork[4]] = array(
-        'configured' => false,
-        'protocol' => ConvertToSecurity($arrNetwork[3]),
-        'channel' => ConvertToChannel($arrNetwork[1]),
-        'passphrase' => '',
-        'visible' => true,
-        'connected' => false
-      );
+    if (isset($arrNetwork[4])) {
+      $ssid = $arrNetwork[4];
+      if (array_key_exists($ssid, $networks)) {
+          $is_new = false;
+          $networks[$ssid]['visible'] = true;
+          // Some SSIDs may be on multiple channels in multiple bands
+          if (! isset($networks[$ssid]['channel'])) {
+                $networks[$ssid]['channel'] = ConvertToChannel($arrNetwork[1]);
+          } else {
+              $have_multiple = true;
+                $networks[$ssid]['channel'] = $networks[$ssid]['channel'] . $note;
+          }
+	  // TODO What if the security has changed?
+        } else {
+          $networks[$ssid] = array(
+            'configured' => false,
+            'protocol' => ConvertToSecurity($arrNetwork[3]),
+            'channel' => ConvertToChannel($arrNetwork[1]),
+            'passphrase' => '',
+            'visible' => true,
+            'connected' => false
+          );
+        }
     }
   }
 
@@ -158,7 +170,7 @@ function DisplayWPAConfig(){
               <tr>
                 <th></th>
                 <th>SSID</th>
-                <th>Channel</th>
+                <th>Channel&nbsp;/&nbsp;Band</th>
                 <th>Security</th>
                 <th>Passphrase</th>
                 <th></th>
@@ -167,22 +179,24 @@ function DisplayWPAConfig(){
             <?php foreach ($networks as $ssid => $network) { ?>
               <tr>
                 <td>
-                <?php if ($network['configured']) { ?>
-                <i class="fa fa-check-circle fa-fw"></i>
-                <?php } ?>
-                <?php if ($network['connected']) { ?>
-                <i class="fa fa-exchange-alt fa-fw"></i>
-                <?php } ?>
+                  <?php if ($network['configured']) { ?>
+                  <i class="fa fa-check-circle fa-fw" title="configured"></i>
+                  <?php } ?>
+                  <?php if ($network['connected']) { ?>
+                  <i class="fa fa-exchange-alt fa-fw" title="connected"></i>
+                  <?php } ?>
                 </td>
                 <td>
                   <input type="hidden" name="ssid<?php echo $index ?>" value="<?php echo htmlentities($ssid) ?>" />
                   <?php echo $ssid ?>
                 </td>
+                <td>
               <?php if ($network['visible']) { ?>
-                <td><?php echo $network['channel'] ?></td>
+                <?php echo $network['channel'] ?>
               <?php } else { ?>
-                <td><span class="label label-warning">X</span></td>
+                <span class="label label-warning">X</span>
               <?php } ?>
+                </td>
                 <td><input type="hidden" name="protocol<?php echo $index ?>" value="<?php echo $network['protocol'] ?>" /><?php echo $network['protocol'] ?></td>
               <?php if ($network['protocol'] === 'Open') { ?>
                 <td><input type="hidden" name="passphrase<?php echo $index ?>" value="" />---</td>
@@ -205,11 +219,16 @@ function DisplayWPAConfig(){
             </table>
           </form>
         </div><!-- ./ Panel body -->
-        <div class="panel-footer"><strong>Note,</strong> WEP access points appear as 'Open'. The Allsky portal does not currently support connecting to WEP.</div>
+        <div class="panel-footer">
+          <?php if ($have_multiple)
+            echo "$note SSID is in multiple channels and/or bands; only the first is listed above.";
+            echo "<br>";
+          ?>
+          <strong>Note,</strong> WEP access points appear as 'Open'. The Allsky portal does not currently support connecting to WEP.
+        </div>
       </div><!-- /.panel-primary -->
     </div><!-- /.col-lg-12 -->
   </div><!-- /.row -->
 <?php
 }
-
 ?>
