@@ -25,9 +25,9 @@
 },
 {
 "name":"daybrightness",
-"default":50,
-"description":"0 to 600. Changes the amount of light in the image.<br>Low value = dark; high value = bright. Also called 'offset'.",
-"label":"Brightness",
+"default":100,
+"description":"50 - 160. Changes the amount of light in the image.<br>Low value = dark; high value = bright. Only works with auto-exposure.",
+"label":"Auto-Exposure Brightness",
 "type":"number",
 "advanced":0
 },
@@ -44,7 +44,13 @@
 "default":1,
 "description":"1 = binning OFF (1x1), 2 = 2x2 binning, 4 = 4x4 binning.<br>Check available binning modes for your camera.",
 "label":"Binning",
-"type":"number",
+"type":"select",
+"options": [
+	{"value": 1, "label": "1x1"},
+	{"value": 2, "label": "2x2"},
+	{"value": 4, "label": "4x4"}
+],
+
 "advanced":1
 },
 
@@ -82,9 +88,9 @@
 },
 {
 "name":"nightbrightness",
-"default":50,
-"description":"0 to 600. Changes the amount of light in the image.<br>Low value = dark; high value = bright.",
-"label":"Brightness",
+"default":100,
+"description":"50 - 160. Changes the amount of light in the image.<br>Low value = dark; high value = bright. Only works with auto-exposure.",
+"label":"Auto-Exposure Brightness",
 "type":"number",
 "advanced":0
 },
@@ -133,7 +139,12 @@
 "default":1,
 "description":"1 = binning OFF (1x1), 2 = 2x2 binning, 4 = 4x4 binning.<br>Check available binning modes for your camera.",
 "label":"Binning",
-"type":"number",
+"type":"select",
+"options": [
+	{"value": 1, "label": "1x1"},
+	{"value": 2, "label": "2x2"},
+	{"value": 4, "label": "4x4"}
+],
 "advanced":0
 },
 
@@ -169,11 +180,11 @@
 "label":"Image Type",
 "type":"select",
 "options": [
-	{"value": "99", "label": "auto"},
-	{"value": "0", "label": "RAW8"},
-	{"value": "1", "label": "RGB24"},
-	{"value": "2", "label": "RAW16"},
-	{"value": "3", "label": "Y8"}
+	{"value": 99, "label": "auto"},
+	{"value": 0, "label": "RAW8"},
+	{"value": 1, "label": "RGB24"},
+	{"value": 2, "label": "RAW16"},
+	{"value": 3, "label": "Y8"}
 ],
 "advanced":1
 },
@@ -184,6 +195,14 @@
 "label":"Gamma",
 "type":"number",
 "advanced":0
+},
+{
+"name":"offset",
+"default":"0",
+"description":"From 0 to a camera-specific upper value. Adds about 1/10 the specified value to every pixel.",
+"label":"Brightness (offset)",
+"type":"number",
+"advanced":1
 },
 {
 "name":"autowhitebalance",
@@ -228,7 +247,7 @@
 {
 "name":"usb",
 "default":80,
-"description":"USB bandwidth.  Values between 40-100.<br>If you get ASI TIMEOUT errors in the log file, try chaning this value.",
+"description":"USB bandwidth.  Values between 40-100.<br>If you get ASI_ERROR_TIMEOUT errors in the log file, try chaning this value.",
 "label":"USB Bandwidth",
 "type":"number",
 "advanced":1
@@ -236,7 +255,7 @@
 {
 "name":"filename",
 "default":"image.jpg",
-"description":"No whitespaces in filename. Extensions allowed: .jpg or .png.",
+"description":"No whitespaces in filename. Extensions allowed: .jpg or .png.<br>WARNING: saving a .png file can take 10 or more seconds so be sure the time between successive images is long enough.  To measure how long it takes your Pi to save a .png file, set the 'Debug Level' to 3 and look in the log file.",
 "label":"Filename",
 "type":"text",
 "advanced":1
@@ -248,10 +267,10 @@
 "label":"Flip",
 "type":"select",
 "options": [
-	{"value": "0", "label": "No flipping"},
-	{"value": "1", "label": "Horizontal"},
-	{"value": "2", "label": "Vertical"},
-	{"value": "3", "label": "Both"}
+	{"value": 0, "label": "No flipping"},
+	{"value": 1, "label": "Horizontal"},
+	{"value": 2, "label": "Vertical"},
+	{"value": 3, "label": "Both"}
 ],
 "advanced":0
 },
@@ -327,6 +346,14 @@
 "advanced":0
 },
 {
+"name":"showUSB",
+"default":0,
+"description":"Activate to display the USB Bandwidth value on the overlay.<br>This is mostly for testing.",
+"label":"Show USB",
+"type":"checkbox",
+"advanced":1
+},
+{
 "name":"showHistogram",
 "default":0,
 "description":"Activate to display the histogram mean on the overlay.<br>This is mostly for testing.",
@@ -389,14 +416,14 @@
 "label":"Font Name",
 "type":"select",
 "options": [
-	{"value": "0", "label": "Simplex"},
-	{"value": "1", "label": "Plain"},
-	{"value": "2", "label": "Duplex"},
-	{"value": "3", "label": "Complex"},
-	{"value": "4", "label": "Triplex"},
-	{"value": "5", "label": "Complex Small"},
-	{"value": "6", "label": "Script Simplex"},
-	{"value": "7", "label": "Script Complex"}
+	{"value": 0, "label": "Simplex"},
+	{"value": 1, "label": "Plain"},
+	{"value": 2, "label": "Duplex"},
+	{"value": 3, "label": "Complex"},
+	{"value": 4, "label": "Triplex"},
+	{"value": 5, "label": "Complex Small"},
+	{"value": 6, "label": "Script Simplex"},
+	{"value": 7, "label": "Script Complex"}
 ],
 "advanced":0
 },
@@ -423,9 +450,9 @@
 "label":"Font Smoothness",
 "type":"select",
 "options": [
-	{"value": "0", "label": "Antialiased"},
-	{"value": "1", "label": "8 connected"},
-	{"value": "2", "label": "4 connected"}
+	{"value": 0, "label": "Antialiased"},
+	{"value": 1, "label": "8 connected"},
+	{"value": 2, "label": "4 connected"}
 ],
 "advanced":0
 },
@@ -550,11 +577,20 @@
 "label":"Debug Level",
 "type":"select",
 "options": [
-	{"value": "0", "label": "0"},
-	{"value": "1", "label": "1"},
-	{"value": "2", "label": "2"},
-	{"value": "3", "label": "3"}
+	{"value": 0, "label": "0"},
+	{"value": 1, "label": "1"},
+	{"value": 2, "label": "2"},
+	{"value": 3, "label": "3"},
+	{"value": 4, "label": "4"}
 ],
+"advanced":1
+},
+{
+"name":"newexposure",
+"default":0,
+"description":"Activate to use the version 0.8 exposure method which decreases sensor temperature.  If you see ASI_ERROR_TIMEOUTs in the log file, deactivate this.",
+"label":"Version 0.8 Exposure",
+"type":"checkbox",
 "advanced":1
 },
 {
