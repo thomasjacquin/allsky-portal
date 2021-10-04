@@ -62,7 +62,7 @@ function DisplayDashboard_eth0(){
                         <div class="panel panel-default">
                   <div class="panel-body">
                       <h4>Interface Information</h4>
-          <div class="info-item">Interface Name</div> wlan0</br>
+          <div class="info-item">Interface Name</div> eth0</br>
           <div class="info-item">IP Address</div>     <?php echo $strIPAddress ?></br>
           <div class="info-item">Subnet Mask</div>    <?php echo $strNetMask ?></br>
           <div class="info-item">Mac Address</div>    <?php echo $strHWAddress ?></br></br>
