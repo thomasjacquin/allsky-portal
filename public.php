@@ -1,10 +1,12 @@
 <?php
 
   include_once('includes/functions.php');
+  define('ALLSKY_HOME', '/home/pi/allsky');
+  define('ALLSKY_CONFIG', ALLSKY_HOME . '/config');
 
-  $cam = get_variable('/home/pi/allsky/autocam.sh', 'CAMERA=', 'ZWO');
-  $img_dir = get_variable('/home/pi/allsky/config.sh', 'IMG_DIR=', 'current');
-  $img_prefix = get_variable('/home/pi/allsky/config.sh', 'IMG_PREFIX=', 'liveview-');
+  $cam = get_variable(ALLSKY_CONFIG . '/autocam.sh', 'CAMERA=', 'ZWO');
+  $img_dir = get_variable(ALLSKY_CONFIG . '/config.sh', 'IMG_DIR=', 'current');
+  $img_prefix = get_variable(ALLSKY_CONFIG . '/config.sh', 'IMG_PREFIX=', 'liveview-');
 
   define('RASPI_CONFIG', '/etc/raspap');
   define('RASPI_CAMERA_SETTINGS', RASPI_CONFIG . '/settings_'.$cam.'.json');

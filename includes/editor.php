@@ -11,7 +11,7 @@ function DisplayEditor()
 
         $(document).ready(function () {
 	    var editor = null;
-	    $.get("current/config.sh?_ts=" + new Date().getTime(), function (data) {
+	    $.get("current/config/config.sh?_ts=" + new Date().getTime(), function (data) {
         	editor = CodeMirror(document.querySelector("#editorContainer"), {
                     value: data,
                     mode: "shell",
@@ -70,7 +70,7 @@ function DisplayEditor()
                             <select class="form-control" id="script_path"
                                     style="display: inline-block; width: auto; margin-right: 15px; margin-bottom: 5px"
                                     >
-                                <option value="current/config.sh">config.sh</option>
+                                <option value="current/config/config.sh">config.sh</option>
                                 <option value="current/allsky.sh">allsky.sh</option>
 
 				<?php
