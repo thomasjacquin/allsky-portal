@@ -18,6 +18,7 @@ include_once('includes/functions.php');		// needs to be at top for get_variable(
 
 define('RASPI_CONFIG', '/etc/raspap');
 define('RASPI_ADMIN_DETAILS', RASPI_CONFIG . '/raspap.auth');
+define('ALLSKY_CONFIG', '/home/pi/allsky/config');
 
 $cam = get_variable('/home/pi/allsky/autocam.sh', 'CAMERA=', 'ZWO');
 
@@ -67,8 +68,8 @@ $page = $_GET['page'];
 
 $camera_settings_str = file_get_contents(RASPI_CAMERA_SETTINGS, true);
 $camera_settings_array = json_decode($camera_settings_str, true);
-$img_dir = get_variable('/home/pi/allsky/config.sh', 'IMG_DIR=', 'current');
-$img_prefix = get_variable('/home/pi/allsky/config.sh', 'IMG_PREFIX=', 'liveview-');
+$img_dir = get_variable(ALLSKY_CONFIG . '/config.sh', 'IMG_DIR=', 'current');
+$img_prefix = get_variable(ALLSKY_CONFIG .'/config.sh', 'IMG_PREFIX=', 'liveview-');
 $image_name = $img_dir . "/" . $img_prefix . $camera_settings_array['filename'];
 
 session_start();
