@@ -58,12 +58,13 @@ function RPiVersion()
 	'd03114' => 'Model 4B Revision 1.4 (8 GB)',
 	'c03130' => 'Pi 400 Revision 1.0 (4 GB)'
     );
-    exec('cat /proc/cpuinfo', $cpuinfo_array);
-    $rev = trim(array_pop(explode(':', array_pop(preg_grep("/^Revision/", $cpuinfo_array)))));
+    // space and tab for -F
+    exec("awk -F ' ' '/^Revision/ {print $3; exit 0;}' < /proc/cpuinfo", $rev);
+    $rev = trim(array_pop($rev));
     if (array_key_exists($rev, $revisions)) {
         return $revisions[$rev];
     } else {
-        return 'Unknown Pi';
+        return 'Unknown Pi, rev=' . $rev;
     }
 }
 
@@ -118,6 +119,14 @@ function DisplaySystem()
         exec("free -m | awk '/Mem:/ { total=$2 } /Mem:/ { used=$3 } END { print used/total*100}'", $memarray);
         $memused = floor($memarray[0]);
     }
+    if ($memused > 90) {
+        $memused_status = "danger";
+    } elseif ($memused > 75) {
+        $memused_status = "warning";
+    } elseif ($memused > 0) {
+        $memused_status = "success";
+    }
+
 
     // Disk usage
     // File Usage
@@ -128,7 +137,7 @@ function DisplaySystem()
     /* now we calculate the disk space used (in bytes) */
     $du = $dt - $df;
     /* percentage of disk used - this will be used to also set the width % of the progress bar */
-    $dp = sprintf('%.2f', ($du / $dt) * 100);
+    $dp = sprintf('%.1f', ($du / $dt) * 100);
 
     /* and we formate the size from bytes to MB, GB, etc. */
     $df = formatSize($df);
@@ -136,23 +145,21 @@ function DisplaySystem()
     $dt = formatSize($dt);
 
 
-    if ($memused > 90) {
-        $memused_status = "danger";
-    } elseif ($memused > 75) {
-        $memused_status = "warning";
-    } elseif ($memused > 0) {
-        $memused_status = "success";
-    }
-
     // cpu load
+if (0) {	// this method can give > 100%, but either way, refreshing the browser causes a spike in CPU which throws off our number.
     $cores = exec("grep -c ^processor /proc/cpuinfo");
     $loadavg = exec("awk '{print $1}' /proc/loadavg");
     $cpuload = floor(($loadavg * 100) / $cores);
-    if ($cpuload > 90) {
+} else {
+    $secs = 2; $q = '"';
+    $cpuload = exec("(grep -m 1 'cpu ' /proc/stat; sleep $secs; grep -m 1 'cpu ' /proc/stat) | awk '{u=$2+$4; t=$2+$4+$5; if (NR==1){u1=u; t1=t;} else printf($q%.0f$q, (($2+$4-u1) * 100 / (t-t1))); }'");
+    if ($cpuload < 0 || $cpuload > 100) echo "<p style='color: red; font-size: 125%;'>Invalid cpuload value: $cpuload</p>";
+}
+    if ($cpuload > 90 || $cpuload < 0) {
         $cpuload_status = "danger";
     } elseif ($cpuload > 75) {
         $cpuload_status = "warning";
-    } elseif ($cpuload > 0) {
+    } elseif ($cpuload >= 0) {
         $cpuload_status = "success";
     }
 
