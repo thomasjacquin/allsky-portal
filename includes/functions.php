@@ -146,10 +146,10 @@ function DisplayOpenVPNConfig() {
 
 	if( $openvpnstatus[0] == 0 ) {
 		$status = '<div class="alert alert-warning alert-dismissable">OpenVPN is not running
-					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">Ã—</button></div>';
+					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button></div>';
 	} else {
 		$status = '<div class="alert alert-success alert-dismissable">OpenVPN is running
-					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">Ã—</button></div>';
+					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button></div>';
 	}
 
 	// parse client settings
@@ -276,10 +276,10 @@ function DisplayTorProxyConfig(){
 
 	if( $torproxystatus[0] == 0 ) {
 		$status = '<div class="alert alert-warning alert-dismissable">TOR is not running
-					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">Ã—</button></div>';
+					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button></div>';
 	} else {
 		$status = '<div class="alert alert-success alert-dismissable">TOR is running
-					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">Ã—</button></div>';
+					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button></div>';
 	}
 
 	foreach( $return as $a ) {
