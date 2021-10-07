@@ -1,19 +1,32 @@
 <?php
 
-  include_once('includes/functions.php');
-  define('ALLSKY_HOME', '/home/pi/allsky');
-  define('ALLSKY_CONFIG', ALLSKY_HOME . '/config');
+include_once('includes/functions.php');
 
-  $cam = get_variable(ALLSKY_CONFIG . '/autocam.sh', 'CAMERA=', 'ZWO');
-  $img_dir = get_variable(ALLSKY_CONFIG . '/config.sh', 'IMG_DIR=', 'current');
-  $img_prefix = get_variable(ALLSKY_CONFIG . '/config.sh', 'IMG_PREFIX=', 'liveview-');
+define('ALLSKY_HOME', '/home/pi/allsky');		// value updated during installation
 
-  define('RASPI_CONFIG', '/etc/raspap');
-  define('RASPI_CAMERA_SETTINGS', RASPI_CONFIG . '/settings_'.$cam.'.json');
+// xxx COMPATIBILITY CHECK:
+// Version 0.8 and older of allsky had config.sh and autocam.sh in $ALLSKY_HOME.
+// Newer versions have them in $ALLSKY_CONFIG.
+// Look for a variable we know won't be null in the new location;
+// if it's not there, use the old location.
+define('ALLSKY_CONFIG', ALLSKY_HOME . '/config');	// value updated during installation
+$test = get_variable(ALLSKY_CONFIG . '/config.sh', 'CAMERA=', 'NOTFOUND');
+if ($test == "NOTFOUND") {
+    define('ALLSKY_CONFIG', ALLSKY_HOME);
+}
 
-  $camera_settings_str = file_get_contents(RASPI_CAMERA_SETTINGS, true);
-  $camera_settings_array = json_decode($camera_settings_str, true);
-  $image_name = $img_dir . "/" . $img_prefix . $camera_settings_array['filename'];
+define('RASPI_CONFIG', '/etc/raspap');			// xxx will replace with ALLSKY_CONFIG
+
+$img_dir = get_variable(ALLSKY_CONFIG . '/config.sh', 'IMG_DIR=', 'current');
+$cam = get_variable(ALLSKY_CONFIG . '/autocam.sh', 'CAMERA=', 'ZWO');
+define('RASPI_CAMERA_SETTINGS', RASPI_CONFIG . '/settings_'.$cam.'.json');
+
+$camera_settings_str = file_get_contents(RASPI_CAMERA_SETTINGS, true);
+$camera_settings_array = json_decode($camera_settings_str, true);
+// xxx NEW:  $image_name = $img_dir . "/" . $camera_settings_array['filename'];
+// old:
+$img_prefix = get_variable(ALLSKY_CONFIG . '/config.sh', 'IMG_PREFIX=', 'liveview-');
+$image_name = $img_dir . "/" . $img_prefix . $camera_settings_array['filename'];
 
 ?>
 
