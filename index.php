@@ -17,18 +17,36 @@
 include_once('includes/functions.php');		// needs to be at top for get_variable()
 
 define('ALLSKY_HOME', '/home/pi/allsky');		// value updated during installation
+
+// xxx COMPATIBILITY CHECK:
+// Version 0.8 and older of allsky had config.sh and autocam.sh in $ALLSKY_HOME.
+// Newer versions have them in $ALLSKY_CONFIG.
+// Look for a variable we know won't be null in the new location;
+// if it's not there, use the old location.
 define('ALLSKY_CONFIG', ALLSKY_HOME . '/config');	// value updated during installation
-define('ALLSKY_IMAGES', ALLSKY_HOME . '/images');	// value updated during installation
+$test = get_variable(ALLSKY_CONFIG . '/config.sh', 'CAMERA=', 'NOTFOUND');
+if ($test == "NOTFOUND") {
+    define('ALLSKY_CONFIG', ALLSKY_HOME);
+}
+
 define('RASPI_CONFIG', '/etc/raspap');			// xxx will replace with ALLSKY_CONFIG
-define('RASPI_ADMIN_DETAILS', RASPI_CONFIG . '/raspap.auth');
 
+$img_dir = get_variable(ALLSKY_CONFIG . '/config.sh', 'IMG_DIR=', 'current');
 $cam = get_variable(ALLSKY_CONFIG .'/autocam.sh', 'CAMERA=', 'ZWO');
-
 define('RASPI_CAMERA_SETTINGS', RASPI_CONFIG . '/settings_'.$cam.'.json');
 define('RASPI_CAMERA_OPTIONS', RASPI_CONFIG . '/camera_options_'.$cam.'.json');
 
+$camera_settings_str = file_get_contents(RASPI_CAMERA_SETTINGS, true);
+$camera_settings_array = json_decode($camera_settings_str, true);
+// xxx new way:  $image_name = $img_dir . "/" . $camera_settings_array['filename'];
+// old way:
+$img_prefix = get_variable(ALLSKY_CONFIG .'/config.sh', 'IMG_PREFIX=', 'liveview-');
+$image_name = $img_dir . "/" . $img_prefix . $camera_settings_array['filename'];
+
+
 // Constants for configuration file paths.
 // These are typical for default RPi installs. Modify if needed.
+define('RASPI_ADMIN_DETAILS', RASPI_CONFIG . '/raspap.auth');
 define('RASPI_DNSMASQ_CONFIG', '/etc/dnsmasq.conf');
 define('RASPI_DNSMASQ_LEASES', '/var/lib/misc/dnsmasq.leases');
 define('RASPI_HOSTAPD_CONFIG', '/etc/hostapd/hostapd.conf');
@@ -66,14 +84,6 @@ if (isset($_GET['page']))
     $page = $_GET['page'];
 else
     $page = "";
-
-$camera_settings_str = file_get_contents(RASPI_CAMERA_SETTINGS, true);
-$camera_settings_array = json_decode($camera_settings_str, true);
-$img_dir = get_variable(ALLSKY_CONFIG . '/config.sh', 'IMG_DIR=', 'current');
-// xxx new way:  $image_name = $img_dir . "/" . $camera_settings_array['filename'];
-// old way:
-$img_prefix = get_variable(ALLSKY_CONFIG .'/config.sh', 'IMG_PREFIX=', 'liveview-');
-$image_name = $img_dir . "/" . $img_prefix . $camera_settings_array['filename'];
 
 session_start();
 if (empty($_SESSION['csrf_token'])) {
