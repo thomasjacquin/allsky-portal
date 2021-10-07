@@ -16,15 +16,16 @@
 
 include_once('includes/functions.php');		// needs to be at top for get_variable()
 
-define('RASPI_CONFIG', '/etc/raspap');
+define('ALLSKY_HOME', '/home/pi/allsky');		// value updated during installation
+define('ALLSKY_CONFIG', ALLSKY_HOME . '/config');	// value updated during installation
+define('ALLSKY_IMAGES', ALLSKY_HOME . '/images');	// value updated during installation
+define('RASPI_CONFIG', '/etc/raspap');			// xxx will replace with ALLSKY_CONFIG
 define('RASPI_ADMIN_DETAILS', RASPI_CONFIG . '/raspap.auth');
-define('ALLSKY_CONFIG', '/home/pi/allsky/config');
 
-$cam = get_variable('/home/pi/allsky/autocam.sh', 'CAMERA=', 'ZWO');
+$cam = get_variable(ALLSKY_CONFIG .'/autocam.sh', 'CAMERA=', 'ZWO');
 
 define('RASPI_CAMERA_SETTINGS', RASPI_CONFIG . '/settings_'.$cam.'.json');
 define('RASPI_CAMERA_OPTIONS', RASPI_CONFIG . '/camera_options_'.$cam.'.json');
-define('RASPI_ALLSKY_DIR', 'RASPI_ALLSKY_DIR_PLACEHOLDER');
 
 // Constants for configuration file paths.
 // These are typical for default RPi installs. Modify if needed.
@@ -44,10 +45,7 @@ define('RASPI_TORPROXY_ENABLED', false);
 
 include_once(RASPI_CONFIG . '/raspap.php');
 include_once('includes/dashboard.php');
-define('useEth0', true);	// MAY need more testing, especially the "Stop eth0" button.
-if (useEth0) :
-	include_once('includes/dashboard_eth0.php');
-endif;
+include_once('includes/dashboard_eth0.php');
 include_once('includes/liveview.php');
 include_once('includes/authenticate.php');
 include_once('includes/admin.php');
@@ -64,11 +62,16 @@ include_once('includes/startrails.php');
 include_once('includes/editor.php');
 
 $output = $return = 0;
-$page = $_GET['page'];
+if (isset($_GET['page']))
+    $page = $_GET['page'];
+else
+    $page = "";
 
 $camera_settings_str = file_get_contents(RASPI_CAMERA_SETTINGS, true);
 $camera_settings_array = json_decode($camera_settings_str, true);
 $img_dir = get_variable(ALLSKY_CONFIG . '/config.sh', 'IMG_DIR=', 'current');
+// xxx new way:  $image_name = $img_dir . "/" . $camera_settings_array['filename'];
+// old way:
 $img_prefix = get_variable(ALLSKY_CONFIG .'/config.sh', 'IMG_PREFIX=', 'liveview-');
 $image_name = $img_dir . "/" . $img_prefix . $camera_settings_array['filename'];
 
@@ -109,7 +112,8 @@ $csrf_token = $_SESSION['csrf_token'];
 			border-color: #bce8f1;
 		}
 		.alert-dismissable .close {
-    			top: -22px;
+    			right: 0px;
+			opacity: .6;
 		}
 	</style>
     <!-- MetisMenu CSS -->
@@ -229,11 +233,9 @@ $csrf_token = $_SESSION['csrf_token'];
                     <li>
                         <a href="index.php?page=editor"><i class="fa fa-code fa-fw"></i> Editor</a>
                     </li>
-		<?php if (useEth0) : ?>
 		    <li>
                         <a href="index.php?page=eth0_info"><i class="fa fa-tachometer-alt fa-fw"></i> <b>LAN</b> Connection Status</a>
                     </li>
-		<?php endif; ?>
                     <li>
                         <a href="index.php?page=wlan0_info"><i class="fa fa-tachometer-alt fa-fw"></i> <b>WLAN</b> Connection Status</a>
                     </li>
