@@ -9,22 +9,22 @@ define('ALLSKY_HOME', '/home/pi/allsky');		// value updated during installation
 // Newer versions have them in $ALLSKY_CONFIG.
 // Look for a variable we know won't be null in the new location;
 // if it's not there, use the old location.
-define('ALLSKY_CONFIG', ALLSKY_HOME . '/config');	// value updated during installation
-$test = get_variable(ALLSKY_CONFIG . '/config.sh', 'CAMERA=', 'NOTFOUND');
-if ($test == "NOTFOUND") {
-    define('ALLSKY_CONFIG', ALLSKY_HOME);
+define('ALLSKY_CONFIG_DIR', '/config');		// name of just the directory
+define('ALLSKY_CONFIG', ALLSKY_HOME . ALLSKY_CONFIG_DIR);	// value updated during installation
+if (get_variable(ALLSKY_CONFIG . '/config.sh', 'CAMERA=', 'NOTFOUND') == "NOTFOUND") {
+	define('ALLSKY_CONFIG_DIR', '');
+	define('ALLSKY_CONFIG', ALLSKY_HOME);
 }
-
-define('RASPI_CONFIG', '/etc/raspap');			// xxx will replace with ALLSKY_CONFIG
 
 $img_dir = get_variable(ALLSKY_CONFIG . '/config.sh', 'IMG_DIR=', 'current');
 $cam = get_variable(ALLSKY_CONFIG . '/autocam.sh', 'CAMERA=', 'ZWO');
+define('RASPI_CONFIG', '/etc/raspap');			// xxx will replace with ALLSKY_CONFIG
 define('RASPI_CAMERA_SETTINGS', RASPI_CONFIG . '/settings_'.$cam.'.json');
 
 $camera_settings_str = file_get_contents(RASPI_CAMERA_SETTINGS, true);
 $camera_settings_array = json_decode($camera_settings_str, true);
 // xxx NEW:  $image_name = $img_dir . "/" . $camera_settings_array['filename'];
-// old:
+// // old way uses IMG_PREFIX:
 $img_prefix = get_variable(ALLSKY_CONFIG . '/config.sh', 'IMG_PREFIX=', 'liveview-');
 $image_name = $img_dir . "/" . $img_prefix . $camera_settings_array['filename'];
 
