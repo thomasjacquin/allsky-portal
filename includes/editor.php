@@ -62,11 +62,9 @@ function DisplayEditor()
                         <div id="editorContainer"></div>
                         <div style="margin-top: 15px;">
 			    <?php
-                                $path = ALLSKY_SCRIPTS;
-                                $scripts = array_filter(array_diff(scandir($path), array('.', '..')), function($item) {
-                                	$path = ALLSKY_SCRIPTS;
-					return !is_dir($path.$item);
-                                });
+                                $scripts = array_filter(array_diff(scandir(ALLSKY_SCRIPTS), array('.', '..')), function($item) {
+					return !is_dir(ALLSKY_SCRIPTS.$item);
+					});
 			    ?>
                             <select class="form-control" id="script_path"
                                     style="display: inline-block; width: auto; margin-right: 15px; margin-bottom: 5px"
