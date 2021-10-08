@@ -7,7 +7,10 @@ function DisplayLiveView($image_name){
 
   // Determine if it's day or night so we know which delay to use.
   // $delay is the old variable name.  If it exists, assume the new variables don't exist.
-  $d = $camera_settings_array["delay"];
+  $d = '';
+  if(isset($camera_settings_array["delay"])) {
+  	$d = $camera_settings_array["delay"];
+  }
   if ($d == '')
   {
 	// The time between daylight exposures is (daydelay + dayexposure), but dayexposure is very small

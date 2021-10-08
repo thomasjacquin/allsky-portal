@@ -473,7 +473,7 @@ function get_variable($file, $searchfor, $default)
 */
 function ListFileType($dir, $imageFileName, $formalImageTypeName, $type) {	// if $dir is not null, it ends in "/"
 	$num = 0;	// Let the user know when there are no images for the specified day
-	$topDir = ALLSKY_IMAGES;
+	$topDir = ALLSKY_IMAGES . "/";
 	$chosen_day = $_GET['day'];
 	if ($chosen_day === 'All'){
 

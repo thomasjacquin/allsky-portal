@@ -11,7 +11,7 @@ function DisplayEditor()
 
         $(document).ready(function () {
 	    var editor = null;
-	    $.get("current<?php ALLSKY_CONFIG_DIR ?>/config.sh?_ts=" + new Date().getTime(), function (data) {
+	    $.get("current/config/config.sh?_ts=" + new Date().getTime(), function (data) {
         	editor = CodeMirror(document.querySelector("#editorContainer"), {
                     value: data,
                     mode: "shell",
@@ -62,16 +62,17 @@ function DisplayEditor()
                         <div id="editorContainer"></div>
                         <div style="margin-top: 15px;">
 			    <?php
-                                $path = <?php ALLSKY_SCRIPTS ?>;
+                                $path = ALLSKY_SCRIPTS;
                                 $scripts = array_filter(array_diff(scandir($path), array('.', '..')), function($item) {
+                                	$path = ALLSKY_SCRIPTS;
 					return !is_dir($path.$item);
                                 });
 			    ?>
                             <select class="form-control" id="script_path"
                                     style="display: inline-block; width: auto; margin-right: 15px; margin-bottom: 5px"
                                     >
-                                <option value="current<?php ALLSKY_CONFIG_DIR ?>/config.sh">config.sh</option>
-                                <option value="current<?php ALLSKY_CONFIG_DIR ?>/ftp-settings.sh">config.sh</option>
+                                <option value="current/<?php echo ALLSKY_CONFIG_DIR ?>/config.sh">config.sh</option>
+                                <option value="current/<?php echo ALLSKY_CONFIG_DIR ?>/ftp-settings.sh">ftp-settings.sh</option>
                                 <option value="current/allsky.sh">allsky.sh</option>
 
 				<?php
