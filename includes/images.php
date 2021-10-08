@@ -7,7 +7,7 @@ $chosen_day = $_GET['day'];
 $num = 0;	// Keep track of count so we can tell user when no files exist.
 
 
-if ($handle = opendir('/home/pi/allsky/images/'.$chosen_day)) {
+if ($handle = opendir(ALLSKY_IMAGES . '/'.$chosen_day)) {
     $blacklist = array('.', '..', '*.mp4', 'startrails', 'keogram', 'thumbnails');
     while (false !== ($image = readdir($handle))) {
 	$ext = explode(".",$image);
@@ -65,8 +65,8 @@ if ($num == 0) {
 } else {
 	foreach ($images as $image) {
 		echo "<div style='float: left'>";
-		if(file_exists("/home/pi/allsky/images/$chosen_day/thumbnails/$image"))
-			// "/images/" is an alias for /home/pi/allsky/images in lighttpd
+		if(file_exists(ALLSKY_IMAGES . "/$chosen_day/thumbnails/$image"))
+			// "/images" is an alias for ALLSKY_IMAGES in lighttpd
 			echo "<img src='/images/$chosen_day/thumbnails/$image' style='width: 100px;' title='$image' class='thumb'/>";
 		else
 			echo "<img src='/images/$chosen_day/$image' style='width: 100px;'/>";
