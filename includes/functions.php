@@ -482,14 +482,13 @@ function get_variable($file, $searchfor, $default)
 */
 function ListFileType($dir, $imageFileName, $formalImageTypeName, $type) {	// if $dir is not null, it ends in "/"
 	$num = 0;	// Let the user know when there are no images for the specified day
-	// "/images" is an alias in the web server for $topDir
+	// "/images" is an alias in the web server for ALLSKY_IMAGES
 	$images_dir = "/images";
-	$topDir = ALLSKY_IMAGES;	// $topDir is the full path name on the server
 	$chosen_day = $_GET['day'];
 	echo "<h2>$formalImageTypeName - $chosen_day</h2>\n";
 	echo "<div class='row'>\n";
 	if ($chosen_day === 'All'){
-		if ($handle = opendir($topDir)) {
+		if ($handle = opendir(ALLSKY_IMAGES)) {
 		    $blacklist = array('.', '..', 'somedir', 'somefile.php');
 		    while (false !== ($day = readdir($handle))) {
 		        if (!in_array($day, $blacklist)) {
@@ -505,46 +504,46 @@ function ListFileType($dir, $imageFileName, $formalImageTypeName, $type) {	// if
 			echo "<span class='alert-warning'>There are no image directories.</span>";
 		} else {
 			rsort($days);
-
 			$num = 0;
 			foreach ($days as $day) {
-			  $imageTypes = array();
-			  foreach (glob($topDir . "/$day/$dir$imageFileName-$day.*") as $imageType) {
-				$imageTypes[] = $imageType;
-				$num += 1;
-			  }
-			  foreach ($imageTypes as $imageType) {
-				$imageType_name = basename($imageType);
-				$fullFilename = "$images_dir/$day/$dir$imageType_name";
-				if ($type == "picture") {
-					echo "<a href='$fullFilename'>";
-					echo "<div style='float: left; width: 100%; margin-bottom: 2px;'>";
-					echo "<label>$day</label>";
-					echo "<img src='$fullFilename' style='margin-left: 10px; max-width: 50%; max-height:100px'/>";
-					echo "</div></a>\n";
-				} else {	// video
-					// echo "<video width='640' height='480' controls>
-					// xxxx Would be nice to show a thumbnail since loading all the videos
-					// is bandwidth intensive.  How do you make a thumbnail from a video?
-					echo "<a href='$fullFilename'>";
-					echo "<div style='float: left; width: 100%; margin-bottom: 2px;'>";
-					echo "<label style='vertical-align: middle'>$day &nbsp; &nbsp;</label>";
-					echo "<video width='85%' height='85%' controls style='vertical-align: middle'>";
-					echo "<source src='$fullFilename' type='video/mp4'>";
-					echo "<source src='movie.ogg' type='video/ogg'>";
-					echo "Your browser does not support the video tag.";
-					echo "/video>";
-					echo "/div></a>\n";
+				$imageTypes = array();
+				foreach (glob(ALLSKY_IMAGES . "/$day/$dir$imageFileName-$day.*") as $imageType) {
+					foreach (glob(ALLSKY_IMAGES . "/$day/$dir$imageFileName-$day.*") as $imageType) {
+						$imageTypes[] = $imageType;
+						$num += 1;
+					}
+					foreach ($imageTypes as $imageType) {
+						$imageType_name = basename($imageType);
+						$fullFilename = "$images_dir/$day/$dir$imageType_name";
+						if ($type == "picture") {
+							echo "<a href='$fullFilename'>";
+							echo "<div style='float: left; width: 100%; margin-bottom: 2px;'>";
+								echo "<label>$day</label>";
+							echo "<img src='$fullFilename' style='margin-left: 10px; max-width: 50%; max-height:100px'/>";
+							echo "</div></a>\n";
+							} else {	// video
+							// echo "<video width='640' height='480' controls>
+							// xxxx Would be nice to show a thumbnail since loading all the videos
+							// is bandwidth intensive.  How do you make a thumbnail from a video?
+							echo "<a href='$fullFilename'>";
+							echo "<div style='float: left; width: 100%; margin-bottom: 2px;'>";
+							echo "<label style='vertical-align: middle'>$day &nbsp; &nbsp;</label>";
+							echo "<video width='85%' height='85%' controls style='vertical-align: middle'>";
+							echo "<source src='$fullFilename' type='video/mp4'>";
+								echo "<source src='movie.ogg' type='video/ogg'>";
+							echo "Your browser does not support the video tag.";
+							echo "/video>";
+							echo "/div></a>\n";
+						}
+			  		}
 				}
-			  }
-			}
-			if ($num == 0) {
-			  echo "<span class='alert-warning'>There are no $formalImageTypeName.</span>";
+				if ($num == 0) {
+					echo "<span class='alert-warning'>There are no $formalImageTypeName.</span>";
+				}
 			}
 		}
-
 	} else {
-		foreach (glob($topDir . "/$chosen_day/$dir$imageFileName-$chosen_day.*") as $imageType) {
+		foreach (glob(ALLSKY_IMAGES . "/$chosen_day/$dir$imageFileName-$chosen_day.*") as $imageType) {
 			$imageTypes[] = $imageType;
 			$num += 1;
 		}

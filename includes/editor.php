@@ -62,15 +62,15 @@ function DisplayEditor()
                         <div id="editorContainer"></div>
                         <div style="margin-top: 15px;">
 			    <?php
-                                $path = '/home/pi/allsky/scripts';
-                                $scripts = array_filter(array_diff(scandir($path), array('.', '..')), function($item) {
-					return !is_dir('/home/pi/allsky/scripts/'.$item);
-                                });
+                                $scripts = array_filter(array_diff(scandir(ALLSKY_SCRIPTS), array('.', '..')), function($item) {
+					return !is_dir(ALLSKY_SCRIPTS.$item);
+					});
 			    ?>
                             <select class="form-control" id="script_path"
                                     style="display: inline-block; width: auto; margin-right: 15px; margin-bottom: 5px"
                                     >
-                                <option value="current/config/config.sh">config.sh</option>
+                                <option value="current/<?php echo ALLSKY_CONFIG_DIR ?>/config.sh">config.sh</option>
+                                <option value="current/<?php echo ALLSKY_CONFIG_DIR ?>/ftp-settings.sh">ftp-settings.sh</option>
                                 <option value="current/allsky.sh">allsky.sh</option>
 
 				<?php

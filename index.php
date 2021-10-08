@@ -16,18 +16,42 @@
 
 include_once('includes/functions.php');		// needs to be at top for get_variable()
 
-define('RASPI_CONFIG', '/etc/raspap');
-define('RASPI_ADMIN_DETAILS', RASPI_CONFIG . '/raspap.auth');
-define('ALLSKY_CONFIG', '/home/pi/allsky/config');
+define('ALLSKY_HOME', '/home/pi/allsky');			// value updated during installation
+define('ALLSKY_SCRIPTS', ALLSKY_HOME . '/scripts');	// value updated during installation
+define('ALLSKY_IMAGES', ALLSKY_HOME . '/images');	// value updated during installation
 
-$cam = get_variable('/home/pi/allsky/autocam.sh', 'CAMERA=', 'ZWO');
+// xxx COMPATIBILITY CHECK:
+// Version 0.8 and older of allsky had config.sh and autocam.sh in $ALLSKY_HOME.
+// Newer versions have them in $ALLSKY_CONFIG.
+// Look for a variable we know won't be null in the new location;
+// if it's not there, use the old location.
+define('ALLSKY_CONFIG_DIR', '/config');		// name of just the directory
+define('ALLSKY_CONFIG', ALLSKY_HOME . ALLSKY_CONFIG_DIR);	// value updated during installation
+if (get_variable(ALLSKY_CONFIG . '/config.sh', 'CAMERA=', 'NOTFOUND') == "NOTFOUND") {
+	define('ALLSKY_CONFIG_DIR', '');
+	define('ALLSKY_CONFIG', ALLSKY_HOME);
+}
 
+// $img_dir is an alias in the web server's config.
+// It's the same as ALLSKY_HOME which is the full path name on the server.
+$img_dir = get_variable(ALLSKY_CONFIG . '/config.sh', 'IMG_DIR=', 'current');
+$cam = get_variable(ALLSKY_CONFIG .'/autocam.sh', 'CAMERA=', 'ZWO');
+
+define('RASPI_CONFIG', '/etc/raspap');			// xxx will replace with ALLSKY_CONFIG
 define('RASPI_CAMERA_SETTINGS', RASPI_CONFIG . '/settings_'.$cam.'.json');
 define('RASPI_CAMERA_OPTIONS', RASPI_CONFIG . '/camera_options_'.$cam.'.json');
-define('RASPI_ALLSKY_DIR', 'RASPI_ALLSKY_DIR_PLACEHOLDER');
+
+$camera_settings_str = file_get_contents(RASPI_CAMERA_SETTINGS, true);
+$camera_settings_array = json_decode($camera_settings_str, true);
+// xxx new way:  $image_name = $img_dir . "/" . $camera_settings_array['filename'];
+// old way uses IMG_PREFIX:
+$img_prefix = get_variable(ALLSKY_CONFIG .'/config.sh', 'IMG_PREFIX=', 'liveview-');
+$image_name = $img_dir . "/" . $img_prefix . $camera_settings_array['filename'];
+
 
 // Constants for configuration file paths.
 // These are typical for default RPi installs. Modify if needed.
+define('RASPI_ADMIN_DETAILS', RASPI_CONFIG . '/raspap.auth');
 define('RASPI_DNSMASQ_CONFIG', '/etc/dnsmasq.conf');
 define('RASPI_DNSMASQ_LEASES', '/var/lib/misc/dnsmasq.leases');
 define('RASPI_HOSTAPD_CONFIG', '/etc/hostapd/hostapd.conf');
@@ -44,10 +68,7 @@ define('RASPI_TORPROXY_ENABLED', false);
 
 include_once(RASPI_CONFIG . '/raspap.php');
 include_once('includes/dashboard.php');
-define('useEth0', true);	// MAY need more testing, especially the "Stop eth0" button.
-if (useEth0) :
-	include_once('includes/dashboard_eth0.php');
-endif;
+include_once('includes/dashboard_eth0.php');
 include_once('includes/liveview.php');
 include_once('includes/authenticate.php');
 include_once('includes/admin.php');
@@ -64,13 +85,10 @@ include_once('includes/startrails.php');
 include_once('includes/editor.php');
 
 $output = $return = 0;
-$page = $_GET['page'];
-
-$camera_settings_str = file_get_contents(RASPI_CAMERA_SETTINGS, true);
-$camera_settings_array = json_decode($camera_settings_str, true);
-$img_dir = get_variable(ALLSKY_CONFIG . '/config.sh', 'IMG_DIR=', 'current');
-$img_prefix = get_variable(ALLSKY_CONFIG .'/config.sh', 'IMG_PREFIX=', 'liveview-');
-$image_name = $img_dir . "/" . $img_prefix . $camera_settings_array['filename'];
+if (isset($_GET['page']))
+    $page = $_GET['page'];
+else
+    $page = "";
 
 session_start();
 if (empty($_SESSION['csrf_token'])) {
@@ -109,7 +127,8 @@ $csrf_token = $_SESSION['csrf_token'];
 			border-color: #bce8f1;
 		}
 		.alert-dismissable .close {
-    			top: -22px;
+    			right: 0px;
+			opacity: .6;
 		}
 	</style>
     <!-- MetisMenu CSS -->
@@ -229,11 +248,9 @@ $csrf_token = $_SESSION['csrf_token'];
                     <li>
                         <a href="index.php?page=editor"><i class="fa fa-code fa-fw"></i> Editor</a>
                     </li>
-		<?php if (useEth0) : ?>
 		    <li>
                         <a href="index.php?page=eth0_info"><i class="fa fa-tachometer-alt fa-fw"></i> <b>LAN</b> Connection Status</a>
                     </li>
-		<?php endif; ?>
                     <li>
                         <a href="index.php?page=wlan0_info"><i class="fa fa-tachometer-alt fa-fw"></i> <b>WLAN</b> Connection Status</a>
                     </li>

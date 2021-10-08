@@ -1,4 +1,5 @@
 <?php
+define('ALLSKY_HOME', '/home/pi/allsky');                     // value updated during installation
 
 $content = "";
 $path = "";
@@ -11,14 +12,9 @@ if (isset($_POST['path'])) {
     $path = $_POST['path'];
 }
 
-$file = str_replace('current','/home/pi/allsky', $path);
+$file = str_replace('current', ALLSKY_HOME, $path);
 
 file_put_contents(getcwd()."/temp", $content);
-
-//echo "sudo mv ".getcwd()."/temp ".$file;
-//echo "sudo chmod +x ".$file;
-shell_exec("sudo mv ".getcwd()."/temp ".$file);
-shell_exec("sudo chown pi:pi ".$file);
-shell_exec("sudo chmod +x ".$file);
+shell_exec("sudo mv ".getcwd()."/temp ".$file . ";sudo chown pi:pi ".$file . ";sudo chmod +x ".$file);
 
 ?>
