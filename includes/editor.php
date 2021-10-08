@@ -11,7 +11,7 @@ function DisplayEditor()
 
         $(document).ready(function () {
 	    var editor = null;
-	    $.get("current<?php echo /config/config.sh?_ts=" + new Date().getTime(), function (data) {
+	    $.get("current<?php ALLSKY_CONFIG_DIR ?>/config.sh?_ts=" + new Date().getTime(), function (data) {
         	editor = CodeMirror(document.querySelector("#editorContainer"), {
                     value: data,
                     mode: "shell",
