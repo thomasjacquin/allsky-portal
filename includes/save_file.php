@@ -1,4 +1,5 @@
 <?php
+define('ALLSKY_HOME', '/home/pi/allsky');                     // value updated during installation
 
 $content = "";
 $path = "";
