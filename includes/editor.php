@@ -3,6 +3,7 @@
 function DisplayEditor()
 {
     $status = new StatusMessages();
+	$showFullList = false;	// show the full list of what's in ALLSKY_SCRIPTS, or just user-editable files?
 ?>
 
     <script type="text/javascript">
@@ -60,8 +61,11 @@ function DisplayEditor()
                         <div id="editorContainer"></div>
                         <div style="margin-top: 15px;">
 			    <?php
-                                $scripts = array_filter(array_diff(scandir(ALLSKY_SCRIPTS), array('.', '..')), function($item) {
-					return !is_dir(ALLSKY_SCRIPTS.$item);
+                    $scripts = array_filter(array_diff(scandir(ALLSKY_SCRIPTS), array('.', '..')), function($item) {
+						if ($showFullList == "true")
+							return !is_dir(ALLSKY_SCRIPTS.$item);
+						else
+							return $item == "endOfNight_additionalSteps.sh";
 					});
 			    ?>
                             <select class="form-control" id="script_path"
@@ -72,10 +76,10 @@ function DisplayEditor()
                                 <option value="current/allsky.sh">allsky.sh</option>
 
 				<?php
-                                foreach ($scripts as $script) {
-                                    echo "<option value='current/scripts/$script'>$script</option>";
-                                }
-                                ?>
+							foreach ($scripts as $script) {
+								echo "<option value='current/scripts/$script'>$script</option>";
+							}
+               ?>
                             </select>
                             <button type="submit" class="btn btn-success" style="margin-bottom:5px" id="save_file"/>
                             <i class="fa fa-save"></i> Save Changes</button>
