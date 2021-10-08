@@ -71,6 +71,7 @@ function DisplayEditor()
                                     style="display: inline-block; width: auto; margin-right: 15px; margin-bottom: 5px"
                                     >
                                 <option value="current<?php ALLSKY_CONFIG_DIR ?>/config.sh">config.sh</option>
+                                <option value="current<?php ALLSKY_CONFIG_DIR ?>/ftp-settings.sh">config.sh</option>
                                 <option value="current/allsky.sh">allsky.sh</option>
 
 				<?php
