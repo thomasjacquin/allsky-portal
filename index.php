@@ -18,6 +18,7 @@ include_once('includes/functions.php');		// needs to be at top for get_variable(
 
 define('ALLSKY_HOME', '/home/pi/allsky');			// value updated during installation
 define('ALLSKY_SCRIPTS', ALLSKY_HOME . '/scripts');	// value updated during installation
+define('ALLSKY_IMAGES', ALLSKY_HOME . '/images');	// value updated during installation
 
 // xxx COMPATIBILITY CHECK:
 // Version 0.8 and older of allsky had config.sh and autocam.sh in $ALLSKY_HOME.
