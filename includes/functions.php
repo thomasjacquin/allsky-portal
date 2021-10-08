@@ -473,7 +473,7 @@ function get_variable($file, $searchfor, $default)
 */
 function ListFileType($dir, $imageFileName, $formalImageTypeName, $type) {	// if $dir is not null, it ends in "/"
 	$num = 0;	// Let the user know when there are no images for the specified day
-	$topDir = "/home/pi/allsky/images/";
+	$topDir = ALLSKY_IMAGES;
 	$chosen_day = $_GET['day'];
 	if ($chosen_day === 'All'){
 
@@ -505,7 +505,7 @@ function ListFileType($dir, $imageFileName, $formalImageTypeName, $type) {	// if
 				}
 				foreach ($imageTypes as $imageType) {
 					$imageType_name = basename($imageType);
-					// "/images" is an alias for $topDir.
+					// $topDir is the physical path to images.  "/images" is a web alias to that directory
 					$fullFilename = "/images/$day/$dir$imageType_name";
 					if ($type == "picture") {
 					    echo "<a href='$fullFilename'>
