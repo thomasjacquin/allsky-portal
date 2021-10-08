@@ -146,10 +146,10 @@ function DisplayOpenVPNConfig() {
 
 	if( $openvpnstatus[0] == 0 ) {
 		$status = '<div class="alert alert-warning alert-dismissable">OpenVPN is not running
-					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button></div>';
+					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button></div>';
 	} else {
 		$status = '<div class="alert alert-success alert-dismissable">OpenVPN is running
-					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button></div>';
+					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button></div>';
 	}
 
 	// parse client settings
@@ -276,10 +276,10 @@ function DisplayTorProxyConfig(){
 
 	if( $torproxystatus[0] == 0 ) {
 		$status = '<div class="alert alert-warning alert-dismissable">TOR is not running
-					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button></div>';
+					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button></div>';
 	} else {
 		$status = '<div class="alert alert-success alert-dismissable">TOR is running
-					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button></div>';
+					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button></div>';
 	}
 
 	foreach( $return as $a ) {
@@ -446,6 +446,8 @@ function SaveTORAndVPNConfig(){
 /**
 *
 * Get a variable from a file and return its value; if not there, return the default.
+* NOTE: The variable's value is anything after the equal sign, so there shouldn't be a comment on the line.
+* NOTE: There may be something before $searchfor, e.g., "export X=1", where "X" is $searchfor.
 */
 function get_variable($file, $searchfor, $default)
 {
@@ -457,12 +459,19 @@ function get_variable($file, $searchfor, $default)
 	$pattern = preg_quote($searchfor, '/');
 	// finalise the regular expression, matching the whole line
 	$pattern = "/^.*$pattern.*\$/m";
-	// search, and store all matching occurences in $matches
-	if(preg_match_all($pattern, $contents, $matches)){
+
+	// search, and store all matching occurences in $matches, but only return the last one
+	$num_matches = preg_match_all($pattern, $contents, $matches);
+	if ($num_matches) {
 		$double_quote = '"';
-		return(str_replace($double_quote, '', explode( '=', implode("\n", $matches[0]))[1]));
-	}
-	else{
+
+		// Format: [stuff]$searchfor=$value   or   [stuff]$searchfor="$value"
+		// Need to delete  [stuff]$searchfor=  and optional double quotes
+		$last = $matches[0][$num_matches - 1];	// get the last one
+		$last = explode( '=', $last)[1];	// get everything after equal sign
+		$last = str_replace($double_quote, "", $last);
+		return($last);
+	} else {
    		return($default);
 	}
 }
@@ -473,10 +482,13 @@ function get_variable($file, $searchfor, $default)
 */
 function ListFileType($dir, $imageFileName, $formalImageTypeName, $type) {	// if $dir is not null, it ends in "/"
 	$num = 0;	// Let the user know when there are no images for the specified day
-	$topDir = "/home/pi/allsky/images/";
+	// "/images" is an alias in the web server for $topDir
+	$images_dir = "/images";
+	$topDir = ALLSKY_IMAGES;	// $topDir is the full path name on the server
 	$chosen_day = $_GET['day'];
+	echo "<h2>$formalImageTypeName - $chosen_day</h2>\n";
+	echo "<div class='row'>\n";
 	if ($chosen_day === 'All'){
-
 		if ($handle = opendir($topDir)) {
 		    $blacklist = array('.', '..', 'somedir', 'somefile.php');
 		    while (false !== ($day = readdir($handle))) {
@@ -494,65 +506,59 @@ function ListFileType($dir, $imageFileName, $formalImageTypeName, $type) {	// if
 		} else {
 			rsort($days);
 
-			echo "<h2>$formalImageTypeName - $chosen_day</h2>
-			<div class='row'>";
 			$num = 0;
 			foreach ($days as $day) {
-				$imageTypes = array();
-				foreach (glob($topDir . "$day/$dir$imageFileName-$day.*") as $imageType) {
-					$imageTypes[] = $imageType;
-					$num += 1;
+			  $imageTypes = array();
+			  foreach (glob($topDir . "/$day/$dir$imageFileName-$day.*") as $imageType) {
+				$imageTypes[] = $imageType;
+				$num += 1;
+			  }
+			  foreach ($imageTypes as $imageType) {
+				$imageType_name = basename($imageType);
+				$fullFilename = "$images_dir/$day/$dir$imageType_name";
+				if ($type == "picture") {
+					echo "<a href='$fullFilename'>";
+					echo "<div style='float: left; width: 100%; margin-bottom: 2px;'>";
+					echo "<label>$day</label>";
+					echo "<img src='$fullFilename' style='margin-left: 10px; max-width: 50%; max-height:100px'/>";
+					echo "</div></a>\n";
+				} else {	// video
+					// echo "<video width='640' height='480' controls>
+					// xxxx Would be nice to show a thumbnail since loading all the videos
+					// is bandwidth intensive.  How do you make a thumbnail from a video?
+					echo "<a href='$fullFilename'>";
+					echo "<div style='float: left; width: 100%; margin-bottom: 2px;'>";
+					echo "<label style='vertical-align: middle'>$day &nbsp; &nbsp;</label>";
+					echo "<video width='85%' height='85%' controls style='vertical-align: middle'>";
+					echo "<source src='$fullFilename' type='video/mp4'>";
+					echo "<source src='movie.ogg' type='video/ogg'>";
+					echo "Your browser does not support the video tag.";
+					echo "/video>";
+					echo "/div></a>\n";
 				}
-				foreach ($imageTypes as $imageType) {
-					$imageType_name = basename($imageType);
-					// "/images" is an alias for $topDir.
-					$fullFilename = "/images/$day/$dir$imageType_name";
-					if ($type == "picture") {
-					    echo "<a href='$fullFilename'>
-						<div style='float: left; width: 100%; margin-bottom: 2px;'>
-						<label>$day</label>
-						<img src='$fullFilename' style='margin-left: 10px; max-width: 50%; max-height:100px'/>
-						</div></a>";
-					} else {	// video
-					    // echo "<video width='640' height='480' controls>
-					    // xxxx Would be nice to show a thumbnail since loading all the videos
-					    // is bandwidth intensive.  How do you make a thumbnail from a video?
-					    echo "<a href='$fullFilename'>";
-					    echo "<div style='float: left; width: 100%; margin-bottom: 2px;'>
-						<label style='vertical-align: middle'>$day &nbsp; &nbsp;</label>
-						<video width='85%' height='85%' controls style='vertical-align: middle'>
-							<source src='$fullFilename' type='video/mp4'>
-							<source src='movie.ogg' type='video/ogg'>
-							Your browser does not support the video tag.
-						</video>
-						</div></a>";
-					}
-				}
+			  }
 			}
 			if ($num == 0) {
-				echo "<span class='alert-warning'>There are no $formalImageTypeName.</span>";
+			  echo "<span class='alert-warning'>There are no $formalImageTypeName.</span>";
 			}
 		}
-	        echo "</div>";
 
 	} else {
-		foreach (glob($topDir . "$chosen_day/$dir$imageFileName-$chosen_day.*") as $imageType) {
-			  $imageTypes[] = $imageType;
-			  $num += 1;
+		foreach (glob($topDir . "/$chosen_day/$dir$imageFileName-$chosen_day.*") as $imageType) {
+			$imageTypes[] = $imageType;
+			$num += 1;
 		}
-		echo "<h2>$formalImageTypeName - $chosen_day</h2>
-		<div class='row'>";
 		if ($num == 0) {
 			echo "<span class='alert-warning'>There are no $formalImageTypeName for this day.</span>";
 		} else {
 			foreach ($imageTypes as $imageType) {
 				$imageType_name = basename($imageType);
-				$fullFilename = "/images/$chosen_day/$dir$imageType_name";
+				$fullFilename = "$images_dir/$chosen_day/$dir$imageType_name";
 				if ($type == "picture") {
 				    echo "<a href='$fullFilename'>
 					<div style='float: left'>
 					<img src='$fullFilename' style='max-width: 100%;max-height:400px'/>
-					</div></a>";
+					</div></a>\n";
 				} else {	//video
 				    echo "<a href='$fullFilename'>";
 				    echo "<div style='float: left; width: 100%'>
@@ -561,12 +567,12 @@ function ListFileType($dir, $imageFileName, $formalImageTypeName, $type) {	// if
 						<source src='movie.ogg' type='video/ogg'>
 						Your browser does not support the video tag.
 					</video>
-					</div></a>";
+					</div></a>\n";
 				}
 			}
 		}
-	        echo "</div>";
 	}
+        echo "</div>";
 }
 
 ?>
