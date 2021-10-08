@@ -482,14 +482,13 @@ function get_variable($file, $searchfor, $default)
 */
 function ListFileType($dir, $imageFileName, $formalImageTypeName, $type) {	// if $dir is not null, it ends in "/"
 	$num = 0;	// Let the user know when there are no images for the specified day
-	// "/images" is an alias in the web server for $topDir
+	// "/images" is an alias in the web server for ALLSKY_IMAGES
 	$images_dir = "/images";
-	$topDir = ALLSKY_IMAGES . "/";	// $topDir is the full path name on the server
 	$chosen_day = $_GET['day'];
 	echo "<h2>$formalImageTypeName - $chosen_day</h2>\n";
 	echo "<div class='row'>\n";
 	if ($chosen_day === 'All'){
-		if ($handle = opendir($topDir)) {
+		if ($handle = opendir(ALLSKY_IMAGES)) {
 		    $blacklist = array('.', '..', 'somedir', 'somefile.php');
 		    while (false !== ($day = readdir($handle))) {
 		        if (!in_array($day, $blacklist)) {
@@ -508,8 +507,8 @@ function ListFileType($dir, $imageFileName, $formalImageTypeName, $type) {	// if
 			$num = 0;
 			foreach ($days as $day) {
 				$imageTypes = array();
-				foreach (glob($topDir . "/$day/$dir$imageFileName-$day.*") as $imageType) {
-					foreach (glob($topDir . "$day/$dir$imageFileName-$day.*") as $imageType) {
+				foreach (glob(ALLSKY_IMAGES . "/$day/$dir$imageFileName-$day.*") as $imageType) {
+					foreach (glob(ALLSKY_IMAGES . "/$day/$dir$imageFileName-$day.*") as $imageType) {
 						$imageTypes[] = $imageType;
 						$num += 1;
 					}
@@ -544,7 +543,7 @@ function ListFileType($dir, $imageFileName, $formalImageTypeName, $type) {	// if
 			}
 		}
 	} else {
-		foreach (glob($topDir . "/$chosen_day/$dir$imageFileName-$chosen_day.*") as $imageType) {
+		foreach (glob(ALLSKY_IMAGES . "/$chosen_day/$dir$imageFileName-$chosen_day.*") as $imageType) {
 			$imageTypes[] = $imageType;
 			$num += 1;
 		}
