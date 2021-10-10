@@ -35,7 +35,13 @@ if (get_variable(ALLSKY_CONFIG . '/config.sh', 'CAMERA=', 'NOTFOUND') == "NOTFOU
 // $img_dir is an alias in the web server's config.
 // It's the same as ALLSKY_HOME which is the full path name on the server.
 $img_dir = get_variable(ALLSKY_CONFIG . '/config.sh', 'IMG_DIR=', 'current');
-$cam = get_variable(ALLSKY_CONFIG .'/autocam.sh', 'CAMERA=', 'ZWO');
+$cam = get_variable(ALLSKY_CONFIG .'/autocam.sh', 'CAMERA=', '');
+if ($cam == '') {
+	echo "<div style='color: red; font-size: 200%;'>";
+	echo "Unable to determine camera type.  Check " . ALLSKY_CONFIG . "'/autocam.sh'";
+	echo "</div>";
+	exit;
+}
 
 define('RASPI_CONFIG', '/etc/raspap');			// xxx will replace with ALLSKY_CONFIG
 define('RASPI_CAMERA_SETTINGS', RASPI_CONFIG . '/settings_'.$cam.'.json');
@@ -317,13 +323,16 @@ $csrf_token = $_SESSION['csrf_token'];
                         ListImages();
                         break;
                     case "list_videos":
-                        ListVideos();
+                        // directory, file name prefix, formal name, type of file
+						ListFileType("", "allsky", "Timelapse", "video");
                         break;
                     case "list_keograms":
-                        ListKeograms();
+                        // directory, file name prefix, formal name, type of file
+						ListFileType("keogram/", "keogram", "Keogram", "picture");
                         break;
                     case "list_startrails":
-                        ListStartrails();
+                        // directory, file name prefix, formal name, type of file
+						ListFileType("startrails/", "startrails", "Startrails", "picture");
                         break;
                     case "editor":
                         DisplayEditor();
