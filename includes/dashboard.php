@@ -16,32 +16,49 @@ function DisplayDashboard(){
 
 // Parse results from ifconfig/iwconfig
   preg_match( '/ether ([0-9a-f:]+)/i',$strWlan0,$result );
-  $strHWAddress = $result[1];
+  $strHWAddress = isset($result[1]) ?  $result[1] : "[not set]";
+
   preg_match( '/inet ([0-9.]+)/i',$strWlan0,$result );
-  $strIPAddress = $result[1];
+  $strIPAddress = isset($result[1]) ?  $result[1] : "[not set]";
+
   preg_match( '/netmask ([0-9.]+)/i',$strWlan0,$result );
-  $strNetMask = $result[1];
+  $strNetMask = isset($result[1]) ?  $result[1] : "[not set]";
+
   preg_match( '/RX packets (\d+)/',$strWlan0,$result );
-  $strRxPackets = $result[1];
+  $strRxPackets = isset($result[1]) ?  $result[1] : "[not set]";
+
   preg_match( '/TX packets (\d+)/',$strWlan0,$result );
-  $strTxPackets = $result[1];
+  $strTxPackets = isset($result[1]) ?  $result[1] : "[not set]";
+
   preg_match_all( '/bytes (\d+ \(\d+.\d+ [K|M|G]iB\))/i',$strWlan0,$result );
-  $strRxBytes = $result[1][0];
-  $strTxBytes = $result[1][1];
+  if (isset($result[1][0])) {
+	$strRxBytes = $result[1][0];
+	$strTxBytes = $result[1][1];
+  } else {
+	$strRxBytes = "[not set]";
+	$strTxBytes = "[not set]";
+  }
+
   preg_match( '/ESSID:\"([a-zA-Z0-9\s]+)\"/i',$strWlan0,$result );
-  $strSSID = str_replace( '"','',$result[1] );
+  $strSSID = isset($result[1]) ?  str_replace('"','',$result[1]) : "[not set]";
+
   preg_match( '/Access Point: ([0-9a-f:]+)/i',$strWlan0,$result );
-  $strBSSID = $result[1];
+  $strBSSID = isset($result[1]) ?  $result[1] : "[not set]";
+
   preg_match( '/Bit Rate=([0-9\.]+ Mb\/s)/i',$strWlan0,$result );
-  $strBitrate = $result[1];
+  $strBitrate = isset($result[1]) ?  $result[1] : "[not set]";
+
   preg_match( '/Tx-Power=([0-9]+ dBm)/i',$strWlan0,$result );
-  $strTxPower = $result[1];
+  $strTxPower = isset($result[1]) ?  $result[1] : "[not set]";
+
   preg_match( '/Link Quality=([0-9]+)/i',$strWlan0,$result );
-  $strLinkQuality = $result[1];
+  $strLinkQuality = isset($result[1]) ?  $result[1] : "[not set]";
+
   preg_match( '/Signal level=(-?[0-9]+ dBm)/i',$strWlan0,$result );
-  $strSignalLevel = $result[1];
+  $strSignalLevel = isset($result[1]) ?  $result[1] : "[not set]";
+
   preg_match('/Frequency:(\d+.\d+ GHz)/i',$strWlan0,$result);
-  $strFrequency = $result[1];
+  $strFrequency = isset($result[1]) ?  $result[1] : "[not set]";
 
   if(strpos( $strWlan0, "UP" ) !== false && strpos( $strWlan0, "RUNNING" ) !== false ) {
     $status->addMessage('Interface is up', 'success');
@@ -92,7 +109,7 @@ function DisplayDashboard(){
                         </div><!-- /.col-md-6 -->
 
         <div class="col-md-6">
-                    <div class="panel panel-default">
+           <div class="panel panel-default">
               <div class="panel-body wireless">
                             <h4>Wireless Information</h4>
           <div class="info-item">Connected To</div>   <?php echo $strSSID ?></br>
@@ -111,7 +128,7 @@ function DisplayDashboard(){
           </div>
         </div><!-- /.panel-body -->
         </div><!-- /.panel-default -->
-                        </div><!-- /.col-md-6 -->
+      </div><!-- /.col-md-6 -->
       </div><!-- /.row -->
 
                   <div class="col-lg-12">
@@ -133,7 +150,6 @@ function DisplayDashboard(){
             </div><!-- /.panel-default -->
         </div><!-- /.col-lg-12 -->
     </div><!-- /.row -->
-  <?php 
+<?php 
 }
-
 ?>

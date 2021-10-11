@@ -17,19 +17,17 @@ function DisplayDashboard_eth0(){
 	preg_match( '/ether ([0-9a-f:]+)/i',$strEth0,$result );
 	$strHWAddress = $result[1];
 	preg_match( '/inet ([0-9.]+)/i',$strEth0,$result );
-	if (isset($result[1]))
-		$strIPAddress = $result[1];
-	else
-		$strIPAddress = "[not set]";
+	$strIPAddress = isset($result[1]) ?  $result[1] : "[not set]";
+
 	preg_match( '/netmask ([0-9.]+)/i',$strEth0,$result );
-	if (isset($result[1]))
-		$strNetMask = $result[1];
-	else
-		$strNetMask = "[not set]";
+	$strNetMask = isset($result[1]) ?  $result[1] : "[not set]";
+
 	preg_match( '/RX packets (\d+)/',$strEth0,$result );
-	$strRxPackets = $result[1];
+	$strRxPackets = isset($result[1]) ?  $result[1] : "[not set]";
+
 	preg_match( '/TX packets (\d+)/',$strEth0,$result );
-	$strTxPackets = $result[1];
+	$strTxPackets = isset($result[1]) ?  $result[1] : "[not set]";
+
 	preg_match_all( '/bytes (\d+ \(\d+.\d+ [K|M|G]iB\))/i',$strEth0,$result );
 	if (isset($result[1][0])) {
 		$strRxBytes = $result[1][0];
@@ -43,8 +41,8 @@ function DisplayDashboard_eth0(){
 		$status->addMessage('Interface is up', 'success');
 		$eth0up = true;
 	} else {
-		$eth0up = false;
 		$status->addMessage('Interface is down', 'warning');
+		$eth0up = false;
 	}
 
 	if( isset($_POST['ifdown_eth0']) ) {
