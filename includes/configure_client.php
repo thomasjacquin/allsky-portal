@@ -6,7 +6,6 @@
 */
 function DisplayWPAConfig(){
   $status = new StatusMessages();
-  // xxx $scanned_networks = array();
 
   // Find currently configured networks
   exec(' sudo cat ' . RASPI_WPA_SUPPLICANT_CONFIG, $known_return);
