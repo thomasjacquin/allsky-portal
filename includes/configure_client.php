@@ -6,7 +6,7 @@
 */
 function DisplayWPAConfig(){
   $status = new StatusMessages();
-  $scanned_networks = array();
+  // xxx $scanned_networks = array();
 
   // Find currently configured networks
   exec(' sudo cat ' . RASPI_WPA_SUPPLICANT_CONFIG, $known_return);
@@ -118,6 +118,7 @@ function DisplayWPAConfig(){
   // display output
   $have_multiple = false;
   $note = " <span style='color: red; font-weight: bold'>*</span>";
+  $num_networks = 0;
   foreach( $scan_return as $network ) {
     $arrNetwork = preg_split("/[\t]+/",$network);
     if (isset($arrNetwork[4])) {
@@ -133,7 +134,8 @@ function DisplayWPAConfig(){
                 $networks[$ssid]['channel'] = $networks[$ssid]['channel'] . $note;
           }
 	  // TODO What if the security has changed?
-        } else {
+      } else {
+	  $num_networks += 1;
           $networks[$ssid] = array(
             'configured' => false,
             'protocol' => ConvertToSecurity($arrNetwork[3]),
@@ -142,7 +144,7 @@ function DisplayWPAConfig(){
             'visible' => true,
             'connected' => false
           );
-        }
+      }
     }
   }
 
@@ -176,7 +178,7 @@ function DisplayWPAConfig(){
                 <th></th>
               </tr>
             <?php $index = 0; ?>
-            <?php foreach ($networks as $ssid => $network) { ?>
+            <?php if ($num_networks > 0) { foreach ($networks as $ssid => $network) { ?>
               <tr>
                 <td>
                   <?php if ($network['configured']) { ?>
@@ -215,7 +217,7 @@ function DisplayWPAConfig(){
                 </td>
               </tr>
               <?php $index += 1; ?>
-            <?php } ?>
+            <?php } } else { echo "<p style='font-size: 150%; color: red;'>No networks found</p>"; } ?>
             </table>
           </form>
         </div><!-- ./ Panel body -->
