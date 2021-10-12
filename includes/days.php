@@ -14,10 +14,10 @@ $days = array();
 if (isset($_POST['delete_directory'])) {
 	$dir = $_POST['delete_directory'];
   echo '<div class="alert alert-warning">Deleted directory '.$dir.'</div>';
-  delete_directory('/home/pi/allsky/images/'.$dir);
+  delete_directory(ALLSKY_IMAGES . $dir);
 }
 
-if ($handle = opendir('/home/pi/allsky/images/')) {
+if ($handle = opendir(ALLSKY_IMAGES)) {
     $blacklist = array('.', '..', 'somedir', 'somefile.php');
     while (false !== ($day = readdir($handle))) {
         if (!in_array($day, $blacklist)) {
@@ -57,30 +57,21 @@ arsort($days);
 			</tr>
 		</thead>
 		<tbody>
-<?php
-echo "<tr>
-                                <td style='font-weight:bold'>All
-                                </td>
+                        <tr>
+                                <td style='font-weight:bold'>All</td>
                                 <td></td>
-                                <td><a href='index.php?page=list_videos&day=All' title='All Timelapse (CAN BE SLOW TO LOAD)'><i class='fa fa-film fa-lg fa-fw'></i></a>
-                                <td><a href='index.php?page=list_keograms&day=All' title='All Keograms'><i class='fa fa-barcode fa-lg fa-fw'></i></a>
-                                </td>
-                                <td><a href='index.php?page=list_startrails&day=All' title='All Startrails'><i class='fa fa-circle-notch fa-lg fa-fw'></i></a>
-                                </td>
+                                <td><a href='index.php?page=list_videos&day=All' title='All Timelapse (CAN BE SLOW TO LOAD)'><i class='fa fa-film fa-lg fa-fw'></i></a></td>
+                                <td><a href='index.php?page=list_keograms&day=All' title='All Keograms'><i class='fa fa-barcode fa-lg fa-fw'></i></a></td>
+                                <td><a href='index.php?page=list_startrails&day=All' title='All Startrails'><i class='fa fa-circle-notch fa-lg fa-fw'></i></a></td>
                                 <td style='padding: 22px 0'></td>
-                        </tr>";
+                        </tr>
+<?php
 foreach ($days as $day) {
-	echo "<tr>
-                                <td style='font-weight:bold'>$day
-                                </td>
-				<td><a href='index.php?page=list_images&day=$day' title='Images'><i class='fa fa-image fa-lg fa-fw'></i></a>
-				</td>
-				<td><a href='index.php?page=list_videos&day=$day' title='Timelapse'><i class='fa fa-film fa-lg fa-fw'></i></a>
-                                </td>
-                                <td><a href='index.php?page=list_keograms&day=$day' title='Keogram'><i class='fa fa-barcode fa-lg fa-fw'></i></a>
-                                </td>
-  				<td><a href='index.php?page=list_startrails&day=$day' title='Startrails'><i class='fa fa-circle-notch fa-lg fa-fw'></i></a>
-                                </td>
+	echo "                        <tr>
+                                <td style='font-weight:bold'>$day</td>
+				<td><a href='index.php?page=list_images&day=$day' title='Images'><i class='fa fa-image fa-lg fa-fw'></i></a></td>
+				<td><a href='index.php?page=list_videos&day=$day' title='Timelapse'><i class='fa fa-film fa-lg fa-fw'></i></a></td>
+                                <td><a href='index.php?page=list_keograms&day=$day' title='Keogram'><i class='fa fa-barcode fa-lg fa-fw'></i></a></td></td>
 				<td style='padding: 5px'>
 					<button type='submit'
 						class='btn btn-danger'
@@ -97,11 +88,10 @@ foreach ($days as $day) {
 	</table>
 	</form>
     </div><!-- /.row -->
-	</div><!-- /.panel-body -->
+  </div><!-- /.panel-body -->
   </div><!-- /.panel-primary -->
   </div><!-- /.col-lg-12 -->
-  </div><!-- /.row -->
-  <?php 
+</div><!-- /.row -->
+<?php 
 }
-
 ?>
