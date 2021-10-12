@@ -22,29 +22,42 @@ define('ALLSKY_IMAGES', ALLSKY_HOME . '/images');	// value updated during instal
 
 // xxx COMPATIBILITY CHECK:
 // Version 0.8 and older of allsky had config.sh and autocam.sh in $ALLSKY_HOME.
-// Newer versions have them in $ALLSKY_CONFIG.
-// Look for a variable we know won't be null in the new location;
-// if it's not there, use the old location.
+// Newer versions have config.sh in $ALLSKY_CONFIG and don't need autocam.sh since "auto" is no longer a valid CAMERA type.
 define('ALLSKY_CONFIG_DIR', '/config');		// name of just the directory
 define('ALLSKY_CONFIG', ALLSKY_HOME . ALLSKY_CONFIG_DIR);	// value updated during installation
-if (get_variable(ALLSKY_CONFIG . '/config.sh', 'CAMERA=', 'NOTFOUND') == "NOTFOUND") {
+if (! file_exists(ALLSKY_CONFIG . '/config.sh')) {
 	define('ALLSKY_CONFIG_DIR', '');
 	define('ALLSKY_CONFIG', ALLSKY_HOME);
 }
 
-// $img_dir is an alias in the web server's config.
-// It's the same as ALLSKY_HOME which is the full path name on the server.
-$img_dir = get_variable(ALLSKY_CONFIG . '/config.sh', 'IMG_DIR=', 'current');
-$cam = get_variable(ALLSKY_CONFIG .'/autocam.sh', 'CAMERA=', '');
+$cam = get_variable(ALLSKY_CONFIG .'/config.sh', 'CAMERA=', '');
 if ($cam == '') {
 	echo "<div style='color: red; font-size: 200%;'>";
-	echo "Unable to determine camera type.  Check " . ALLSKY_CONFIG . "'/autocam.sh'";
+	echo "CAMERA type not defined.";
+	echo "<br>Please update '" . ALLSKY_CONFIG . "/config.sh'";
+	echo "</div>";
+	exit;
+} else if ($cam == 'auto') {
+	echo "<div style='color: red; font-size: 200%;'>";
+	echo "A CAMERA setting of 'auto' is no longer supported.<br>You must set it to the type of camera you have.";
+	echo "<br>Please update '" . ALLSKY_CONFIG . "/config.sh'";
 	echo "</div>";
 	exit;
 }
+	
+// $img_dir is an alias in the web server's config.
+// It's the same as ALLSKY_HOME which is the physical path name on the server.
+$img_dir = get_variable(ALLSKY_CONFIG . '/config.sh', 'IMG_DIR=', 'current');
 
-define('RASPI_CONFIG', '/etc/raspap');			// xxx will replace with ALLSKY_CONFIG
+define('RASPI_CONFIG', '/etc/raspap');			// xxx will replace with ALLSKY_CONFIG when one big configuration file is implemented
 define('RASPI_CAMERA_SETTINGS', RASPI_CONFIG . '/settings_'.$cam.'.json');
+if (! file_exists(RASPI_CAMERA_SETTINGS)) {
+	echo "<div style='color: red; font-size: 200%;'>";
+	echo "ERROR: Unable to find camera settings file for camera of type '$cam'.";
+	echo "<br>Please check the " . RASPI_CONFIG . " directory.";
+	echo "</div>";
+	exit;
+}
 define('RASPI_CAMERA_OPTIONS', RASPI_CONFIG . '/camera_options_'.$cam.'.json');
 
 $camera_settings_str = file_get_contents(RASPI_CAMERA_SETTINGS, true);
