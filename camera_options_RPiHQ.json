@@ -194,6 +194,19 @@
 "advanced":0
 },
 {
+"name":"temptype",
+"default":"C",
+"description":"Unit(s) to display temperature in.",
+"label":"Temperature Units",
+"type":"select",
+"options": [
+	{"value": "C", "label": "Celcius"},
+	{"value": "F", "label": "Fahrenheit"},
+	{"value": "B", "label": "Both"}
+],
+"advanced":0
+},
+{
 "name":"fontsize",
 "default":"32",
 "description":"Font size 6 - 160, default value 32",
