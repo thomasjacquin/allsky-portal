@@ -83,9 +83,12 @@ function DisplaySystem()
 {
     $camera_settings_str = file_get_contents(RASPI_CAMERA_SETTINGS, true);
     $camera_settings_array = json_decode($camera_settings_str, true);
-    $temp_type = $camera_settings_array['temptype'];
-    if ($temp_type == "") $temp_type = "C";
-
+	if (isset($camera_settings_array['temptype'])) {
+		$temp_type = $camera_settings_array['temptype'];
+		if ($temp_type == "") $temp_type = "C";
+	} else {
+		$temp_type = "C";
+	}
 
     // hostname
     exec("hostname -f", $hostarray);
