@@ -130,7 +130,10 @@ function toggle_advanced()
 				}
 				$label = $option['label'];
 				$name = $option['name'];
-				$default = $option['default'];
+				if (isset($option['default']))
+					$default = $option['default'];
+				else
+					$default = "";
 				$type = $option['type'];
 				if ($type == "header") {
 					$value = "";
