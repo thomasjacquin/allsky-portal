@@ -68,7 +68,7 @@ $camera_settings_str = file_get_contents(RASPI_CAMERA_SETTINGS, true);
 $camera_settings_array = json_decode($camera_settings_str, true);
 // xxx new way:  $image_name = $img_dir . "/" . $camera_settings_array['filename'];
 // old way uses IMG_PREFIX:
-$img_prefix = get_variable(ALLSKY_CONFIG .'/config.sh', 'IMG_PREFIX=', 'liveview-');
+$img_prefix = get_variable(ALLSKY_CONFIG .'/config.sh', 'IMG_PREFIX=', '');
 $image_name = $img_dir . "/" . $img_prefix . $camera_settings_array['filename'];
 
 
