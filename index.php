@@ -25,10 +25,10 @@ define('ALLSKY_IMAGES', ALLSKY_HOME . '/images');	// value updated during instal
 // Newer versions have config.sh in $ALLSKY_CONFIG and don't need autocam.sh since "auto" is no longer a valid CAMERA type.
 // Can't change a constant after it's defined so use temp names first.
 $allsky_config_dir = '/config';		// name of just the directory
-$allsky_config = ALLSKY_HOME . allsky_config_dir;	// value updated during installation
-if (file_exists(ALLSKY_CONFIG . $allsky_config_dir)) {
+$allsky_config = ALLSKY_HOME . $allsky_config_dir;	// value updated during installation
+if (file_exists($allsky_config . $allsky_config_dir)) {
 	define('ALLSKY_CONFIG_DIR', '/config');
-	define('ALLSKY_CONFIG', ALLSKY_HOME . ALLSKY_CONFIG_DIR);
+	define('ALLSKY_CONFIG', ALLSKY_HOME . $allsky_config_dir);
 } else {
 	define('ALLSKY_CONFIG_DIR', '');
 	define('ALLSKY_CONFIG', ALLSKY_HOME);
