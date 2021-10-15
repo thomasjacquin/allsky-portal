@@ -14,7 +14,7 @@ $days = array();
 if (isset($_POST['delete_directory'])) {
 	$dir = $_POST['delete_directory'];
   echo '<div class="alert alert-warning">Deleted directory '.$dir.'</div>';
-  delete_directory(ALLSKY_IMAGES . $dir);
+  delete_directory(ALLSKY_IMAGES . "/" . $dir);
 }
 
 if ($handle = opendir(ALLSKY_IMAGES)) {
