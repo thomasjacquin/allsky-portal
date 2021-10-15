@@ -11,9 +11,12 @@ define('ALLSKY_IMAGES', ALLSKY_HOME . '/images');	// value updated during instal
 // Newer versions have them in $ALLSKY_CONFIG.
 // Look for a variable we know won't be null in the new location;
 // if it's not there, use the old location.
-define('ALLSKY_CONFIG_DIR', '/config');		// name of just the directory
-define('ALLSKY_CONFIG', ALLSKY_HOME . ALLSKY_CONFIG_DIR);	// value updated during installation
-if (get_variable(ALLSKY_CONFIG . '/config.sh', 'CAMERA=', 'NOTFOUND') == "NOTFOUND") {
+$allsky_config_dir = '/config';		// name of just the directory
+$allsky_config = ALLSKY_HOME . allsky_config_dir;	// value updated during installation
+if (file_exists(ALLSKY_CONFIG . $allsky_config_dir)) {
+	define('ALLSKY_CONFIG_DIR', '/config');
+	define('ALLSKY_CONFIG', ALLSKY_HOME . ALLSKY_CONFIG_DIR);
+} else {
 	define('ALLSKY_CONFIG_DIR', '');
 	define('ALLSKY_CONFIG', ALLSKY_HOME);
 }
@@ -27,7 +30,7 @@ $camera_settings_str = file_get_contents(RASPI_CAMERA_SETTINGS, true);
 $camera_settings_array = json_decode($camera_settings_str, true);
 // xxx NEW:  $image_name = $img_dir . "/" . $camera_settings_array['filename'];
 // // old way uses IMG_PREFIX:
-$img_prefix = get_variable(ALLSKY_CONFIG . '/config.sh', 'IMG_PREFIX=', 'liveview-');
+$img_prefix = get_variable(ALLSKY_CONFIG . '/config.sh', 'IMG_PREFIX=', '');
 $image_name = $img_dir . "/" . $img_prefix . $camera_settings_array['filename'];
 
 ?>
