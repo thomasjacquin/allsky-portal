@@ -30,8 +30,14 @@ function DisplayEditor()
                         url: "includes/save_file.php",
                         data: {content:content, path:path},
                         dataType: 'text',
-                        success: function(){
-                            //alert("File saved!");
+                        cache: false,
+                        success: function(data){
+                            if (data != "")
+                                alert(data);
+                            // else alert("File saved!");
+                        },
+                        error: function(XMLHttpRequest, textStatus, errorThrown) {
+                            alert("Unable to save '" + path + ": " + errorThrown);
                         }
                     });
                 }
@@ -40,7 +46,7 @@ function DisplayEditor()
                 }
             });
 
-	$("#script_path").change(function(e) {
+        $("#script_path").change(function(e) {
             $.get(e.currentTarget.value + "?_ts=" + new Date().getTime(), function (data) {
                 console.log(data);
                 editor.getDoc().setValue(data);
@@ -60,7 +66,7 @@ function DisplayEditor()
                     <p><?php $status->showMessages(); ?></p>
                         <div id="editorContainer"></div>
                         <div style="margin-top: 15px;">
-                            <?php
+                 <?php
 						if(isset($showFullList) && $showFullList == "true") {
 							$scripts = array_filter(array_diff(scandir(ALLSKY_SCRIPTS), array('.', '..')), function($item) {
 								return !is_dir(ALLSKY_SCRIPTS.$item);
