@@ -11,7 +11,8 @@ define('ALLSKY_IMAGES', ALLSKY_HOME . '/images');	// value updated during instal
 // Newer versions have them in $ALLSKY_CONFIG.
 // Look for a variable we know won't be null in the new location;
 // if it's not there, use the old location.
-$allsky_config = ALLSKY_HOME . $allsky_config_dir . '/config';	// value updated during installation
+$allsky_config_dir = '/config';
+$allsky_config = ALLSKY_HOME . $allsky_config_dir;	// value updated during installation
 if (file_exists($allsky_config . '/config.sh')) {
 	define('ALLSKY_CONFIG_DIR', '/config');
 	define('ALLSKY_CONFIG', ALLSKY_HOME . ALLSKY_CONFIG_DIR);
