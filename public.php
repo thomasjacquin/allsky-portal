@@ -15,7 +15,7 @@ $allsky_config_dir = '/config';
 $allsky_config = ALLSKY_HOME . $allsky_config_dir;	// value updated during installation
 if (file_exists($allsky_config . '/config.sh')) {
 	define('ALLSKY_CONFIG_DIR', '/config');
-	define('ALLSKY_CONFIG', ALLSKY_HOME . ALLSKY_CONFIG_DIR);
+	define('ALLSKY_CONFIG', $allsky_config);
 } else {
 	define('ALLSKY_CONFIG_DIR', '');
 	define('ALLSKY_CONFIG', ALLSKY_HOME);
