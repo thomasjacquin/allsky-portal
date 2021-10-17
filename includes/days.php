@@ -18,9 +18,8 @@ if (isset($_POST['delete_directory'])) {
 }
 
 if ($handle = opendir(ALLSKY_IMAGES)) {
-    $blacklist = array('.', '..', 'somedir', 'somefile.php');
     while (false !== ($day = readdir($handle))) {
-        if (!in_array($day, $blacklist)) {
+        if (preg_match('/^(2\d{7}|test\w+)$/', $day)) {
             $days[] = $day;
         }
     }
