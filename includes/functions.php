@@ -489,9 +489,8 @@ function ListFileType($dir, $imageFileName, $formalImageTypeName, $type) {	// if
 	echo "<div class='row'>\n";
 	if ($chosen_day === 'All'){
 		if ($handle = opendir(ALLSKY_IMAGES)) {
-		    $blacklist = array('.', '..', 'somedir', 'somefile.php');
 		    while (false !== ($day = readdir($handle))) {
-		        if (!in_array($day, $blacklist)) {
+		        if (preg_match('/^2\d{7}$/', $day)) {
 		            $days[] = $day;
 			    $num += 1;
 		        }
