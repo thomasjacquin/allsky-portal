@@ -490,7 +490,7 @@ function ListFileType($dir, $imageFileName, $formalImageTypeName, $type) {	// if
 	if ($chosen_day === 'All'){
 		if ($handle = opendir(ALLSKY_IMAGES)) {
 		    while (false !== ($day = readdir($handle))) {
-		        if (preg_match('/^(2\d{7}|test\w+)$/', $day)) {
+		        if (preg_match('/^(2\d{7}|test\w*)$/', $day)) {
 		            $days[] = $day;
 			    $num += 1;
 		        }

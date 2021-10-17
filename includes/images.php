@@ -8,10 +8,9 @@ $num = 0;	// Keep track of count so we can tell user when no files exist.
 
 
 if ($handle = opendir(ALLSKY_IMAGES . '/'.$chosen_day)) {
-    $blacklist = array('.', '..', '*.mp4', 'startrails', 'keogram', 'thumbnails');
     while (false !== ($image = readdir($handle))) {
 	$ext = explode(".",$image);
-        if (!in_array($image, $blacklist) && $ext[1]!='mp4') {
+        if (preg_match('/^\w+-\d{14}[.](jpe?g|png)$/i', $image)){
             $images[] = $image;
 	    $num += 1;
         }
