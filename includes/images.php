@@ -50,7 +50,7 @@ function getTimeStamp(url)
 	var hour = timeStamp.substring(8, 10);
 	var minute = timeStamp.substring(10, 12);
 	var seconds = timeStamp.substring(12, 14);
-	var date = new Date(year, month, day, hour, minute, seconds, 0);
+	var date = new Date(year, month-1, day, hour, minute, seconds, 0);
 	return date.toDateString() + " @ " + hour + ":"+minute + ":"+seconds;
 }
 </script>
