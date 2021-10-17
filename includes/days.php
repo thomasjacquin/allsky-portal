@@ -19,7 +19,7 @@ if (isset($_POST['delete_directory'])) {
 
 if ($handle = opendir(ALLSKY_IMAGES)) {
     while (false !== ($day = readdir($handle))) {
-        if (preg_match('/^2\d{7}$/', $day)) {
+        if (preg_match('/^(2\d{7}|test\w+)$/', $day)) {
             $days[] = $day;
         }
     }
