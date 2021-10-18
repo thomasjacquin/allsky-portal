@@ -5,8 +5,14 @@ function delete_directory($dirname) {
 	$output = null;
 	$retval = null;
 	exec("sudo rm -r '$dirname' 2>&1", $output, $retval);
-	if ($output[0] == "" && $retval != 0)
-		$output[0] = "Unknown error, retval=$retval.";
+	if ($output == null) {
+		if ($retval != 0)
+			$output = "Unknown error, retval=$retval.";
+		else
+			$output = "";
+	} else {
+		$output = $output[0];	// exec() return output as an array
+	}
 	return $output;
 }
 
@@ -16,11 +22,10 @@ function ListDays(){
 	if (isset($_POST['delete_directory'])) {
 		$date = $_POST['delete_directory'];
 		$msg = delete_directory(ALLSKY_IMAGES . "/$date");
-		$m = $msg[0];
-		if ($m == "") {
+		if ($msg == "") {
 			echo "<div class='alert alert-success'>Deleted directory $date</div>";
 		} else {
-			echo "<div class='alert alert-danger'><b>Unable to delete directory for $date</b>: $m</div>";
+			echo "<div class='alert alert-danger'><b>Unable to delete directory for $date</b>: $msg</div>";
 		}
 	}
 
