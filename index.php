@@ -14,62 +14,11 @@
  * @link       https://github.com/thomasjacquin/allsky-portal
  */
 
-include_once('includes/functions.php');		// needs to be at top for get_variable()
+// functions.php sets a bunch of constants and variables.
+// It needs to be at the top of this file since code below uses the items it sets.
+include_once('includes/functions.php');
 
-define('ALLSKY_HOME', '/home/pi/allsky');			// value updated during installation
-define('ALLSKY_SCRIPTS', ALLSKY_HOME . '/scripts');	// value updated during installation
-define('ALLSKY_IMAGES', ALLSKY_HOME . '/images');	// value updated during installation
-
-// xxx COMPATIBILITY CHECK:
-// Version 0.8 and older of allsky had config.sh and autocam.sh in $ALLSKY_HOME.
-// Newer versions have config.sh in $ALLSKY_CONFIG and don't need autocam.sh since "auto" is no longer a valid CAMERA type.
-// Can't change a constant after it's defined so use temp names first.
-$allsky_config_dir = '/config';
-$allsky_config = ALLSKY_HOME . $allsky_config_dir;	// value updated during installation
-if (file_exists($allsky_config . '/config.sh')) {
-	define('ALLSKY_CONFIG_DIR', '/config');			// name of just the directory
-	define('ALLSKY_CONFIG', $allsky_config);
-} else {
-	define('ALLSKY_CONFIG_DIR', '');
-	define('ALLSKY_CONFIG', ALLSKY_HOME);
-}
-
-$cam = get_variable(ALLSKY_CONFIG .'/config.sh', 'CAMERA=', '');
-if ($cam == '') {
-	echo "<div style='color: red; font-size: 200%;'>";
-	echo "CAMERA type not defined.";
-	echo "<br>Please update '" . ALLSKY_CONFIG . "/config.sh'";
-	echo "</div>";
-	exit;
-} else if ($cam == 'auto') {
-	echo "<div style='color: red; font-size: 200%;'>";
-	echo "A CAMERA setting of 'auto' is no longer supported.<br>You must set it to the type of camera you have.";
-	echo "<br>Please update '" . ALLSKY_CONFIG . "/config.sh'";
-	echo "</div>";
-	exit;
-}
-	
-// $img_dir is an alias in the web server's config.
-// It's the same as ALLSKY_HOME which is the physical path name on the server.
-$img_dir = get_variable(ALLSKY_CONFIG . '/config.sh', 'IMG_DIR=', 'current');
-
-define('RASPI_CONFIG', '/etc/raspap');			// xxx will replace with ALLSKY_CONFIG when one big configuration file is implemented
-define('RASPI_CAMERA_SETTINGS', RASPI_CONFIG . '/settings_'.$cam.'.json');
-if (! file_exists(RASPI_CAMERA_SETTINGS)) {
-	echo "<div style='color: red; font-size: 200%;'>";
-	echo "ERROR: Unable to find camera settings file for camera of type '$cam'.";
-	echo "<br>Please check the " . RASPI_CONFIG . " directory.";
-	echo "</div>";
-	exit;
-}
 define('RASPI_CAMERA_OPTIONS', RASPI_CONFIG . '/camera_options_'.$cam.'.json');
-
-$camera_settings_str = file_get_contents(RASPI_CAMERA_SETTINGS, true);
-$camera_settings_array = json_decode($camera_settings_str, true);
-// xxx new way:  $image_name = $img_dir . "/" . $camera_settings_array['filename'];
-// old way uses IMG_PREFIX:
-$img_prefix = get_variable(ALLSKY_CONFIG .'/config.sh', 'IMG_PREFIX=', '');
-$image_name = $img_dir . "/" . $img_prefix . $camera_settings_array['filename'];
 
 
 // Constants for configuration file paths.
@@ -131,7 +80,7 @@ $csrf_token = $_SESSION['csrf_token'];
     <meta name="description" content="">
     <meta name="author" content="Thomas Jacquin">
 
-    <title>AllSky Admin Panel</title>
+    <title>AllSky WebUI</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -310,7 +259,7 @@ $csrf_token = $_SESSION['csrf_token'];
 
                 switch ($page) {
                     case "live_view":
-                        DisplayLiveView("$image_name");
+                        DisplayLiveView("$image_name", $delay, $daydelay, $nightdelay, $darkframe);
                         break;
                     case "wlan0_info":
                         DisplayDashboard();
@@ -352,7 +301,7 @@ $csrf_token = $_SESSION['csrf_token'];
                         DisplayEditor();
                         break;
                     default:
-                        DisplayLiveView("$image_name");
+                        DisplayLiveView("$image_name", $delay, $daydelay, $nightdelay, $darkframe);
                 }
                 ?>
             </div>
