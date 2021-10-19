@@ -1,6 +1,124 @@
 <?php
 
 /**
+ *
+ * This code is executed outside of a function and is needed by index.php and public.php.
+ * It's centralized in this file to make it easier to maintain.
+ *
+*/
+
+//FUTURE define('ALLSKY_CONFIG_DIR', '/config');		// name of directory only.
+
+// These values are updated during installation.
+define('ALLSKY_HOME',    'XX_ALLSKY_HOME_XX');
+define('ALLSKY_SCRIPTS', 'XX_ALLSKY_SCRIPTS_XX');
+define('ALLSKY_IMAGES',  'XX_ALLSKY_IMAGES_XX');
+//FUTURE define('ALLSKY_CONFIG',  'XX_ALLSKY_CONFIG_XX');
+define('RASPI_CONFIG',   'XX_RASPI_CONFIG_XX');
+
+if (ALLSKY_HOME == "XX_ALLSKY_HOME_XX") {
+	// This file hasn't been updated yet after installation.
+	echo "<div style='font-size: 200%;'>";
+	echo "<span style='color: red'>";
+	echo "Please run the following from the 'allsky' directory before using the WebUI:";
+	echo "</span>";
+	echo "<br> &nbsp; &nbsp; &nbsp; sudo gui/install --update";
+	echo "</div>";
+	exit;
+}
+
+// xxx COMPATIBILITY CHECK:
+// Version 0.8 and older of allsky had config.sh and autocam.sh in $ALLSKY_HOME.
+// Newer versions have config.sh in $ALLSKY_CONFIG and don't need autocam.sh since "auto" is no longer a valid CAMERA type.
+// Can't change a constant after it's defined so use temp names first.
+$allsky_config_dir = '/config';
+$allsky_config = ALLSKY_HOME . $allsky_config_dir;	// value updated during installation
+if (file_exists($allsky_config . '/config.sh')) {
+	define('ALLSKY_CONFIG_DIR', '/config');			// name of just the directory
+	define('ALLSKY_CONFIG', $allsky_config);
+} else {
+	define('ALLSKY_CONFIG_DIR', '');
+	define('ALLSKY_CONFIG', ALLSKY_HOME);
+}
+
+$cam = get_variable(ALLSKY_CONFIG .'/config.sh', 'CAMERA=', '');
+if ($cam == '') {
+	echo "<div style='color: red; font-size: 200%;'>";
+	echo "CAMERA type not defined.";
+	echo "<br>Please update '" . ALLSKY_CONFIG . "/config.sh'";
+	echo "</div>";
+	exit;
+} else if ($cam == 'auto') {
+	echo "<div style='color: red; font-size: 200%;'>";
+	echo "A CAMERA setting of 'auto' is no longer supported.<br>You must set it to the type of camera you have.";
+	echo "<br>Please update '" . ALLSKY_CONFIG . "/config.sh'";
+	echo "</div>";
+	exit;
+}
+
+define('RASPI_CAMERA_SETTINGS', RASPI_CONFIG . '/settings_'.$cam.'.json');
+if (! file_exists(RASPI_CAMERA_SETTINGS)) {
+	echo "<div style='color: red; font-size: 200%;'>";
+	echo "ERROR: Unable to find camera settings file for camera of type '$cam'.";
+	echo "<br>Please check the " . RASPI_CONFIG . " directory for 'settings_$cam.json'.";
+	echo "</div>";
+	exit;
+}
+
+$camera_settings_str = file_get_contents(RASPI_CAMERA_SETTINGS, true);
+$camera_settings_array = json_decode($camera_settings_str, true);
+// $img_dir is an alias in the web server's config.
+// It's the same as ALLSKY_HOME which is the physical path name on the server.
+$img_dir = get_variable(ALLSKY_CONFIG . '/config.sh', 'IMG_DIR=', 'current');
+// xxx new way:  $image_name = $img_dir . "/" . $camera_settings_array['filename'];
+// old way uses IMG_PREFIX:
+$img_prefix = get_variable(ALLSKY_CONFIG .'/config.sh', 'IMG_PREFIX=', '');
+$image_name = $img_dir . "/" . $img_prefix . $camera_settings_array['filename'];
+$darkframe = $camera_settings_array['darkframe'];
+
+
+////////////////// Determine delay between refreshes of the image.
+// Determine if it's day or night so we know which delay to use.
+// The time between daylight exposures is (daydelay + dayexposure).
+$daydelay = $camera_settings_array["daydelay"] + $camera_settings_array["dayexposure"];
+
+// The time between night exposures is (nightdelay + nightmaxexposure).
+// Both can be large numbers so use both.
+if (isset($camera_settings_array['nightmaxexposure']))	// not defined for RPiHQ cameras
+	$x = $camera_settings_array['nightmaxexposure'];
+else
+	$x = $camera_settings_array['nightexposure'];
+$nightdelay = $camera_settings_array["nightdelay"] + $x;
+
+$angle = $camera_settings_array['angle'];
+$lat = $camera_settings_array['latitude'];
+$lon = $camera_settings_array['longitude'];
+exec("sunwait poll exit set angle $angle $lat $lon", $return);
+if ($return[0] == 'DAY') {
+	$delay = $daydelay;
+} else {
+	$delay = $nightdelay;
+}
+// Divide by 2 to lessen the delay between a new picture and when we check.
+$delay /= 2;
+
+// Convert to seconds for display.
+$daydelay /= 1000;
+$nightdelay /= 1000;
+
+
+/**
+*
+* Is this a valid directory name?
+* This helps keep us from displaying and deleting invalid directories.
+* Example directory: 20210710.  They should start with "2" for the 2000's.
+*
+*/
+function is_valid_directory($directory_name) {
+	return preg_match('/^(2\d{7}|test\w*)$/', basename($directory_name));
+}
+
+/**
 *
 * Add CSRF Token to form
 *
@@ -490,10 +608,10 @@ function ListFileType($dir, $imageFileName, $formalImageTypeName, $type) {	// if
 	if ($chosen_day === 'All'){
 		if ($handle = opendir(ALLSKY_IMAGES)) {
 		    while (false !== ($day = readdir($handle))) {
-		        if (preg_match('/^(2\d{7}|test\w*)$/', $day)) {
-		            $days[] = $day;
-			    $num += 1;
-		        }
+				if (is_valid_directory($day)) {
+					$days[] = $day;
+					$num += 1;
+				}
 		    }
 		    closedir($handle);
 		}
