@@ -5,7 +5,7 @@ function ListImages(){
 $images = array();
 $chosen_day = $_GET['day'];
 $num = 0;	// Keep track of count so we can tell user when no files exist.
-
+$nav_images_max = 50;	// hide the navigation bar if more than this number of images are displayed.
 
 if ($handle = opendir(ALLSKY_IMAGES . '/'.$chosen_day)) {
     while (false !== ($image = readdir($handle))) {
@@ -28,14 +28,15 @@ if ($num > 0) asort($images);
 
 <script>
 $( document ).ready(function() {
-        $('#images').viewer({
+	$('#images').viewer({
 		url(image) {
-                	return image.src.replace('/thumbnails', '/');
-        	},
+			return image.src.replace('/thumbnails', '/');
+		},
+		<?php if ($num > $nav_images_max) echo "navbar: 0,"; // if there are a lot of images it takes forever to display the navbar. ?>
 		transition: false
 	});
-        $('.thumb').each(function(){		
-			this.title=getTimeStamp(this.src);
+	$('.thumb').each(function(){		
+		this.title=getTimeStamp(this.src);
 	});
 });
 

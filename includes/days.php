@@ -1,10 +1,15 @@
 <?php
 
-function delete_directory($dirname) {
+function delete_directory($directory_name) {
+	// First make sure this is a valid directory.
+	if (! is_valid_directory($directory_name)) {
+		return "Invalid directory name.";
+	}
+
 	// If there is any output it's from an error message.
 	$output = null;
 	$retval = null;
-	exec("sudo rm -r '$dirname' 2>&1", $output, $retval);
+	exec("sudo rm -r '$directory_name' 2>&1", $output, $retval);
 	if ($output == null) {
 		if ($retval != 0)
 			$output = "Unknown error, retval=$retval.";
@@ -31,7 +36,7 @@ function ListDays(){
 
 	if ($handle = opendir(ALLSKY_IMAGES)) {
 		while (false !== ($day = readdir($handle))) {
-			if (preg_match('/^(2\d{7}|test\w*)$/', $day)) {
+			if (is_valid_directory($day)) {
 				$days[] = $day;
 			}
 		}
