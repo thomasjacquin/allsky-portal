@@ -72,9 +72,10 @@ function DisplayEditor()
 						$scripts = null;
 						if(isset($showFullList) && $showFullList == "true") {
 							$scripts = array_filter(array_diff(scandir(ALLSKY_SCRIPTS), array('.', '..')), function($item) {
-								return !is_dir(ALLSKY_SCRIPTS.$item);
+								// Anything OTHER than a directory is valid.
+								return !is_dir(ALLSKY_SCRIPTS . "/" . $item);
 							});
-						} else if (file_exists(ALLSKY_SCRIPTS . "endOfNight_additionalSteps.sh")) {
+						} else if (file_exists(ALLSKY_SCRIPTS . "/endOfNight_additionalSteps.sh")) {
 							$scripts[0] = "endOfNight_additionalSteps.sh";
 						}
 			    ?>
