@@ -1,32 +1,49 @@
 <?php
 
-function delete_directory($dirname) {
-	error_log("deleting image directory: rm -rf ".$dirname."/");
-	$result=system("sudo rm -rf ".$dirname);
-        error_log($result);
-	return true;
+function delete_directory($directory_name) {
+	// First make sure this is a valid directory.
+	if (! is_valid_directory($directory_name)) {
+		return "Invalid directory name.";
+	}
+
+	// If there is any output it's from an error message.
+	$output = null;
+	$retval = null;
+	exec("sudo rm -r '$directory_name' 2>&1", $output, $retval);
+	if ($output == null) {
+		if ($retval != 0)
+			$output = "Unknown error, retval=$retval.";
+		else
+			$output = "";
+	} else {
+		$output = $output[0];	// exec() return output as an array
+	}
+	return $output;
 }
 
 function ListDays(){
+	$days = array();
 
-$days = array();
+	if (isset($_POST['delete_directory'])) {
+		$date = $_POST['delete_directory'];
+		$msg = delete_directory(ALLSKY_IMAGES . "/$date");
+		if ($msg == "") {
+			echo "<div class='alert alert-success'>Deleted directory $date</div>";
+		} else {
+			echo "<div class='alert alert-danger'><b>Unable to delete directory for $date</b>: $msg</div>";
+		}
+	}
 
-if (isset($_POST['delete_directory'])) {
-	$dir = $_POST['delete_directory'];
-  echo '<div class="alert alert-warning">Deleted directory '.$dir.'</div>';
-  delete_directory(ALLSKY_IMAGES . "/" . $dir);
-}
+	if ($handle = opendir(ALLSKY_IMAGES)) {
+		while (false !== ($day = readdir($handle))) {
+			if (is_valid_directory($day)) {
+				$days[] = $day;
+			}
+		}
+		closedir($handle);
+	}
 
-if ($handle = opendir(ALLSKY_IMAGES)) {
-    while (false !== ($day = readdir($handle))) {
-        if (preg_match('/^(2\d{7}|test\w*)$/', $day)) {
-            $days[] = $day;
-        }
-    }
-    closedir($handle);
-}
-
-arsort($days);
+	arsort($days);
 
 ?>
 <style>
