@@ -536,9 +536,9 @@ function ListFileType($dir, $imageFileName, $formalImageTypeName, $type) {	// if
 						}
 			  		}
 				}
-				if ($num == 0) {
-					echo "<span class='alert-warning'>There are no $formalImageTypeName.</span>";
-				}
+			}
+			if ($num == 0) {
+				echo "<span class='alert-warning'>There are no $formalImageTypeName.</span>";
 			}
 		}
 	} else {
