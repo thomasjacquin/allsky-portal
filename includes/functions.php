@@ -22,7 +22,7 @@ if (ALLSKY_HOME == "XX_ALLSKY_HOME_XX") {
 	echo "<span style='color: red'>";
 	echo "Please run the following from the 'allsky' directory before using the WebUI:";
 	echo "</span>";
-	echo "<br> &nbsp; &nbsp; &nbsp; sudo gui/install --update";
+	echo "<code>   sudo gui/install --update</code>";
 	echo "</div>";
 	exit;
 }
@@ -109,8 +109,9 @@ $nightdelay /= 1000;
 
 /**
 *
-* Is this a valid directory name?
-* This helps keep us from displaying and deleting invalid directories.
+* We need to make sure we're only trying to display and delete image directories, not ones like /etc.
+* In this case "valid" means it's an image directory.
+* We allow "test*" in case the user created a directory for testing.
 * Example directory: 20210710.  They should start with "2" for the 2000's.
 *
 */
