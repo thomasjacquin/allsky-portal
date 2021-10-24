@@ -17,7 +17,7 @@ function DisplayCameraConfig(){
 						$settings[$key] = $value;
 					}
 				}
-				fwrite($camera_settings_file, json_encode($settings));
+				fwrite($camera_settings_file, json_encode($settings, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES));
 				fclose($camera_settings_file);
 				$msg = "Camera settings saved";
 				if (isset($_POST['restart'])) {
@@ -45,7 +45,7 @@ function DisplayCameraConfig(){
 					$value = $option['default'];
 					$settings[$key] = $value;
 				}
-				fwrite($camera_settings_file, json_encode($settings));
+				fwrite($camera_settings_file, json_encode($settings,JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES|JSON_NUMERIC_CHECK));
 				fclose($camera_settings_file);
 				$status->addMessage('Camera settings reset to default');
 			} else {
