@@ -6,11 +6,13 @@ $images = array();
 $chosen_day = $_GET['day'];
 $num = 0;	// Keep track of count so we can tell user when no files exist.
 $nav_images_max = 50;	// hide the navigation bar if more than this number of images are displayed.
+$dir = ALLSKY_IMAGES . "/$chosen_day";
 
-if ($handle = opendir(ALLSKY_IMAGES . '/'.$chosen_day)) {
+if ($handle = opendir($dir)) {
     while (false !== ($image = readdir($handle))) {
 	$ext = explode(".",$image);
-        if (preg_match('/^\w+-\d{14}[.](jpe?g|png)$/i', $image)){
+		// Allow "image-YYYYMMDDHHMMSS.jpg" and "image-resized-YYYYMMDDHHMMSS.jpg"
+        if (preg_match('/^\w+-.*\d{14}[.](jpe?g|png)$/i', $image)){
             $images[] = $image;
 	    $num += 1;
         }
@@ -32,18 +34,21 @@ $( document ).ready(function() {
 		url(image) {
 			return image.src.replace('/thumbnails', '/');
 		},
-		<?php if ($num > $nav_images_max) echo "navbar: 0,"; // if there are a lot of images it takes forever to display the navbar. ?>
+		<?php
+			// if there are a lot of images it takes forever to display the navbar.
+			if ($num > $nav_images_max) echo "navbar: 0,";
+		?>
 		transition: false
 	});
 	$('.thumb').each(function(){		
-		this.title=getTimeStamp(this.src);
+		this.title = this.title + "\n" + getTimeStamp(this.src);
 	});
 });
 
 function getTimeStamp(url)
 {
-	var filename = url.substring(url.lastIndexOf('/')+1);
-	var timeStamp = filename.substring(6);
+	var filename = url.substring(url.lastIndexOf('/')+1);			// everything after the last "/"
+	var timeStamp = filename.substr(filename.lastIndexOf('-')+1);	// everything after the last "-"
 	var year = timeStamp.substring(0, 4);
 	var month = timeStamp.substring(4, 6);
 	var day = timeStamp.substring(6, 8);
@@ -62,14 +67,15 @@ echo "<h2>$chosen_day</h2>
 echo "<div id='images'>";
 if ($num == 0) {
 	echo "<span class='alert-warning'>There are no images for this day.</span>";
+	echo "<br>Check <b>$dir</b>";
 } else {
 	foreach ($images as $image) {
 		echo "<div style='float: left'>";
-		if(file_exists(ALLSKY_IMAGES . "/$chosen_day/thumbnails/$image"))
+		if(file_exists("$dir/thumbnails/$image"))
 			// "/images" is an alias for ALLSKY_IMAGES in lighttpd
 			echo "<img src='/images/$chosen_day/thumbnails/$image' style='width: 100px;' title='$image' class='thumb'/>";
 		else
-			echo "<img src='/images/$chosen_day/$image' style='width: 100px;'/>";
+			echo "<img src='/images/$chosen_day/$image' style='width: 100px;'  title='$image' class='thumb'/>";
 		echo "</a>";
 		echo "</div>";
 	}
@@ -77,6 +83,6 @@ if ($num == 0) {
 ?>
 	</div>
   </div>
-  <?php 
+<?php 
 }
 ?>
