@@ -626,29 +626,26 @@ function ListFileType($dir, $imageFileName, $formalImageTypeName, $type) {	// if
 			foreach ($days as $day) {
 				$imageTypes = array();
 				foreach (glob(ALLSKY_IMAGES . "/$day/$dir$imageFileName-$day.*") as $imageType) {
-					foreach (glob(ALLSKY_IMAGES . "/$day/$dir$imageFileName-$day.*") as $imageType) {
-						$imageTypes[] = $imageType;
-						$num += 1;
-					}
+					$imageTypes[] = $imageType;
+					$num += 1;
+					echo "<br>&nbsp;"; // to separate images
 					foreach ($imageTypes as $imageType) {
 						$imageType_name = basename($imageType);
 						$fullFilename = "$images_dir/$day/$dir$imageType_name";
 						if ($type == "picture") {
 							echo "<a href='$fullFilename'>";
 							echo "<div style='float: left; width: 100%; margin-bottom: 2px;'>";
-								echo "<label>$day</label>";
+							echo "<label>$day</label>";
 							echo "<img src='$fullFilename' style='margin-left: 10px; max-width: 50%; max-height:100px'/>";
 							echo "</div></a>\n";
-							} else {	// video
-							// echo "<video width='640' height='480' controls>
-							// xxxx Would be nice to show a thumbnail since loading all the videos
-							// is bandwidth intensive.  How do you make a thumbnail from a video?
+						} else {	// is video
+							// xxxx TODO: Show a thumbnail since loading all the videos is bandwidth intensive.
 							echo "<a href='$fullFilename'>";
 							echo "<div style='float: left; width: 100%; margin-bottom: 2px;'>";
 							echo "<label style='vertical-align: middle'>$day &nbsp; &nbsp;</label>";
 							echo "<video width='85%' height='85%' controls style='vertical-align: middle'>";
 							echo "<source src='$fullFilename' type='video/mp4'>";
-								echo "<source src='movie.ogg' type='video/ogg'>";
+							echo "<source src='movie.ogg' type='video/ogg'>";
 							echo "Your browser does not support the video tag.";
 							echo "/video>";
 							echo "/div></a>\n";
