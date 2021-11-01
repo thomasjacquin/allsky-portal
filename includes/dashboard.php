@@ -65,6 +65,7 @@ function DisplayDashboard(){
     $wlan0up = true;
   } else {
     $status->addMessage('Interface is down', 'warning');
+    $wlan0up = false;
   }
 
   if( isset($_POST['ifdown_wlan0']) ) {
@@ -115,7 +116,7 @@ function DisplayDashboard(){
           <div class="info-item">Connected To</div>   <?php echo $strSSID ?></br>
           <div class="info-item">AP Mac Address</div> <?php echo $strBSSID ?></br>
           <div class="info-item">Bitrate</div>        <?php echo $strBitrate ?></br>
-          <div class="info-item">Signal Level</div>        <?php echo $strSignalLevel ?></br>
+          <div class="info-item">Signal Level</div>   <?php echo $strSignalLevel ?></br>
           <div class="info-item">Transmit Power</div> <?php echo $strTxPower ?></br>
           <div class="info-item">Frequency</div>      <?php echo $strFrequency ?></br></br>
           <div class="info-item">Link Quality</div>
