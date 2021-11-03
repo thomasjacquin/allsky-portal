@@ -647,8 +647,8 @@ function ListFileType($dir, $imageFileName, $formalImageTypeName, $type) {	// if
 							echo "<source src='$fullFilename' type='video/mp4'>";
 							echo "<source src='movie.ogg' type='video/ogg'>";
 							echo "Your browser does not support the video tag.";
-							echo "/video>";
-							echo "/div></a>\n";
+							echo "</video>";
+							echo "</div></a>\n";
 						}
 			  		}
 				}
