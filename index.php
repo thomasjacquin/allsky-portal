@@ -99,6 +99,10 @@ $csrf_token = $_SESSION['csrf_token'];
     			right: 0px;
 			opacity: .6;
 		}
+		/* used in system.php */
+		.progress-bar {color: black;}
+		.x {line-height: 150%;}
+		@media (min-width: 992px) {.col-md-6 { width: 75%; }}
 	</style>
     <!-- MetisMenu CSS -->
     <link href="bower_components/metisMenu/dist/metisMenu.min.css" rel="stylesheet">
