@@ -150,7 +150,9 @@ function DisplaySystem()
 	// Throttle / undervoltage status
 	$x = exec("sudo vcgencmd get_throttled 2>&1");	// Output: throttled=0x12345...
 	if (preg_match("/^throttled=/", $x) == false) {
-			$throttle_status="<div class='progress-bar-danger' style='overflow: hidden'>Not able to get throttle status:<br>$x</div>";
+			$throttle_status="<div class='progress-bar-danger' style='overflow: hidden'>Not able to get throttle status:<br>$x";
+			$throttle_status = $throttle_status . "<br><span style='font-size: 150%'>Run 'sudo ~/allsky/gui/install.sh --update' to try and resolve.</style>";
+			$throttle_status = $throttle_status . "</div>";
 	} else {
 		$x = explode("x", $x);	// Output: throttled=0x12345...
 //FOR TESTING: $x[1] = "50001";
