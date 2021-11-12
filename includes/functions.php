@@ -16,7 +16,7 @@ define('ALLSKY_IMAGES',  'XX_ALLSKY_IMAGES_XX');
 //FUTURE define('ALLSKY_CONFIG',  'XX_ALLSKY_CONFIG_XX');
 define('RASPI_CONFIG',   'XX_RASPI_CONFIG_XX');
 
-i// Split the placeholder so it doesn't get replaced if the update script is run multiple times.
+// Split the placeholder so it doesn't get replaced if the update script is run multiple times.
 if (ALLSKY_HOME == "XX_ALLSKY_HOME" . "_XX") {
 	// This file hasn't been updated yet after installation.
 	echo "<div style='font-size: 200%;'>";
