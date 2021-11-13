@@ -147,17 +147,59 @@ function DisplaySystem()
     $du = formatSize($du);
     $dt = formatSize($dt);
 
+	// Throttle / undervoltage status
+	$x = exec("sudo vcgencmd get_throttled 2>&1");	// Output: throttled=0x12345...
+	if (preg_match("/^throttled=/", $x) == false) {
+			$throttle_status="<div class='progress-bar-danger' style='overflow: hidden'>Not able to get throttle status:<br>$x";
+			$throttle_status = $throttle_status . "<br><span style='font-size: 150%'>Run 'sudo ~/allsky/gui/install.sh --update' to try and resolve.</style>";
+			$throttle_status = $throttle_status . "</div>";
+	} else {
+		$x = explode("x", $x);	// Output: throttled=0x12345...
+//FOR TESTING: $x[1] = "50001";
+		if ($x[1] == "0") {
+				$throttle_status="<div class='progress-bar-success'>No throttling</div>";
+		} else {
+			$bits = base_convert($x[1], 16, 2);	// convert hex to bits
+			// See https://www.raspberrypi.com/documentation/computers/os.html#vcgencmd
+			$messages = array(
+				0 => 'Currently under-voltage',
+				1 => 'ARM frequency currently capped',
+				2 => 'Currently throttled',
+				3 => 'Soft temperature limit currently active',
+
+				16 => 'Under-voltage has occurred since last reboot.',
+				17 => 'Throttling has occurred since last reboot.',
+				18 => 'ARM frequency capped has occurred since last reboot.',
+				19 => 'Soft temperature limit has occurred'
+			);
+			$l = strlen($bits);
+//echo "<br>bits=$bits, strlen=$l";
+			$s = "warning";
+			$throttle_status = "";
+		// bit 0 is the rightmost bit
+			for ($pos=0; $pos<$l; $pos++) {
+				$i = $l - $pos - 1;
+				$bit = $bits[$i];
+//echo "<br>pos=$pos, lookin at bit $i, is $bit";
+				if ($bit == 0) continue;
+				if (array_key_exists($pos, $messages)) {
+//echo "<br>Found, = " . $messages[$pos];
+                	if ($throttle_status == "") {
+                    	$throttle_status = $messages[$pos];
+					} else {
+				    	$throttle_status = $throttle_status . "<br>" . $messages[$pos];
+                	}
+					if ($pos <=3) $s = "danger"; // current issues are a danger; prior a warning
+				}
+			}
+			$throttle_status = "<div class='progress-bar-$s' style='overflow: hidden'>" . $throttle_status . "</div>";
+		}
+	}
 
     // cpu load
-if (0) {	// this method can give > 100%, but either way, refreshing the browser causes a spike in CPU which throws off our number.
-    $cores = exec("grep -c ^processor /proc/cpuinfo");
-    $loadavg = exec("awk '{print $1}' /proc/loadavg");
-    $cpuload = floor(($loadavg * 100) / $cores);
-} else {
     $secs = 2; $q = '"';
     $cpuload = exec("(grep -m 1 'cpu ' /proc/stat; sleep $secs; grep -m 1 'cpu ' /proc/stat) | awk '{u=$2+$4; t=$2+$4+$5; if (NR==1){u1=u; t1=t;} else printf($q%.0f$q, (($2+$4-u1) * 100 / (t-t1))); }'");
     if ($cpuload < 0 || $cpuload > 100) echo "<p style='color: red; font-size: 125%;'>Invalid cpuload value: $cpuload</p>";
-}
     if ($cpuload > 90 || $cpuload < 0) {
         $cpuload_status = "danger";
     } elseif ($cpuload > 75) {
@@ -183,17 +225,17 @@ if (0) {	// this method can give > 100%, but either way, refreshing the browser 
 
     // fan speed.  Should probably put the path in config.sh...
     $fan_data = "/home/pi/fan/fandata.txt";
-    if (file_exists($fan_data)) {	// fanspeed is $1, we want percent
-        $fanpercent = exec("awk '{print $2}' ".$fan_data);
-        if ($fanpercent >= 90) {
+    if (file_exists($fan_data)) {	// fanspeed is $1, we want percent which is $2
+        $fan = exec("awk '{print $2}' ".$fan_data);
+        if ($fan >= 90) {
 	        $fan_status = "danger";
-        } elseif ($fanpercent >= 75) {
+        } elseif ($fan >= 75) {
 	        $fan_status = "warning";
         } else {
 	        $fan_status = "success";
         }
     } else {
-        $fanpercent = "";
+        $fan = "";
     }
 
     // disk usage
@@ -204,7 +246,6 @@ if (0) {	// this method can give > 100%, but either way, refreshing the browser 
     } else {
         $disk_usage_status = "success";
     }
-
     ?>
     <div class="row">
         <div class="col-lg-12">
@@ -236,59 +277,55 @@ if (0) {	// this method can give > 100%, but either way, refreshing the browser 
                             <div class="panel panel-default">
                                 <div class="panel-body">
                                     <h4>System Information</h4>
-                                    <div class="info-item">Hostname</div>
-                                    <?php echo $hostname ?></br>
-                                    <div class="info-item">Pi Revision</div>
-                                    <?php echo RPiVersion() ?></br>
-                                    <div class="info-item">Uptime</div>
-                                    <?php echo $uptime ?></br>
-				    <div class="info-item">SD Card</div>
-                                    <?php echo "$dt ($df free)" ?></br></br>
-                                    <div class="info-item">Memory Used</div>
-                                    <div class="progress">
-                                        <div class="progress-bar progress-bar-<?php echo $memused_status ?> ECCprogress-bar-striped active"
-                                             role="progressbar"
-                                             aria-valuenow="<?php echo $memused ?>" aria-valuemin="0"
-                                             aria-valuemax="100"
-                                             style="width: <?php echo $memused ?>%;"><?php echo $memused ?>%
-                                        </div>
-                                    </div>
-                                    <div class="info-item">CPU Load</div>
-                                    <div class="progress">
-                                        <div class="progress-bar progress-bar-<?php echo $cpuload_status ?> ECCprogress-bar-striped active"
-                                             role="progressbar"
-                                             aria-valuenow="<?php echo $cpuload ?>" aria-valuemin="0"
-                                             aria-valuemax="100"
-                                             style="width: <?php echo $cpuload ?>%;"><?php echo $cpuload ?>%
-                                        </div>
-                                    </div>
-                                    <div class="info-item">CPU Temperature</div>
-                                    <div class="progress">
-                                        <div class="progress-bar progress-bar-<?php echo $temperature_status ?> ECCprogress-bar-striped active"
-                                             role="progressbar"
-                                             aria-valuenow="<?php echo $temperature ?>" aria-valuemin="0"
-                                             aria-valuemax="100"
-                                             style="width: <?php echo $temperature ?>%;"><?php echo $display_temperature ?>
-                                        </div>
-                                    </div>
-                                    <?php if ($fanpercent != "") { ?>
-                                        <div class="info-item">Fan speed</div>
-                                        <div class="progress">
-                                            <div class="progress-bar progress-bar-<?php echo $fan_status ?> ECCprogress-bar-striped active"
-                                                 role="progressbar"
-                                                 aria-valuenow="<?php echo $fanpercent ?>" aria-valuemin="0" aria-valuemax="100"
-                                                 style="width: <?php echo $fanpercent ?>%;"><?php echo $fanpercent ?>%
-                                            </div>
-                                        </div>
-                                    <?php } ?>
-                                    <div class="info-item">Disk Usage</div>
-                                    <div class="progress">
-                                        <div class="progress-bar progress-bar-<?php echo $disk_usage_status ?> ECCprogress-bar-striped active"
-                                             role="progressbar"
-                                             aria-valuenow="<?php echo $dp ?>" aria-valuemin="0" aria-valuemax="100"
-                                             style="width: <?php echo $dp ?>%;"><?php echo $dp ?>%
-                                        </div>
-                                    </div>
+									<table>
+									<tr class="x"><td class="info-item">Hostname</td><td><?php echo $hostname ?></td></tr>
+									<tr class="x"><td class="info-item">Pi Revision</td><td><?php echo RPiVersion() ?></td></tr>
+									<tr class="x"><td class="info-item">Uptime</td><td><?php echo $uptime ?></td></tr>
+									<tr class="x"><td class="info-item">SD Card</td><td><?php echo "$dt ($df free)" ?></td></tr>
+									<tr class="x"><td class="info-item">Throttle Status</td><td><?php echo $throttle_status ?></td></tr>
+
+									<tr><td colspan="2" style="height: 15px"></td></tr>
+									<tr><td class="info-item">Memory Used</td>
+										<td style="width: 100%" class="progress"><div class="progress-bar progress-bar-<?php echo $memused_status ?>"
+										role="progressbar"
+										aria-valuenow="<?php echo $memused ?>" aria-valuemin="0" aria-valuemax="100"
+										style="width: <?php echo $memused ?>%;"><?php echo $memused ?>%
+										</div></td></tr>
+
+									<tr><td colspan="2" style="height: 15px"></td></tr>
+									<tr><td class="info-item">CPU Load</td>
+										<td style="width: 100%" class="progress"><div class="progress-bar progress-bar-<?php echo $cpuload_status ?>"
+										role="progressbar"
+										aria-valuenow="<?php echo $cpuload ?>" aria-valuemin="0" aria-valuemax="100"
+										style="width: <?php echo $cpuload ?>%;"><?php echo $cpuload ?>%
+										</div></td></tr>
+
+									<tr><td colspan="2" style="height: 15px"></td></tr>
+									<tr><td class="info-item">CPU Temperature</td>
+										<td style="width: 100%" class="progress"><div class="progress-bar progress-bar-<?php echo $temperature_status ?>"
+										role="progressbar"
+										aria-valuenow="<?php echo $temperature ?>" aria-valuemin="0" aria-valuemax="100"
+                                        style="width: <?php echo $temperature ?>%;"><?php echo $display_temperature ?>
+										</div></td></tr>
+                                <?php if ($fan != "") { ?>
+
+									<tr><td colspan="2" style="height: 15px"></td></tr>
+									<tr><td class="info-item">Fan Speed</td>
+										<td style="width: 100%" class="progress"><div class="progress-bar progress-bar-<?php echo $fan_status ?>"
+										role="progressbar"
+										aria-valuenow="<?php echo $fan ?>" aria-valuemin="0" aria-valuemax="100"
+										style="width: <?php echo $fan ?>%;"><?php echo $fan ?>%
+										</div></td></tr>
+                                <?php } ?>
+
+									<tr><td colspan="2" style="height: 15px"></td></tr>
+									<tr><td class="info-item">Disk Usage</td>
+										<td style="width: 100%" class="progress"><div class="progress-bar progress-bar-<?php echo $disk_usage_status ?>"
+										role="progressbar"
+										aria-valuenow="<?php echo $dp ?>" aria-valuemin="0" aria-valuemax="100"
+										style="width: <?php echo $dp ?>%;"><?php echo $dp ?>%
+										</div></td></tr>
+									</table>
                                 </div><!-- /.panel-body -->
                             </div><!-- /.panel-default -->
                         </div><!-- /.col-md-6 -->
@@ -312,5 +349,4 @@ if (0) {	// this method can give > 100%, but either way, refreshing the browser 
     </div><!-- /.row -->
     <?php
 }
-
 ?>
