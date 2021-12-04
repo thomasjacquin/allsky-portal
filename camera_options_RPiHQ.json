@@ -329,7 +329,7 @@
 },
 {
 "name":"textlineheight",
-"default":30,
+"default":80,
 "description":"The line height of the text in pixels. If increasing the font size causes the text to overlap then increase this value.",
 "label":"Line Height",
 "type":"number",
@@ -345,7 +345,7 @@
 },
 {
 "name":"texty",
-"default":35,
+"default":75,
 "description":"Text placement vertical from TOP in pixels.",
 "label":"Text Y",
 "type":"number",
