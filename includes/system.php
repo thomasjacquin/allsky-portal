@@ -81,6 +81,7 @@ function formatSize($bytes)
  */
 function DisplaySystem()
 {
+    $top_dir = "/var/www";
     $camera_settings_str = file_get_contents(RASPI_CAMERA_SETTINGS, true);
     $camera_settings_array = json_decode($camera_settings_str, true);
 	if (isset($camera_settings_array['temptype'])) {
@@ -134,15 +135,15 @@ function DisplaySystem()
     // Disk usage
     // File Usage
     /* get disk space free (in bytes) */
-    $df = disk_free_space("/var/www");
+    $df = disk_free_space($top_dir);
     /* and get disk space total (in bytes)  */
-    $dt = disk_total_space("/var/www");
+    $dt = disk_total_space($top_dir);
     /* now we calculate the disk space used (in bytes) */
     $du = $dt - $df;
     /* percentage of disk used - this will be used to also set the width % of the progress bar */
     $dp = sprintf('%.1f', ($du / $dt) * 100);
 
-    /* and we formate the size from bytes to MB, GB, etc. */
+    /* and we format the size from bytes to MB, GB, etc. */
     $df = formatSize($df);
     $du = formatSize($du);
     $dt = formatSize($dt);
@@ -150,14 +151,15 @@ function DisplaySystem()
 	// Throttle / undervoltage status
 	$x = exec("sudo vcgencmd get_throttled 2>&1");	// Output: throttled=0x12345...
 	if (preg_match("/^throttled=/", $x) == false) {
-			$throttle_status="<div class='progress-bar-danger' style='overflow: hidden'>Not able to get throttle status:<br>$x";
-			$throttle_status = $throttle_status . "<br><span style='font-size: 150%'>Run 'sudo ~/allsky/gui/install.sh --update' to try and resolve.</style>";
-			$throttle_status = $throttle_status . "</div>";
+			$throttle_status = "danger";
+			$throttle = "Not able to get throttle status:<br>$x";
+			$throttle .= "<br><span style='font-size: 150%'>Run 'sudo ~/allsky/gui/install.sh --update' to try and resolve.</style>";
 	} else {
 		$x = explode("x", $x);	// Output: throttled=0x12345...
 //FOR TESTING: $x[1] = "50001";
 		if ($x[1] == "0") {
-				$throttle_status="<div class='progress-bar-success'>No throttling</div>";
+				$throttle_status = "success";
+				$throttle = "No throttling";
 		} else {
 			$bits = base_convert($x[1], 16, 2);	// convert hex to bits
 			// See https://www.raspberrypi.com/documentation/computers/os.html#vcgencmd
@@ -173,26 +175,23 @@ function DisplaySystem()
 				19 => 'Soft temperature limit has occurred'
 			);
 			$l = strlen($bits);
-//echo "<br>bits=$bits, strlen=$l";
-			$s = "warning";
-			$throttle_status = "";
-		// bit 0 is the rightmost bit
+			$throttle_status = "warning";
+			$throttle = "";
+			// bit 0 is the rightmost bit
 			for ($pos=0; $pos<$l; $pos++) {
 				$i = $l - $pos - 1;
 				$bit = $bits[$i];
-//echo "<br>pos=$pos, lookin at bit $i, is $bit";
 				if ($bit == 0) continue;
 				if (array_key_exists($pos, $messages)) {
-//echo "<br>Found, = " . $messages[$pos];
-                	if ($throttle_status == "") {
-                    	$throttle_status = $messages[$pos];
+                	if ($throttle == "") {
+                    	$throttle = $messages[$pos];
 					} else {
-				    	$throttle_status = $throttle_status . "<br>" . $messages[$pos];
+				    	$throttle .= "<br>" . $messages[$pos];
                 	}
-					if ($pos <=3) $s = "danger"; // current issues are a danger; prior a warning
+					// current issues are a danger; prior issues are a warning
+					if ($pos <=3) $throttle_status = "danger";
 				}
 			}
-			$throttle_status = "<div class='progress-bar-$s' style='overflow: hidden'>" . $throttle_status . "</div>";
 		}
 	}
 
@@ -282,9 +281,16 @@ function DisplaySystem()
 									<tr class="x"><td class="info-item">Pi Revision</td><td><?php echo RPiVersion() ?></td></tr>
 									<tr class="x"><td class="info-item">Uptime</td><td><?php echo $uptime ?></td></tr>
 									<tr class="x"><td class="info-item">SD Card</td><td><?php echo "$dt ($df free)" ?></td></tr>
-									<tr class="x"><td class="info-item">Throttle Status</td><td><?php echo $throttle_status ?></td></tr>
+									<tr><td colspan="2" style="height: 10px"></td></tr>
+									<tr><td class="info-item">Throttle Status</td>
+										<!-- Treat it like a full-width progress bar -->
+										<td style="width: 100%" class="progress"><div class="progress-bar progress-bar-<?php echo $throttle_status ?>"
+										role="progressbar"
+										aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"
+										style="width: 100%;"><?php echo $throttle ?>
+										</div></td></tr>
 
-									<tr><td colspan="2" style="height: 15px"></td></tr>
+									<tr><td colspan="2" style="height: 10px"></td></tr>
 									<tr><td class="info-item">Memory Used</td>
 										<td style="width: 100%" class="progress"><div class="progress-bar progress-bar-<?php echo $memused_status ?>"
 										role="progressbar"
@@ -292,7 +298,7 @@ function DisplaySystem()
 										style="width: <?php echo $memused ?>%;"><?php echo $memused ?>%
 										</div></td></tr>
 
-									<tr><td colspan="2" style="height: 15px"></td></tr>
+									<tr><td colspan="2" style="height: 10px"></td></tr>
 									<tr><td class="info-item">CPU Load</td>
 										<td style="width: 100%" class="progress"><div class="progress-bar progress-bar-<?php echo $cpuload_status ?>"
 										role="progressbar"
@@ -300,7 +306,7 @@ function DisplaySystem()
 										style="width: <?php echo $cpuload ?>%;"><?php echo $cpuload ?>%
 										</div></td></tr>
 
-									<tr><td colspan="2" style="height: 15px"></td></tr>
+									<tr><td colspan="2" style="height: 10px"></td></tr>
 									<tr><td class="info-item">CPU Temperature</td>
 										<td style="width: 100%" class="progress"><div class="progress-bar progress-bar-<?php echo $temperature_status ?>"
 										role="progressbar"
@@ -309,7 +315,7 @@ function DisplaySystem()
 										</div></td></tr>
                                 <?php if ($fan != "") { ?>
 
-									<tr><td colspan="2" style="height: 15px"></td></tr>
+									<tr><td colspan="2" style="height: 10px"></td></tr>
 									<tr><td class="info-item">Fan Speed</td>
 										<td style="width: 100%" class="progress"><div class="progress-bar progress-bar-<?php echo $fan_status ?>"
 										role="progressbar"
@@ -318,7 +324,7 @@ function DisplaySystem()
 										</div></td></tr>
                                 <?php } ?>
 
-									<tr><td colspan="2" style="height: 15px"></td></tr>
+									<tr><td colspan="2" style="height: 10px"></td></tr>
 									<tr><td class="info-item">Disk Usage</td>
 										<td style="width: 100%" class="progress"><div class="progress-bar progress-bar-<?php echo $disk_usage_status ?>"
 										role="progressbar"
