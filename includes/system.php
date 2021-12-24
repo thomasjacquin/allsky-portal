@@ -32,10 +32,11 @@ function RPiVersion()
 	'a21041' => 'Pi 2 Model B Revision 1.1 (1 GB)',
 	'a22042' => 'Pi 2 Model B (with BCM2837) Revision 1.2 (1 GB)',
 	'a020a0' => 'Compute Module 3 Revision 1.0 (1 GB)',
-	'a220a0' > 'Compute Module 3 Revision 1.0 (1 GB)',
+	'a220a0' => 'Compute Module 3 Revision 1.0 (1 GB)',
+	'a02100' => 'Compute Module 3+',
 	'900021' => 'Model A+ Revision 1.1 (512 MB)',
 	'900032' => 'Model B+ Revision 1.2 (512 MB)',
-	'900061' => 'Compute Module Revision 1.1 (512 MB)',
+	'900062' => 'Compute Module Revision 1.1 (512 MB)',
 	'900092' => 'PiZero 1.2 (512 MB)',
 	'900093' => 'PiZero 1.3 (512 MB)',
 	'9000c1' => 'PiZero W 1.1 (512 MB)',
@@ -44,27 +45,33 @@ function RPiVersion()
 	'9020e0' => 'Pi 3 Model A+ Revision 1.0 (512 MB)',
 	'a02082' => 'Pi 3 Model B Revision 1.2 (1 GB)',
 	'a22082' => 'Pi 3 Model B Revision 1.2 (1 GB)',
-	'a22083' => 'Pi 3 Model B Revision 1.3 (1 GB)',
-	'a020d3' => 'Pi 3 Model B+ Revision 1.3 (1 GB)',
 	'a32082' => 'Pi 3 Model B Revision 1.2 (1 GB)',
 	'a52082' => 'Pi 3 Model B Revision 1.2 (1 GB)',
+	'a22083' => 'Pi 3 Model B Revision 1.3 (1 GB)',
+	'a020d3' => 'Pi 3 Model B+ Revision 1.3 (1 GB)',
 	'a03111' => 'Model 4B Revision 1.1 (1 GB)',
 	'b03111' => 'Model 4B Revision 1.1 (2 GB)',
-	'b03112' => 'Model 4B Revision 1.2 (2 GB)',
-	'b03114' => 'Model 4B Revision 1.4 (2 GB)',
 	'c03111' => 'Model 4B Revision 1.1 (4 GB)',
+	'b03112' => 'Model 4B Revision 1.2 (2 GB)',
 	'c03112' => 'Model 4B Revision 1.2 (4 GB)',
+	'b03114' => 'Model 4B Revision 1.4 (2 GB)',
 	'c03114' => 'Model 4B Revision 1.4 (4 GB)',
 	'd03114' => 'Model 4B Revision 1.4 (8 GB)',
 	'c03130' => 'Pi 400 Revision 1.0 (4 GB)'
 	);
-	// space and tab for -F
-	exec("awk -F ' '   '/^Revision/ {print $3; exit 0;}' < /proc/cpuinfo", $rev);
-	$rev = trim(array_pop($rev));
+
+	$cpuinfo_array = '';
+	exec('cat /proc/cpuinfo', $cpuinfo_array);
+	$rev = trim(array_pop(explode(':', array_pop(preg_grep("/^Revision/", $cpuinfo_array)))));
 	if (array_key_exists($rev, $revisions)) {
 		return $revisions[$rev];
 	} else {
-		return 'Unknown Pi, rev=' . $rev;
+		exec('cat /proc/device-tree/model', $model);
+		if (isset($model[0])) {
+			return $model[0];
+		} else {
+			return 'Unknown Pi, rev=' . $rev;
+		}
 	}
 }
 
