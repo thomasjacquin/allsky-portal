@@ -61,8 +61,10 @@ function RPiVersion()
 	);
 
 	$cpuinfo_array = '';
-	exec('cat /proc/cpuinfo', $cpuinfo_array);
-	$rev = trim(array_pop(explode(':', array_pop(preg_grep("/^Revision/", $cpuinfo_array)))));
+	exec('grep "^Revision" /proc/cpuinfo', $cpuinfo_array);
+	// We need to split this into two pieces to avoid a PHP Notice message
+	$x = explode(':', array_pop($cpuinfo_array));
+	$rev = trim(array_pop($x));
 	if (array_key_exists($rev, $revisions)) {
 		return $revisions[$rev];
 	} else {
