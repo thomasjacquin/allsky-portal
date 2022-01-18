@@ -1,5 +1,4 @@
-![](http://www.thomasjacquin.com/allsky-portal/images/liveview.jpg)
-# `$ allsky-portal` ![Release 0.8.3](https://img.shields.io/badge/Release-0.8.3-green.svg)
+# Allsky WebUI ![Release 0.8.3](https://img.shields.io/badge/Release-0.8.3-green.svg) 
 A simple, responsive Web User Interface (**WebUI**) to control an [**allsky camera**](https://github.com/thomasjacquin/allsky)
 built with a Raspberry Pi and ZWO or RPiHQ camera.
 
@@ -7,7 +6,7 @@ The WebUI code is based on an older version of [**RaspAP**](https://github.com/b
 
 
 ## Demo
-A demo of the portal is available [**here**](http://thomasjacquin.com/allsky-portal). 
+A demo of the WebUI is available [**here**](http://thomasjacquin.com/allsky-portal). 
 
 **Note**: Most of the buttons have been disabled for the demo.
 
