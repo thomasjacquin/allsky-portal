@@ -99,8 +99,14 @@ $csrf_token = $_SESSION['csrf_token'];
     			right: 0px;
 			opacity: .6;
 		}
-		/* used in system.php */
-		.progress-bar {color: black;}
+		/* Used in system.php.  Transition wasn't working - the CSS below works. */
+		.progress-bar {
+			color: black;
+			animation-name: progress_bar;
+			animation-duration: 0.6s;
+			animation-timing-function: ease;
+		}
+		@keyframes progress_bar { from { width: 0px } }
 		.x {line-height: 150%;}
 		@media (min-width: 992px) {.col-md-6 { width: 75%; }}
 	</style>
