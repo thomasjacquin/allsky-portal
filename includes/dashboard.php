@@ -26,8 +26,22 @@ function DisplayDashboard($interface) {
 	preg_match( '/Tx-Power=([0-9]+ dBm)/i',$interface_output,$result );
 	$strTxPower = isset($result[1]) ?  $result[1] : "[not set]";
 
-	preg_match( '/Link Quality=([0-9]+)/i',$interface_output,$result );
-	$strLinkQuality = isset($result[1]) ?  $result[1] : "[not set]";
+	// for example:   Link Quality=63/70.  Show absolute number (63) and percent (90%)
+	preg_match( '/Link Quality=([0-9]+)\/([0-9]+)/i',$interface_output,$result );
+	$strLinkQualityAbsolute = isset($result[1]) ?  $result[1] : "[not set]";
+	$strLinkQualityMax = isset($result[2]) ?  $result[2] : $strLinkQualityAbsolute;
+	if ($strLinkQualityAbsolute !== "[not set]" && $strLinkQualityMax !== "[not set]") {
+		$strLinkQualityPercent = number_format(($strLinkQualityAbsolute / $strLinkQualityMax) * 100, 0);
+		if ($strLinkQualityPercent >= 75)
+			$strLinkQuality_status = "success";
+		else if ($strLinkQualityPercent >= 50)
+			$strLinkQuality_status = "warning";
+		else
+			$strLinkQuality_status = "danger";
+	} else {
+		$strLinkQualityPercent = $strLinkQualityAbsolute;
+		$strLinkQuality_status = "info";
+	}
 
 	preg_match( '/Signal level=(-?[0-9]+ dBm)/i',$interface_output,$result );
 	$strSignalLevel = isset($result[1]) ?  $result[1] : "[not set]";
@@ -76,10 +90,10 @@ function DisplayDashboard($interface) {
 								<div class="info-item">Frequency</div>      <?php echo $strFrequency ?></br>
 								<div class="info-item">Link Quality</div>
 								<div class="progress">
-									<div class="progress-bar progress-bar-info"
+									<div class="progress-bar progress-bar-<?php echo $strLinkQuality_status ?>"
 									role="progressbar"
-									aria-valuenow="<?php echo $strLinkQuality ?>" aria-valuemin="0" aria-valuemax="100"
-									style="width: <?php echo $strLinkQuality ?>%;"><?php echo $strLinkQuality ?>%
+									aria-valuenow="<?php echo $strLinkQualityPercent ?>" aria-valuemin="0" aria-valuemax="100"
+									style="width: <?php echo $strLinkQualityPercent ?>%;"><?php echo "$strLinkQualityPercent% &nbsp; &nbsp; ($strLinkQualityAbsolute / $strLinkQualityMax)" ?>
 									</div>
 								</div>
 							</div><!-- /.panel-body -->
