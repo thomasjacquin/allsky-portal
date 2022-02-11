@@ -96,10 +96,10 @@ $csrf_token = $_SESSION['csrf_token'];
 			border-color: #bce8f1;
 		}
 		.alert-dismissable .close {
-    			right: 0px;
+			right: 0px;
 			opacity: .6;
 		}
-		/* Used in system.php.  Transition wasn't working - the CSS below works. */
+		/* used in system.php */
 		.progress-bar {
 			color: black;
 			animation-name: progress_bar;
@@ -272,10 +272,10 @@ $csrf_token = $_SESSION['csrf_token'];
                         DisplayLiveView("$image_name", $delay, $daydelay, $nightdelay, $darkframe);
                         break;
                     case "wlan0_info":
-                        DisplayDashboard();
+                        DisplayDashboard("wlan0");
                         break;
                     case "eth0_info":
-                        DisplayDashboard_eth0();
+                        DisplayDashboard_eth0("eth0");
                         break;
                     case "camera_conf":
                         DisplayCameraConfig();
