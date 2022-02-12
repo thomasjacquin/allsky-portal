@@ -4,68 +4,25 @@
 *
 *
 */
-function DisplayDashboard_eth0(){
+function DisplayDashboard_eth0($interface) {
+	// Unlike with WLAN where when it's UP it's also RUNNING,
+	// with the LAN, the port can be up but nothing connected, i.e., not "RUNNING".
 
 	$status = new StatusMessages();
 
-	exec( 'ifconfig eth0', $return );
+	$interface_output = get_interface_status("ifconfig $interface");
 
-	$strEth0 = implode( " ", $return );
-	$strEth0 = preg_replace( '/\s\s+/', ' ', $strEth0 );
+	// $interface_output is sent and the other variables are returned.
+	parse_ifconfig($interface_output, $strHWAddress, $strIPAddress, $strNetMask, $strRxPackets, $strTxPackets, $strRxBytes, $strTxBytes);
 
-	// Parse results from ifconfig/iwconfig
-	preg_match( '/ether ([0-9a-f:]+)/i',$strEth0,$result );
-	$strHWAddress = $result[1];
-	preg_match( '/inet ([0-9.]+)/i',$strEth0,$result );
-	$strIPAddress = isset($result[1]) ?  $result[1] : "[not set]";
-
-	preg_match( '/netmask ([0-9.]+)/i',$strEth0,$result );
-	$strNetMask = isset($result[1]) ?  $result[1] : "[not set]";
-
-	preg_match( '/RX packets (\d+)/',$strEth0,$result );
-	$strRxPackets = isset($result[1]) ?  $result[1] : "[not set]";
-
-	preg_match( '/TX packets (\d+)/',$strEth0,$result );
-	$strTxPackets = isset($result[1]) ?  $result[1] : "[not set]";
-
-	preg_match_all( '/bytes (\d+ \(\d+.\d+ [K|M|G]iB\))/i',$strEth0,$result );
-	if (isset($result[1][0])) {
-		$strRxBytes = $result[1][0];
-		$strTxBytes = $result[1][1];
-	} else {
-		$strRxBytes = 0;
-		$strTxBytes = 0;
-	}
-
-	if(strpos( $strEth0, "UP" ) !== false && strpos( $strEth0, "RUNNING" ) !== false ) {
-		$status->addMessage('Interface is up', 'success');
-		$eth0up = true;
-	} else {
-		$status->addMessage('Interface is down', 'warning');
-		$eth0up = false;
-	}
-
-	if( isset($_POST['ifdown_eth0']) ) {
-		exec( 'ifconfig eth0 | grep -i running | wc -l',$test );
-		if($test[0] == 1) {
-			exec( 'sudo ifdown eth0',$return );
-		} else {
-			echo 'Interface already down';
-		}
-	} elseif( isset($_POST['ifup_eth0']) ) {
-		exec( 'ifconfig eth0 | grep -i running | wc -l',$test );
-		if($test[0] == 0) {
-			exec( 'sudo ifup eth0',$return );
-		} else {
-			echo 'Interface already up';
-		}
-	}
+	// $interface and $interface_output are sent, $status is returned.
+	$interface_up = handle_interface_POST_and_status($interface, $interface_output, $status);
 ?>
 
   <div class="row">
       <div class="col-lg-12">
           <div class="panel panel-primary">
-            <div class="panel-heading"><i class="fa fa-tachometer-alt fa-fw"></i>LAN Dashboard</div>
+            <div class="panel-heading"><i class="fa fa-tachometer-alt fa-fw"></i> LAN Dashboard</div>
               <div class="panel-body">
                 <p><?php $status->showMessages(); ?></p>
                   <div class="row">
@@ -73,7 +30,7 @@ function DisplayDashboard_eth0(){
                         <div class="panel panel-default">
                           <div class="panel-body">
                            <h4>Interface Information</h4>
-                           <div class="info-item">Interface Name</div> eth0</br>
+						   <div class="info-item">Interface Name</div> <?php echo $interface ?></br>
                            <div class="info-item">IP Address</div>     <?php echo $strIPAddress ?></br>
                            <div class="info-item">Subnet Mask</div>    <?php echo $strNetMask ?></br>
                            <div class="info-item">Mac Address</div>    <?php echo $strHWAddress ?></br></br>
@@ -90,12 +47,12 @@ function DisplayDashboard_eth0(){
 
                   <div class="col-lg-12">
                     <div class="row">
-                      <form action="?page=eth0_info" method="POST">
+					<form action="?page=<?php echo $interface ?>_info" method="POST">
                       <?php
-                      if ( !$eth0up ) {
-                          echo '<input type="submit" class="btn btn-success" value="Start eth0" name="ifup_eth0" />';
+                      if ( ! $interface_up ) {
+							  echo "<input type='submit' class='btn btn-success' value='Start $interface' name='turn_up' />";
                       } else {
-                          echo '<input type="submit" class="btn btn-warning" value="Stop eth0" name="ifdown_eth0" />';
+							  echo "<input type='submit' class='btn btn-warning' value='Stop $interface' name='turn_down' />";
                       }
                       ?>
                       <input type="button" class="btn btn-outline btn-primary" value="Refresh" onclick="document.location.reload(true)" />
