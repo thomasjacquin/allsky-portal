@@ -231,8 +231,8 @@ function DisplaySystem()
 	if ($temp_type == "F" || $temp_type == "B")
 		$display_temperature = $display_temperature . "&nbsp; &nbsp;" . number_format((($temperature * 1.8) + 32), 1, '.', '') . "&deg;F";
 
-	// fan speed.  Should probably put the path in config.sh...
-	$fan_data = "/home/pi/fan/fandata.txt";
+	// fan speed.
+	$fan_data = get_variable(ALLSKY_CONFIG .'/config.sh', 'FAN_DATA_FILE=', '');
 	if (file_exists($fan_data)) {	// fanspeed is $1, we want percent which is $2
 		$fan = exec("awk '{print $2}' ".$fan_data);
 		if ($fan >= 90) {
