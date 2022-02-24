@@ -85,12 +85,38 @@ function formatSize($bytes)
 }
 
 /* Check user data for expiration.  Return true if expired, else false */
+$now = 0;
 function dataExpired($dateTime, $seconds)
 {
+	global $now;
+	$seconds += 0;	// convert to number
 	if ($seconds === 0) return(false);
 
 	// TODO: get working...
-	return(false);
+	if ($now === 0)		// only get once per invocation
+		$now = strtotime("now") + 0;
+	$expire = strtotime($dateTime) + $seconds;
+//echo "<br>now=$now, expire=$expire, diff=";
+//echo $expire-$now;
+	if ($expire < $now)
+		return(true);
+	else
+		return(false);
+}
+
+/* Run a command and display the appropriate status message */
+function runCommand($cmd, $message, $messageColor)
+{
+	global $status;
+
+	exec("$cmd", $result, $return_val);
+	if ($result == null || $return_val !== 0) {
+		$status->addMessage("'$cmd' failed", "danger", true);
+	} else {
+		$status->addMessage($message, $messageColor, true);
+	}
+	// Display any output
+	if (isset($result[0])) $status->addMessage(implode("<br>", $result), "message", true);
 }
 
 /* Display user data in "file". */
@@ -104,7 +130,6 @@ function displayUserData($file, $displayType)
 		echo "<p style='color: red'>WARNING: User data file '$file' does not exist.</p>";
 		return(false);
 	}
-	// Format: Date/time timeout_s label type min current max warning danger
 	$handle = fopen($file, "r");
 	for ($i=1; ; $i++) {		// for each line in $file
 		$line = fgets($handle);
@@ -172,9 +197,7 @@ function displayUserData($file, $displayType)
 					if ($displayType === "button-action") {
 						$u = "user_$num_buttons";
 						if (isset($_POST[$u])) {
-								$status->addMessage($message, "message", true);
-							$result = shell_exec("$action");
-							if ($result !== "") $status->addMessage($result, "message", true);
+							runCommand($action, $message, "message");
 						}
 					} else {	// "button-button"
 						if ($num_buttons === 1) echo "<br>\n";
@@ -350,6 +373,7 @@ function DisplaySystem()
 	}
 
 	// Optional user-specified data.
+	// TODO: read each file once and populate arrays for "data", "progress", and "button".
 	$udf = get_variable(ALLSKY_CONFIG .'/config.sh', 'WEBUI_DATA_FILES=', '');
 	if ($udf !== "") {
 		$user_data_files = explode(':', $udf);
@@ -367,20 +391,18 @@ function DisplaySystem()
 
 					<?php
 					if (isset($_POST['system_reboot'])) {
-						echo '<div class="alert alert-warning">System Rebooting Now!</div>';
+						$status->addMessage("System Rebooting Now!", "warning", true);
 						$result = shell_exec("sudo /sbin/reboot");
 					}
 					if (isset($_POST['system_shutdown'])) {
-						echo '<div class="alert alert-warning">System Shutting Down Now!</div>';
+						$status->addMessage("System Shutting Down Now!", "warning", true);
 						$result = shell_exec("sudo /sbin/shutdown -h now");
 					}
 					if (isset($_POST['service_start'])) {
-						echo '<div class="alert alert-warning">allsky service started</div>';
-						$result = shell_exec("sudo /bin/systemctl start allsky");
+						runCommand("sudo /bin/systemctl start allsky", "allsky service started", "success");
 					}
 					if (isset($_POST['service_stop'])) {
-						echo '<div class="alert alert-warning">allsky service stopped</div>';
-						$result = shell_exec("sudo /bin/systemctl stop allsky");
+						runCommand("echo sudo /bin/systemctl stop allsky", "allsky service stopped", "success");
 					}
 					// Optional user-specified data.
 					for ($i=0; $i < $user_data_files_count; $i++) {
