@@ -84,12 +84,121 @@ function formatSize($bytes)
 	return (round($bytes, 2) . " " . $types[$i]);
 }
 
+/* Check user data for expiration.  Return true if expired, else false */
+function dataExpired($dateTime, $seconds)
+{
+	if ($seconds === 0) return(false);
+
+	// TODO: get working...
+	return(false);
+}
+
+/* Display user data in "file". */
+$num_buttons = 0;
+function displayUserData($file, $displayType)
+{
+	global $num_buttons;
+	global $status;
+
+	if (! file_exists($file)) {
+		echo "<p style='color: red'>WARNING: User data file '$file' does not exist.</p>";
+		return(false);
+	}
+	// Format: Date/time timeout_s label type min current max warning danger
+	$handle = fopen($file, "r");
+	for ($i=1; ; $i++) {		// for each line in $file
+		$line = fgets($handle);
+		if (! $line)
+			break;
+		$line = trim($line);
+		// Skip blank and comment lines
+		if ($line === "" || substr($line, 0, 1) === "#") continue;
+
+		$data = explode('	', $line);		// tab-separated
+		$num = count($data);
+		if ($num === 0) {
+			return(false);
+		}
+		$type = $data[0];
+		if ($type !== "data" && $type !== "progress" && $type !== "button") {
+			echo "<p style='color: red'>WARNING: Line $i in user data file '$file' is invalid:";
+			echo "<br>$line";
+			echo "<br>The first field should be 'data', 'progress', or 'button'.</p>";
+		} else if ($type === "data" && $displayType === $type) {
+		   	if ($num != 5) {
+				echo "<p style='color: red'>WARNING: Line $i in user data file '$file' is invalid:";
+				echo "<br>$line";
+				echo "<br>'data' lines should have 5 fields total but there were $num fields.</p>";
+			} else {
+				list($type, $date, $timeout_s, $label, $data) = $data;
+				if (! dataExpired($date, $timeout_s)) {
+					echo "<tr class='x'><td class='info-item'>$label</td><td>$data</td></tr>\n";
+				}
+			}
+		} else if ($type === "progress" && $displayType === $type) {
+		   	if ($num != 10) {
+				echo "<p style='color: red'>WARNING: Line $i in user data file '$file' is invalid:";
+				echo "<br>$line";
+				echo "<br>'progress' lines should have 10 fields total but there were $num fields.</p>";
+			} else {
+				list($type, $date, $timeout_s, $label, $data, $min, $current, $max, $danger, $warning) = $data;
+				if (! dataExpired($date, $timeout_s)) {
+					if ($current >= $danger) {
+						$status = "danger";
+					} elseif ($current >= $warning) {
+						$status = "warning";
+					} else {
+						$status = "success";
+					}
+					echo "<tr><td colspan='2' style='height: 10px'></td></tr>\n";
+					echo "<tr><td class='info-item'>$label</td>\n";
+					echo "    <td style='width: $current%' class='progress'><div class='progress-bar progress-bar-$status'\n";
+					echo "    role='progressbar\n";
+	   				echo "    aria-valuenow='$current' aria-valuemin='$min' aria-valuemax='$max'\n";
+					echo "    style='width: $current%;'>$data\n";
+					echo "    </div></td></tr>\n";
+				}
+			}
+		} else if ($type === "button" && substr($displayType, 0, 7) === "button-") {
+		   	if ($num != 8) {
+				echo "<p style='color: red'>WARNING: Line $i in user data file '$file' is invalid:";
+				echo "<br>$line";
+				echo "<br>'button' lines should have 8 fields total but there were $num fields.</p>";
+			} else {
+				list($type, $date, $timeout_s, $message, $action, $btn_class, $fa_class, $btn_label) = $data;
+			   	if (! dataExpired($date, $timeout_s)) {
+					// We output two types of button data: the action block and the button block.
+					$num_buttons++;
+					if ($displayType === "button-action") {
+						$u = "user_$num_buttons";
+						if (isset($_POST[$u])) {
+								$status->addMessage($message, "message", true);
+							$result = shell_exec("$action");
+							if ($result !== "") $status->addMessage($result, "message", true);
+						}
+					} else {	// "button-button"
+						if ($num_buttons === 1) echo "<br>\n";
+						echo "<button type='submit' class='btn $btn_class' style='margin-bottom:5px' name='user_$num_buttons'/><i class='fa $fa_class'></i> $btn_label</button>\n";
+					}
+				}
+			}
+		}
+	}
+	fclose($handle);
+	$num_buttons = 0;
+	return(true);
+}
+
 /**
  *
  *
  */
+$status = null;
 function DisplaySystem()
 {
+	global $status;
+	$status = new StatusMessages();
+
 	$top_dir = "/var/www";
 	$camera_settings_str = file_get_contents(RASPI_CAMERA_SETTINGS, true);
 	$camera_settings_array = json_decode($camera_settings_str, true);
@@ -231,21 +340,6 @@ function DisplaySystem()
 	if ($temp_type == "F" || $temp_type == "B")
 		$display_temperature = $display_temperature . "&nbsp; &nbsp;" . number_format((($temperature * 1.8) + 32), 1, '.', '') . "&deg;F";
 
-	// fan speed.
-	$fan_data = get_variable(ALLSKY_CONFIG .'/config.sh', 'FAN_DATA_FILE=', '');
-	if (file_exists($fan_data)) {	// fanspeed is $1, we want percent which is $2
-		$fan = exec("awk '{print $2}' ".$fan_data);
-		if ($fan >= 90) {
-			$fan_status = "danger";
-		} elseif ($fan >= 75) {
-			$fan_status = "warning";
-		} else {
-			$fan_status = "success";
-		}
-	} else {
-		$fan = "";
-	}
-
 	// disk usage
 	if ($dp >= 90) {
 		$disk_usage_status = "danger";
@@ -253,6 +347,16 @@ function DisplaySystem()
 		$disk_usage_status = "warning";
 	} else {
 		$disk_usage_status = "success";
+	}
+
+	// Optional user-specified data.
+	$udf = get_variable(ALLSKY_CONFIG .'/config.sh', 'WEBUI_DATA_FILES=', '');
+	if ($udf !== "") {
+		$user_data_files = explode(':', $udf);
+		$user_data_files_count = count($user_data_files);
+	} else {
+		$user_data_files = "";
+		$user_data_files_count = 0;
 	}
 	?>
 	<div class="row">
@@ -278,7 +382,12 @@ function DisplaySystem()
 						echo '<div class="alert alert-warning">allsky service stopped</div>';
 						$result = shell_exec("sudo /bin/systemctl stop allsky");
 					}
+					// Optional user-specified data.
+					for ($i=0; $i < $user_data_files_count; $i++) {
+						displayUserData($user_data_files[$i], "button-action");
+					}
 					?>
+					<p><?php $status->showMessages(); ?></p>
 
 					<div class="row">
 						<div class="col-md-6">
@@ -290,13 +399,18 @@ function DisplaySystem()
 									<tr class="x"><td class="info-item">Pi Revision</td><td><?php echo RPiVersion() ?></td></tr>
 									<tr class="x"><td class="info-item">Uptime</td><td><?php echo $uptime ?></td></tr>
 									<tr class="x"><td class="info-item">SD Card</td><td><?php echo "$dt ($df free)" ?></td></tr>
+									<?php // Optional user-specified data.
+										for ($i=0; $i < $user_data_files_count; $i++) {
+											displayUserData($user_data_files[$i], "data");
+										}
+									?>
 									<tr><td colspan="2" style="height: 10px"></td></tr>
 									<tr><td class="info-item">Throttle Status</td>
 										<!-- Treat it like a full-width progress bar -->
 										<td style="width: 100%" class="progress"><div class="progress-bar progress-bar-<?php echo $throttle_status ?>"
 										role="progressbar"
 										aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"
-										style="width: 100%;"><?php echo $throttle ?>
+										style="width: 100%;"><?php echo $throttle ?> 
 										</div></td></tr>
 
 									<tr><td colspan="2" style="height: 10px"></td></tr>
@@ -322,17 +436,6 @@ function DisplaySystem()
 										aria-valuenow="<?php echo $temperature ?>" aria-valuemin="0" aria-valuemax="100"
 										style="width: <?php echo $temperature ?>%;"><?php echo $display_temperature ?>
 										</div></td></tr>
-								<?php if ($fan != "") { ?>
-
-									<tr><td colspan="2" style="height: 10px"></td></tr>
-									<tr><td class="info-item">Fan Speed</td>
-										<td style="width: 100%" class="progress"><div class="progress-bar progress-bar-<?php echo $fan_status ?>"
-										role="progressbar"
-										aria-valuenow="<?php echo $fan ?>" aria-valuemin="0" aria-valuemax="100"
-										style="width: <?php echo $fan ?>%;"><?php echo $fan ?>%
-										</div></td></tr>
-								<?php } ?>
-
 									<tr><td colspan="2" style="height: 10px"></td></tr>
 									<tr><td class="info-item">Disk Usage</td>
 										<td style="width: 100%" class="progress"><div class="progress-bar progress-bar-<?php echo $disk_usage_status ?>"
@@ -340,6 +443,12 @@ function DisplaySystem()
 										aria-valuenow="<?php echo $dp ?>" aria-valuemin="0" aria-valuemax="100"
 										style="width: <?php echo $dp ?>%;"><?php echo $dp ?>%
 										</div></td></tr>
+									<?php
+										// Optional user-specified data.
+										for ($i=0; $i < $user_data_files_count; $i++) {
+											displayUserData($user_data_files[$i], "progress");
+										}
+									?>
 									</table>
 								</div><!-- /.panel-body -->
 							</div><!-- /.panel-default -->
@@ -356,6 +465,11 @@ function DisplaySystem()
 					</div>
 					<button type="submit" class="btn btn-warning" style="margin-bottom:5px" name="system_reboot"/><i class="fa fa-power-off"></i> Reboot Raspberry Pi</button>
 					<button type="submit" class="btn btn-warning" style="margin-bottom:5px" name="system_shutdown"/><i class="fa fa-plug"></i> Shutdown Raspberry Pi</button>
+					<?php // Optional user-specified data.
+						for ($i=0; $i < $user_data_files_count; $i++) {
+							displayUserData($user_data_files[$i], "button-button");
+						}
+					?>
 					</form>
 
 				</div><!-- /.panel-body -->
