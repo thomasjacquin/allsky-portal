@@ -109,14 +109,19 @@ function runCommand($cmd, $message, $messageColor)
 {
 	global $status;
 
-	exec("$cmd", $result, $return_val);
+	exec("$cmd 2>&1", $result, $return_val);
 	if ($result == null || $return_val !== 0) {
-		$status->addMessage("'$cmd' failed", "danger", true);
-	} else {
-		$status->addMessage($message, $messageColor, true);
+		$msg = "'$cmd' failed";
+		if ($result != null) $msg .= ": " . implode("<br>", $result);
+		$status->addMessage($msg, "danger", true);
+		return;
 	}
+
+	if ($message !== "-")
+		$status->addMessage($message, $messageColor, true);
+
 	// Display any output
-	if (isset($result[0])) $status->addMessage(implode("<br>", $result), "message", true);
+	if ($result != null) $status->addMessage(implode("<br>", $result), "message", true);
 }
 
 /* Display user data in "file". */
@@ -196,12 +201,12 @@ function displayUserData($file, $displayType)
 					$num_buttons++;
 					if ($displayType === "button-action") {
 						$u = "user_$num_buttons";
-						if (isset($_POST[$u])) {
+						if (isset($_POST[$u]))
 							runCommand($action, $message, "message");
-						}
 					} else {	// "button-button"
 						if ($num_buttons === 1) echo "<br>\n";
-						echo "<button type='submit' class='btn $btn_class' style='margin-bottom:5px' name='user_$num_buttons'/><i class='fa $fa_class'></i> $btn_label</button>\n";
+						if ($fa_class !== "-") $fa_class = "<i class='fa $fa_class'></i>";
+						echo "<button type='submit' class='btn $btn_class' style='margin-bottom:5px;' name='user_$num_buttons'/>$fa_class $btn_label</button>\n";
 					}
 				}
 			}
