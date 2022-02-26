@@ -92,12 +92,9 @@ function dataExpired($dateTime, $seconds)
 	$seconds += 0;	// convert to number
 	if ($seconds === 0) return(false);
 
-	// TODO: get working...
 	if ($now === 0)		// only get once per invocation
 		$now = strtotime("now") + 0;
 	$expire = strtotime($dateTime) + $seconds;
-//echo "<br>now=$now, expire=$expire, diff=";
-//echo $expire-$now;
 	if ($expire < $now)
 		return(true);
 	else
@@ -126,13 +123,18 @@ function runCommand($cmd, $message, $messageColor)
 
 /* Display user data in "file". */
 $num_buttons = 0;
+$num_calls = 0;
 function displayUserData($file, $displayType)
 {
 	global $num_buttons;
+	global $num_calls;
 	global $status;
 
+	$num_calls++;
+
 	if (! file_exists($file)) {
-		echo "<p style='color: red'>WARNING: User data file '$file' does not exist.</p>";
+		if ($num_calls === 1)
+			echo "<p style='color: red'>WARNING: User data file '$file' does not exist.</p>";
 		return(false);
 	}
 	$handle = fopen($file, "r");
@@ -151,14 +153,18 @@ function displayUserData($file, $displayType)
 		}
 		$type = $data[0];
 		if ($type !== "data" && $type !== "progress" && $type !== "button") {
-			echo "<p style='color: red'>WARNING: Line $i in user data file '$file' is invalid:";
-			echo "<br>$line";
-			echo "<br>The first field should be 'data', 'progress', or 'button'.</p>";
+			if ($num_calls === 1) {
+				echo "<p style='color: red'>WARNING: Line $i in '$file' is invalid:";
+				echo "<br>$line";
+				echo "<br>The first field should be 'data', 'progress', or 'button'.</p>";
+			}
 		} else if ($type === "data" && $displayType === $type) {
 		   	if ($num != 5) {
-				echo "<p style='color: red'>WARNING: Line $i in user data file '$file' is invalid:";
-				echo "<br>$line";
-				echo "<br>'data' lines should have 5 fields total but there were $num fields.</p>";
+				if ($num_calls === 1) {
+					echo "<p style='color: red'>WARNING: Line $i in '$file' is invalid:";
+					echo "<br>$line";
+					echo "<br>'data' lines should have 5 fields total but there were $num fields.</p>";
+				}
 			} else {
 				list($type, $date, $timeout_s, $label, $data) = $data;
 				if (! dataExpired($date, $timeout_s)) {
@@ -167,9 +173,11 @@ function displayUserData($file, $displayType)
 			}
 		} else if ($type === "progress" && $displayType === $type) {
 		   	if ($num != 10) {
-				echo "<p style='color: red'>WARNING: Line $i in user data file '$file' is invalid:";
-				echo "<br>$line";
-				echo "<br>'progress' lines should have 10 fields total but there were $num fields.</p>";
+				if ($num_calls === 1) {
+					echo "<p style='color: red'>WARNING: Line $i in '$file' is invalid:";
+					echo "<br>$line";
+					echo "<br>'progress' lines should have 10 fields total but there were $num fields.</p>";
+				}
 			} else {
 				list($type, $date, $timeout_s, $label, $data, $min, $current, $max, $danger, $warning) = $data;
 				if (! dataExpired($date, $timeout_s)) {
@@ -190,24 +198,25 @@ function displayUserData($file, $displayType)
 				}
 			}
 		} else if ($type === "button" && substr($displayType, 0, 7) === "button-") {
-		   	if ($num != 8) {
-				echo "<p style='color: red'>WARNING: Line $i in user data file '$file' is invalid:";
-				echo "<br>$line";
-				echo "<br>'button' lines should have 8 fields total but there were $num fields.</p>";
+		   	if ($num != 6) {
+				if ($num_calls === 1) {
+					echo "<p style='color: red'>WARNING: Line $i in user data file '$file' is invalid:";
+					echo "<br>$line";
+					echo "<br>'button' lines should have 6 fields total but there were $num fields.</p>";
+				}
 			} else {
-				list($type, $date, $timeout_s, $message, $action, $btn_class, $fa_class, $btn_label) = $data;
-			   	if (! dataExpired($date, $timeout_s)) {
-					// We output two types of button data: the action block and the button block.
-					$num_buttons++;
-					if ($displayType === "button-action") {
-						$u = "user_$num_buttons";
-						if (isset($_POST[$u]))
-							runCommand($action, $message, "message");
-					} else {	// "button-button"
-						if ($num_buttons === 1) echo "<br>\n";
-						if ($fa_class !== "-") $fa_class = "<i class='fa $fa_class'></i>";
-						echo "<button type='submit' class='btn $btn_class' style='margin-bottom:5px;' name='user_$num_buttons'/>$fa_class $btn_label</button>\n";
-					}
+				list($type, $message, $action, $btn_class, $fa_class, $btn_label) = $data;
+				// timeout_s doesn't apply to buttons
+				// We output two types of button data: the action block and the button block.
+				$num_buttons++;
+				if ($displayType === "button-action") {
+					$u = "user_$num_buttons";
+					if (isset($_POST[$u]))
+						runCommand($action, $message, "message");
+				} else {	// "button-button"
+					if ($num_buttons === 1) echo "<br>\n";
+					if ($fa_class !== "-") $fa_class = "<i class='fa $fa_class'></i>";
+					echo "<button type='submit' class='btn $btn_class' style='margin-bottom:5px;' name='user_$num_buttons'/>$fa_class $btn_label</button>\n";
 				}
 			}
 		}
