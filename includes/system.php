@@ -84,9 +84,12 @@ function formatSize($bytes)
 	return (round($bytes, 2) . " " . $types[$i]);
 }
 
-/* Check user data for expiration.  Return true if expired, else false */
+/* Check if the data in $file has expired, using the last modified time of the file.
+ * Assume all data in the file was generated at the same time.
+ * Return true if expired, else false.
+*/
 $now = 0;
-function dataExpired($dateTime, $seconds)
+function dataExpired($file, $seconds)
 {
 	global $now;
 	$seconds += 0;	// convert to number
@@ -94,7 +97,7 @@ function dataExpired($dateTime, $seconds)
 
 	if ($now === 0)		// only get once per invocation
 		$now = strtotime("now") + 0;
-	$expire = strtotime($dateTime) + $seconds;
+	$expire = filemtime($file) + $seconds;
 	if ($expire < $now)
 		return(true);
 	else
@@ -121,6 +124,29 @@ function runCommand($cmd, $message, $messageColor)
 	if ($result != null) $status->addMessage(implode("<br>", $result), "message", true);
 }
 
+/* Check for correct number of fields and display error message if not correct. */
+function checkNumFields($num_required, $num_have, $type, $line_num, $line, $file)
+{
+	if ($num_required !== $num_have) {
+		echo "<p style='color: red; border: 1px solid red;'>WARNING: Line $line_num in data file '$file' is invalid:";
+		echo "<br>&nbsp; &nbsp; $line";
+		echo "<br>'$type' lines should have $num_required fields total but there were $num_have fields.";
+		if ($num_have < $num_required) {
+			if ($num_have === 2)
+				// checkNumFields() is only called once we know the first field ($type),
+				// so we know there is at least one TAB on the line.
+				// If there are only 2 fields, that means everthing after $type is missing a tab.
+				echo "<br>There are NO tabs on the line after '$type' - all fields must be TAB-separated.";
+			else
+				echo "<br>Make sure all fields are TAB-separated.";
+		} else {
+			echo "<br>There are too many fields on the line.";
+		}
+		echo "</p>";
+		return(false);
+	}
+	return(true);
+}
 /* Display user data in "file". */
 $num_buttons = 0;
 $num_calls = 0;
@@ -134,7 +160,7 @@ function displayUserData($file, $displayType)
 
 	if (! file_exists($file)) {
 		if ($num_calls === 1)
-			echo "<p style='color: red'>WARNING: User data file '$file' does not exist.</p>";
+			echo "<p style='color: red'>WARNING: data file '$file' does not exist.</p>";
 		return(false);
 	}
 	$handle = fopen($file, "r");
@@ -154,33 +180,26 @@ function displayUserData($file, $displayType)
 		$type = $data[0];
 		if ($type !== "data" && $type !== "progress" && $type !== "button") {
 			if ($num_calls === 1) {
-				echo "<p style='color: red'>WARNING: Line $i in '$file' is invalid:";
-				echo "<br>$line";
-				echo "<br>The first field should be 'data', 'progress', or 'button'.</p>";
+				echo "<p style='color: red; border: 1px solid red;'>WARNING: Line $i in '$file' is invalid:";
+				echo "<br>&nbsp; &nbsp; $line";
+				echo "<br>The first field should be 'data', 'progress', or 'button'.";
+				if (! strstr($type, " "))
+					echo "<br><br>Make sure the fields are TAB-separated.";
+				else
+					echo "<br><br>The fields don't appear to be TAB-separated.";
+				echo "</p>";
 			}
 		} else if ($type === "data" && $displayType === $type) {
-		   	if ($num != 5) {
-				if ($num_calls === 1) {
-					echo "<p style='color: red'>WARNING: Line $i in '$file' is invalid:";
-					echo "<br>$line";
-					echo "<br>'data' lines should have 5 fields total but there were $num fields.</p>";
-				}
-			} else {
-				list($type, $date, $timeout_s, $label, $data) = $data;
-				if (! dataExpired($date, $timeout_s)) {
+			if (checkNumFields(4, $num, $type, $i, $line, $file)) {
+				list($type, $timeout_s, $label, $data) = $data;
+				if (! dataExpired($file, $timeout_s)) {
 					echo "<tr class='x'><td class='info-item'>$label</td><td>$data</td></tr>\n";
 				}
 			}
 		} else if ($type === "progress" && $displayType === $type) {
-		   	if ($num != 10) {
-				if ($num_calls === 1) {
-					echo "<p style='color: red'>WARNING: Line $i in '$file' is invalid:";
-					echo "<br>$line";
-					echo "<br>'progress' lines should have 10 fields total but there were $num fields.</p>";
-				}
-			} else {
-				list($type, $date, $timeout_s, $label, $data, $min, $current, $max, $danger, $warning) = $data;
-				if (! dataExpired($date, $timeout_s)) {
+			if (checkNumFields(9, $num, $type, $i, $line, $file)) {
+				list($type, $timeout_s, $label, $data, $min, $current, $max, $danger, $warning) = $data;
+				if (! dataExpired($file, $timeout_s)) {
 					if ($current >= $danger) {
 						$status = "danger";
 					} elseif ($current >= $warning) {
@@ -198,14 +217,8 @@ function displayUserData($file, $displayType)
 				}
 			}
 		} else if ($type === "button" && substr($displayType, 0, 7) === "button-") {
-		   	if ($num != 6) {
-				if ($num_calls === 1) {
-					echo "<p style='color: red'>WARNING: Line $i in user data file '$file' is invalid:";
-					echo "<br>$line";
-					echo "<br>'button' lines should have 6 fields total but there were $num fields.</p>";
-				}
-			} else {
-				list($type, $message, $action, $btn_class, $fa_class, $btn_label) = $data;
+			if (checkNumFields(6, $num, $type, $i, $line, $file)) {
+				list($type, $message, $action, $btn_color, $fa_class, $btn_label) = $data;
 				// timeout_s doesn't apply to buttons
 				// We output two types of button data: the action block and the button block.
 				$num_buttons++;
@@ -216,7 +229,7 @@ function displayUserData($file, $displayType)
 				} else {	// "button-button"
 					if ($num_buttons === 1) echo "<br>\n";
 					if ($fa_class !== "-") $fa_class = "<i class='fa $fa_class'></i>";
-					echo "<button type='submit' class='btn $btn_class' style='margin-bottom:5px;' name='user_$num_buttons'/>$fa_class $btn_label</button>\n";
+					echo "<button type='submit' class='btn $btn_color' style='margin-bottom:5px;' name='user_$num_buttons'/>$fa_class $btn_label</button>\n";
 				}
 			}
 		}
@@ -493,7 +506,7 @@ function DisplaySystem()
 
 					<form action="?page=system_info" method="POST">
 					<div style="margin-bottom: 20px">
-						<button type="button" class="btn btn-outline btn-primary" onclick="document.location.reload(true)"><i class="fa fa-sync-alt"></i> Refresh</button>
+						<button type="button" class="btn btn-primary" onclick="document.location.reload(true)"><i class="fa fa-sync-alt"></i> Refresh</button>
 					</div>
 					<div style="margin-bottom: 15px">
 						<button type="submit" class="btn btn-success" style="margin-bottom:5px" name="service_start"/><i class="fa fa-play"></i> Start allsky</button>
