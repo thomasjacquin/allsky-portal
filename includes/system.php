@@ -147,6 +147,39 @@ function checkNumFields($num_required, $num_have, $type, $line_num, $line, $file
 	}
 	return(true);
 }
+
+/* Display a "progress" bar. */
+function displayProgress($x, $label, $data, $min, $current, $max, $danger, $warning, $status_override)
+{
+	if ($status_override !== "") {
+		$status = $status_override;
+	} else if ($current >= $danger) {
+		$status = "danger";
+	} elseif ($current >= $warning) {
+		$status = "warning";
+	} else {
+		$status = "success";
+	}
+	echo "<tr><td colspan='2' style='height: 5px'></td></tr>\n";
+	echo "<tr><td $x>$label</td>\n";
+	echo "    <td style='width: 100%' class='progress'><div class='progress-bar progress-bar-$status'\n";
+	echo "    role='progressbar'\n";
+
+	echo "    title='current: $current, min: $min, max: $max'";
+	if ($current < $min) $current = $min;
+	else if ($current > $max) $current = $max;
+   	echo "    aria-valuenow='$current' aria-valuemin='$min' aria-valuemax='$max'\n";
+
+	// The width of the bar should be the percent that $current is in the
+	// range of ($max-$min).
+	// In the typical case where $max=100 and $min=0, if $current is 21,
+	// then width=(21/(100-0)*100) = 21.
+	// If $max=50, $min=0, and $current=21, then width=(21/(50-0))*100 = 42.
+	$width = (($current - $min) / ($max - $min)) * 100;
+	echo "    style='width: $width%;'>$data\n";
+	echo "    </div></td></tr>\n";
+}
+
 /* Display user data in "file". */
 $num_buttons = 0;
 $num_calls = 0;
@@ -200,34 +233,13 @@ function displayUserData($file, $displayType)
 		} else if ($type === "progress" && $displayType === $type) {
 			if (checkNumFields(9, $num, $type, $i, $line, $file)) {
 				list($type, $timeout_s, $label, $data, $min, $current, $max, $danger, $warning) = $data;
-				if ($current >= $danger) {
-					$status = "danger";
-				} elseif ($current >= $warning) {
-					$status = "warning";
+				if (dataExpired($file, $timeout_s)) {
+					$label = $label . " (EXPIRED)";
+					$x = "style='color: red; font-weight: bold;'";
 				} else {
-					$status = "success";
+					$x = "";
 				}
-				echo "<tr><td colspan='2' style='height: 5px'></td></tr>\n";
-				if (dataExpired($file, $timeout_s))
-					echo "<tr><td style='color: red; font-weight: bold;'>$label (EXPIRED)</td>\n";
-				else
-					echo "<tr><td>$label</td>\n";
-				echo "    <td style='width: 100%' class='progress'><div class='progress-bar progress-bar-$status'\n";
-				echo "    role='progressbar'\n";
-
-				echo "    title='current: $current, min: $min, max: $max'";
-				if ($current < $min) $current = $min;
-				else if ($current > $max) $current = $max;
-   				echo "    aria-valuenow='$current' aria-valuemin='$min' aria-valuemax='$max'\n";
-
-				// The width of the bar should be the percent that $current is in the
-				// range of ($max-$min).
-				// In the typical case where $max=100 and $min=0, if $current is 21,
-				// then width=(21/(100-0)*100) = 21.
-				// If $max=50, $min=0, and $current=21, then width=(21/(50-0))*100 = 42.
-				$width = (($current - $min) / ($max - $min)) * 100;
-				echo "    style='width: $width%;'>$data\n";
-				echo "    </div></td></tr>\n";
+				displayProgress($x, $label, $data, $min, $current, $max, $danger, $warning, "");
 			}
 		} else if ($type === "button" && substr($displayType, 0, 7) === "button-") {
 			if (checkNumFields(6, $num, $type, $i, $line, $file)) {
@@ -303,13 +315,6 @@ function DisplaySystem()
 		exec("free -m | awk '/Mem:/ { total=$2 } /Mem:/ { used=$3 } END { print used/total*100}'", $memarray);
 		$memused = floor($memarray[0]);
 	}
-	if ($memused > 90) {
-		$memused_status = "danger";
-	} elseif ($memused > 75) {
-		$memused_status = "warning";
-	} elseif ($memused > 0) {
-		$memused_status = "success";
-	}
 
 
 	// Disk usage
@@ -321,7 +326,7 @@ function DisplaySystem()
 	/* now we calculate the disk space used (in bytes) */
 	$du = $dt - $df;
 	/* percentage of disk used - this will be used to also set the width % of the progress bar */
-	$dp = sprintf('%.1f', ($du / $dt) * 100);
+	$dp = sprintf('%d', ($du / $dt) * 100);
 
 	/* and we format the size from bytes to MB, GB, etc. */
 	$df = formatSize($df);
@@ -379,37 +384,22 @@ function DisplaySystem()
 	$secs = 2; $q = '"';
 	$cpuload = exec("(grep -m 1 'cpu ' /proc/stat; sleep $secs; grep -m 1 'cpu ' /proc/stat) | awk '{u=$2+$4; t=$2+$4+$5; if (NR==1){u1=u; t1=t;} else printf($q%.0f$q, (($2+$4-u1) * 100 / (t-t1))); }'");
 	if ($cpuload < 0 || $cpuload > 100) echo "<p style='color: red; font-size: 125%;'>Invalid cpuload value: $cpuload</p>";
-	if ($cpuload > 90 || $cpuload < 0) {
-		$cpuload_status = "danger";
-	} elseif ($cpuload > 75) {
-		$cpuload_status = "warning";
-	} else {
-		$cpuload_status = "success";
-	}
 
 	// temperature
 	$temperature = round(exec("awk '{print $1/1000}' /sys/class/thermal/thermal_zone0/temp"), 2);
-	if ($temperature > 70 || $temperature < 0) {
+	// additional checks for temperature
+	if ($temperature < 0) {
 		$temperature_status = "danger";
-	} elseif ($temperature > 60 || $temperature < 10) {
+	} elseif ($temperature < 10) {
 		$temperature_status = "warning";
 	} else {
-		$temperature_status = "success";
+		$temperature_status = "";
 	}
 	$display_temperature = "";
 	if ($temp_type == "C" || $temp_type == "B")
 		$display_temperature = number_format($temperature, 1, '.', '') . "&deg;C";
 	if ($temp_type == "F" || $temp_type == "B")
 		$display_temperature = $display_temperature . "&nbsp; &nbsp;" . number_format((($temperature * 1.8) + 32), 1, '.', '') . "&deg;F";
-
-	// disk usage
-	if ($dp >= 90) {
-		$disk_usage_status = "danger";
-	} elseif ($dp >= 70 && $dp < 90) {
-		$disk_usage_status = "warning";
-	} else {
-		$disk_usage_status = "success";
-	}
 
 	// Optional user-specified data.
 	// TODO: read each file once and populate arrays for "data", "progress", and "button".
@@ -467,44 +457,16 @@ function DisplaySystem()
 										}
 									?>
 									<tr><td colspan="2" style="height: 5px"></td></tr>
-									<tr><td>Throttle Status</td>
-										<!-- Treat it like a full-width progress bar -->
-										<td style="width: 100%" class="progress"><div class="progress-bar progress-bar-<?php echo $throttle_status ?>"
-										role="progressbar"
-										aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"
-										style="width: 100%;"><?php echo $throttle ?> 
-										</div></td></tr>
-
+									<!-- Treat Throttle Status like a full-width progress bar -->
+									<?php displayProgress("", "Throttle Status", $throttle, 0, 100, 100, -1, -1, $throttle_status); ?>
 									<tr><td colspan="2" style="height: 5px"></td></tr>
-									<tr><td>Memory Used</td>
-										<td style="width: 100%" class="progress"><div class="progress-bar progress-bar-<?php echo $memused_status ?>"
-										role="progressbar"
-										aria-valuenow="<?php echo $memused ?>" aria-valuemin="0" aria-valuemax="100"
-										style="width: <?php echo $memused ?>%;"><?php echo $memused ?>%
-										</div></td></tr>
-
+									<?php displayProgress("", "Memory Used", "$memused%", 0, $memused, 100, 90, 75, ""); ?>
 									<tr><td colspan="2" style="height: 5px"></td></tr>
-									<tr><td>CPU Load</td>
-										<td style="width: 100%" class="progress"><div class="progress-bar progress-bar-<?php echo $cpuload_status ?>"
-										role="progressbar"
-										aria-valuenow="<?php echo $cpuload ?>" aria-valuemin="0" aria-valuemax="100"
-										style="width: <?php echo $cpuload ?>%;"><?php echo $cpuload ?>%
-										</div></td></tr>
-
+									<?php displayProgress("", "CPU Load", "$cpuload%", 0, $cpuload, 100, 90, 75, ""); ?>
 									<tr><td colspan="2" style="height: 5px"></td></tr>
-									<tr><td>CPU Temperature</td>
-										<td style="width: 100%" class="progress"><div class="progress-bar progress-bar-<?php echo $temperature_status ?>"
-										role="progressbar"
-										aria-valuenow="<?php echo $temperature ?>" aria-valuemin="0" aria-valuemax="100"
-										style="width: <?php echo $temperature ?>%;"><?php echo $display_temperature ?>
-										</div></td></tr>
+									<?php displayProgress("", "CPU Temperature", $display_temperature, 0, $temperature, 100, 70, 60, $temperature_status); ?>
 									<tr><td colspan="2" style="height: 5px"></td></tr>
-									<tr><td>Disk Usage</td>
-										<td style="width: 100%" class="progress"><div class="progress-bar progress-bar-<?php echo $disk_usage_status ?>"
-										role="progressbar"
-										aria-valuenow="<?php echo $dp ?>" aria-valuemin="0" aria-valuemax="100"
-										style="width: <?php echo $dp ?>%;"><?php echo $dp ?>%
-										</div></td></tr>
+									<?php displayProgress("", "Disk Usage", "$dp%", 0, $dp, 100, 90, 70, ""); ?>
 									<?php
 										// Optional user-specified data.
 										for ($i=0; $i < $user_data_files_count; $i++) {
