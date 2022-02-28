@@ -213,15 +213,19 @@ function displayUserData($file, $displayType)
 				else
 					echo "<tr><td>$label</td>\n";
 				echo "    <td style='width: 100%' class='progress'><div class='progress-bar progress-bar-$status'\n";
-				echo "    role='progressbar\n";
+				echo "    role='progressbar'\n";
+
+				echo "    title='current: $current, min: $min, max: $max'";
+				if ($current < $min) $current = $min;
+				else if ($current > $max) $current = $max;
    				echo "    aria-valuenow='$current' aria-valuemin='$min' aria-valuemax='$max'\n";
+
 				// The width of the bar should be the percent that $current is in the
 				// range of ($max-$min).
 				// In the typical case where $max=100 and $min=0, if $current is 21,
 				// then width=(21/(100-0)*100) = 21.
 				// If $max=50, $min=0, and $current=21, then width=(21/(50-0))*100 = 42.
-				$width = ($current / ($max - $min)) * 100;
-				echo "    title='min: $min, max: $max'";
+				$width = (($current - $min) / ($max - $min)) * 100;
 				echo "    style='width: $width%;'>$data\n";
 				echo "    </div></td></tr>\n";
 			}
