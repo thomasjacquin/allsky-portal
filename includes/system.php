@@ -209,7 +209,7 @@ function displayUserData($file, $displayType)
 				}
 				echo "<tr><td colspan='2' style='height: 5px'></td></tr>\n";
 				if (dataExpired($file, $timeout_s))
-					echo "<tr><td style='color: red'>$label (EXPIRED)</td>\n";
+					echo "<tr><td style='color: red; font-weight: bold;'>$label (EXPIRED)</td>\n";
 				else
 					echo "<tr><td>$label</td>\n";
 				echo "    <td style='width: $current%' class='progress'><div class='progress-bar progress-bar-$status'\n";
