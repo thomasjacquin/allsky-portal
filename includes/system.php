@@ -192,29 +192,31 @@ function displayUserData($file, $displayType)
 		} else if ($type === "data" && $displayType === $type) {
 			if (checkNumFields(4, $num, $type, $i, $line, $file)) {
 				list($type, $timeout_s, $label, $data) = $data;
-				if (! dataExpired($file, $timeout_s)) {
-					echo "<tr class='x'><td class='info-item'>$label</td><td>$data</td></tr>\n";
-				}
+				if (dataExpired($file, $timeout_s))
+					echo "<tr class='x' style='color: red; font-weight: bold;'><td>$label (EXPIRED)</td><td>$data</td></tr>\n";
+				else
+					echo "<tr class='x'><td>$label</td><td>$data</td></tr>\n";
 			}
 		} else if ($type === "progress" && $displayType === $type) {
 			if (checkNumFields(9, $num, $type, $i, $line, $file)) {
 				list($type, $timeout_s, $label, $data, $min, $current, $max, $danger, $warning) = $data;
-				if (! dataExpired($file, $timeout_s)) {
-					if ($current >= $danger) {
-						$status = "danger";
-					} elseif ($current >= $warning) {
-						$status = "warning";
-					} else {
-						$status = "success";
-					}
-					echo "<tr><td colspan='2' style='height: 10px'></td></tr>\n";
-					echo "<tr><td class='info-item'>$label</td>\n";
-					echo "    <td style='width: $current%' class='progress'><div class='progress-bar progress-bar-$status'\n";
-					echo "    role='progressbar\n";
-	   				echo "    aria-valuenow='$current' aria-valuemin='$min' aria-valuemax='$max'\n";
-					echo "    style='width: $current%;'>$data\n";
-					echo "    </div></td></tr>\n";
+				if ($current >= $danger) {
+					$status = "danger";
+				} elseif ($current >= $warning) {
+					$status = "warning";
+				} else {
+					$status = "success";
 				}
+				echo "<tr><td colspan='2' style='height: 5px'></td></tr>\n";
+				if (dataExpired($file, $timeout_s))
+					echo "<tr><td style='color: red'>$label (EXPIRED)</td>\n";
+				else
+					echo "<tr><td>$label</td>\n";
+				echo "    <td style='width: $current%' class='progress'><div class='progress-bar progress-bar-$status'\n";
+				echo "    role='progressbar\n";
+   				echo "    aria-valuenow='$current' aria-valuemin='$min' aria-valuemax='$max'\n";
+				echo "    style='width: $current%;'>$data\n";
+				echo "    </div></td></tr>\n";
 			}
 		} else if ($type === "button" && substr($displayType, 0, 7) === "button-") {
 			if (checkNumFields(6, $num, $type, $i, $line, $file)) {
@@ -227,9 +229,8 @@ function displayUserData($file, $displayType)
 					if (isset($_POST[$u]))
 						runCommand($action, $message, "message");
 				} else {	// "button-button"
-					if ($num_buttons === 1) echo "<br>\n";
 					if ($fa_class !== "-") $fa_class = "<i class='fa $fa_class'></i>";
-					echo "<button type='submit' class='btn $btn_color' style='margin-bottom:5px;' name='user_$num_buttons'/>$fa_class $btn_label</button>\n";
+					echo "<button type='submit' class='btn btn-$btn_color' name='user_$num_buttons'/>$fa_class $btn_label</button>\n";
 				}
 			}
 		}
@@ -439,22 +440,23 @@ function DisplaySystem()
 					<p><?php $status->showMessages(); ?></p>
 
 					<div class="row">
-						<div class="col-md-6">
+						<div xxxclass="col-md-6">
 							<div class="panel panel-default">
 								<div class="panel-body">
 									<h4>System Information</h4>
 									<table>
-									<tr class="x"><td class="info-item">Hostname</td><td><?php echo $hostname ?></td></tr>
-									<tr class="x"><td class="info-item">Pi Revision</td><td><?php echo RPiVersion() ?></td></tr>
-									<tr class="x"><td class="info-item">Uptime</td><td><?php echo $uptime ?></td></tr>
-									<tr class="x"><td class="info-item">SD Card</td><td><?php echo "$dt ($df free)" ?></td></tr>
+									<!-- <colgroup> doesn't seem to support "width", so set on 1st line -->
+									<tr class="x"><td style="padding-right: 90px;">Hostname</td><td><?php echo $hostname ?></td></tr>
+									<tr class="x"><td>Pi Revision</td><td><?php echo RPiVersion() ?></td></tr>
+									<tr class="x"><td>Uptime</td><td><?php echo $uptime ?></td></tr>
+									<tr class="x"><td>SD Card</td><td><?php echo "$dt ($df free)" ?></td></tr>
 									<?php // Optional user-specified data.
 										for ($i=0; $i < $user_data_files_count; $i++) {
 											displayUserData($user_data_files[$i], "data");
 										}
 									?>
-									<tr><td colspan="2" style="height: 10px"></td></tr>
-									<tr><td class="info-item">Throttle Status</td>
+									<tr><td colspan="2" style="height: 5px"></td></tr>
+									<tr><td>Throttle Status</td>
 										<!-- Treat it like a full-width progress bar -->
 										<td style="width: 100%" class="progress"><div class="progress-bar progress-bar-<?php echo $throttle_status ?>"
 										role="progressbar"
@@ -462,31 +464,31 @@ function DisplaySystem()
 										style="width: 100%;"><?php echo $throttle ?> 
 										</div></td></tr>
 
-									<tr><td colspan="2" style="height: 10px"></td></tr>
-									<tr><td class="info-item">Memory Used</td>
+									<tr><td colspan="2" style="height: 5px"></td></tr>
+									<tr><td>Memory Used</td>
 										<td style="width: 100%" class="progress"><div class="progress-bar progress-bar-<?php echo $memused_status ?>"
 										role="progressbar"
 										aria-valuenow="<?php echo $memused ?>" aria-valuemin="0" aria-valuemax="100"
 										style="width: <?php echo $memused ?>%;"><?php echo $memused ?>%
 										</div></td></tr>
 
-									<tr><td colspan="2" style="height: 10px"></td></tr>
-									<tr><td class="info-item">CPU Load</td>
+									<tr><td colspan="2" style="height: 5px"></td></tr>
+									<tr><td>CPU Load</td>
 										<td style="width: 100%" class="progress"><div class="progress-bar progress-bar-<?php echo $cpuload_status ?>"
 										role="progressbar"
 										aria-valuenow="<?php echo $cpuload ?>" aria-valuemin="0" aria-valuemax="100"
 										style="width: <?php echo $cpuload ?>%;"><?php echo $cpuload ?>%
 										</div></td></tr>
 
-									<tr><td colspan="2" style="height: 10px"></td></tr>
-									<tr><td class="info-item">CPU Temperature</td>
+									<tr><td colspan="2" style="height: 5px"></td></tr>
+									<tr><td>CPU Temperature</td>
 										<td style="width: 100%" class="progress"><div class="progress-bar progress-bar-<?php echo $temperature_status ?>"
 										role="progressbar"
 										aria-valuenow="<?php echo $temperature ?>" aria-valuemin="0" aria-valuemax="100"
 										style="width: <?php echo $temperature ?>%;"><?php echo $display_temperature ?>
 										</div></td></tr>
-									<tr><td colspan="2" style="height: 10px"></td></tr>
-									<tr><td class="info-item">Disk Usage</td>
+									<tr><td colspan="2" style="height: 5px"></td></tr>
+									<tr><td>Disk Usage</td>
 										<td style="width: 100%" class="progress"><div class="progress-bar progress-bar-<?php echo $disk_usage_status ?>"
 										role="progressbar"
 										aria-valuenow="<?php echo $dp ?>" aria-valuemin="0" aria-valuemax="100"
@@ -505,15 +507,17 @@ function DisplaySystem()
 					</div><!-- /.row -->
 
 					<form action="?page=system_info" method="POST">
-					<div style="margin-bottom: 20px">
+					<div style="margin-bottom: 15px">
 						<button type="button" class="btn btn-primary" onclick="document.location.reload(true)"><i class="fa fa-sync-alt"></i> Refresh</button>
 					</div>
 					<div style="margin-bottom: 15px">
-						<button type="submit" class="btn btn-success" style="margin-bottom:5px" name="service_start"/><i class="fa fa-play"></i> Start allsky</button>
-						<button type="submit" class="btn btn-danger" style="margin-bottom:5px" name="service_stop"/><i class="fa fa-stop"></i> Stop allsky</button>
+						<button type="submit" class="btn btn-success" name="service_start"/><i class="fa fa-play"></i> Start allsky</button>
+						<button type="submit" class="btn btn-danger" name="service_stop"/><i class="fa fa-stop"></i> Stop allsky</button>
 					</div>
-					<button type="submit" class="btn btn-warning" style="margin-bottom:5px" name="system_reboot"/><i class="fa fa-power-off"></i> Reboot Raspberry Pi</button>
-					<button type="submit" class="btn btn-warning" style="margin-bottom:5px" name="system_shutdown"/><i class="fa fa-plug"></i> Shutdown Raspberry Pi</button>
+					<div style="margin-bottom: 15px">
+						<button type="submit" class="btn btn-warning" name="system_reboot"/><i class="fa fa-power-off"></i> Reboot Raspberry Pi</button>
+						<button type="submit" class="btn btn-warning" name="system_shutdown"/><i class="fa fa-plug"></i> Shutdown Raspberry Pi</button>
+					</div>
 					<?php // Optional user-specified data.
 						for ($i=0; $i < $user_data_files_count; $i++) {
 							displayUserData($user_data_files[$i], "button-button");
