@@ -212,25 +212,32 @@ function displayUserData($file, $displayType)
 					echo "<tr><td style='color: red; font-weight: bold;'>$label (EXPIRED)</td>\n";
 				else
 					echo "<tr><td>$label</td>\n";
-				echo "    <td style='width: $current%' class='progress'><div class='progress-bar progress-bar-$status'\n";
+				echo "    <td style='width: 100%' class='progress'><div class='progress-bar progress-bar-$status'\n";
 				echo "    role='progressbar\n";
    				echo "    aria-valuenow='$current' aria-valuemin='$min' aria-valuemax='$max'\n";
-				echo "    style='width: $current%;'>$data\n";
+				// The width of the bar should be the percent that $current is in the
+				// range of ($max-$min).
+				// In the typical case where $max=100 and $min=0, if $current is 21,
+				// then width=(21/(100-0)*100) = 21.
+				// If $max=50, $min=0, and $current=21, then width=(21/(50-0))*100 = 42.
+				$width = ($current / ($max - $min)) * 100;
+				echo "    title='min: $min, max: $max'";
+				echo "    style='width: $width%;'>$data\n";
 				echo "    </div></td></tr>\n";
 			}
 		} else if ($type === "button" && substr($displayType, 0, 7) === "button-") {
 			if (checkNumFields(6, $num, $type, $i, $line, $file)) {
-				list($type, $message, $action, $btn_color, $fa_class, $btn_label) = $data;
+				list($type, $message, $action, $btn_color, $fa_icon, $btn_label) = $data;
 				// timeout_s doesn't apply to buttons
 				// We output two types of button data: the action block and the button block.
 				$num_buttons++;
 				if ($displayType === "button-action") {
 					$u = "user_$num_buttons";
 					if (isset($_POST[$u]))
-						runCommand($action, $message, "message");
+						runCommand($action, $message, "success");
 				} else {	// "button-button"
-					if ($fa_class !== "-") $fa_class = "<i class='fa $fa_class'></i>";
-					echo "<button type='submit' class='btn btn-$btn_color' name='user_$num_buttons'/>$fa_class $btn_label</button>\n";
+					if ($fa_icon !== "-") $fa_icon = "<i class='fa fa-$fa_icon'></i>";
+					echo "<button type='submit' class='btn btn-$btn_color' name='user_$num_buttons'/>$fa_icon $btn_label</button>\n";
 				}
 			}
 		}
