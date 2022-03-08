@@ -4,13 +4,14 @@ function DisplayEditor()
 {
     $status = new StatusMessages();
 	$showFullList = false;	// show the full list of what's in ALLSKY_SCRIPTS, or just user-editable files?
+	$config_dir = basename(ALLSKY_CONFIG);
 ?>
 
     <script type="text/javascript">
 
         $(document).ready(function () {
 	        var editor = null;
-	        $.get("current<?php echo ALLSKY_CONFIG_DIR ?>/config.sh?_ts=" + new Date().getTime(), function (data) {
+	        $.get("current/<?php echo $config_dir ?>/config.sh?_ts=" + new Date().getTime(), function (data) {
         	    editor = CodeMirror(document.querySelector("#editorContainer"), {
                     value: data,
                     mode: "shell",
@@ -82,13 +83,13 @@ function DisplayEditor()
                         <select class="form-control" id="script_path"
                             style="display: inline-block; width: auto; margin-right: 15px; margin-bottom: 5px"
                         >
-                            <option value="current<?php echo ALLSKY_CONFIG_DIR ?>/config.sh">config.sh</option>
-                            <option value="current<?php echo ALLSKY_CONFIG_DIR ?>/ftp-settings.sh">ftp-settings.sh</option>
+                            <option value="current/<?php echo $config_dir ?>/config.sh">config.sh</option>
+                            <option value="current/<?php echo $config_dir ?>/ftp-settings.sh">ftp-settings.sh</option>
 
 				<?php
 							if ($scripts != null) {
 								foreach ($scripts as $script) {
-									echo "<option value='current/scripts/$script'>$script</option>";
+									echo "<option value='current/" . basename(ALLSKY_SCRIPTS) . "/$script'>$script</option>";
 								}
 							}
                ?>
