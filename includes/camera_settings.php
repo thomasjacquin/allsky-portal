@@ -21,7 +21,7 @@ function DisplayCameraConfig(){
 				fclose($camera_settings_file);
 				$msg = "Camera settings saved";
 				if (isset($_POST['restart'])) {
-					shell_exec("sudo systemctl restart allsky.service");
+					shell_exec("sudo systemctl try-reload-or-restart allsky.service");
 					$msg .= " and service restarted";
 					$status->addMessage($msg);
 				} else {
