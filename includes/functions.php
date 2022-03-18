@@ -775,4 +775,27 @@ function ListFileType($dir, $imageFileName, $formalImageTypeName, $type) {	// if
         echo "</div>";
 }
 
+$status = null;
+/* Run a command and display the appropriate status message */
+function runCommand($cmd, $message, $messageColor)
+{
+	global $status;
+
+	exec("$cmd 2>&1", $result, $return_val);
+	if ($result === null || $return_val !== 0) {
+		$msg = "'$cmd' failed";
+		if ($result != null) $msg .= ": " . implode("<br>", $result);
+		$status->addMessage($msg, "danger", true);
+		return false;
+	}
+
+	if ($message !== "-")
+		$status->addMessage($message, $messageColor, true);
+
+	// Display any output
+	if ($result != null) $status->addMessage(implode("<br>", $result), "message", true);
+	
+	return true;
+}
+
 ?>
