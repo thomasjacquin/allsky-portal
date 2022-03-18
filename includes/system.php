@@ -104,26 +104,6 @@ function dataExpired($file, $seconds)
 		return(false);
 }
 
-/* Run a command and display the appropriate status message */
-function runCommand($cmd, $message, $messageColor)
-{
-	global $status;
-
-	exec("$cmd 2>&1", $result, $return_val);
-	if ($result == null || $return_val !== 0) {
-		$msg = "'$cmd' failed";
-		if ($result != null) $msg .= ": " . implode("<br>", $result);
-		$status->addMessage($msg, "danger", true);
-		return;
-	}
-
-	if ($message !== "-")
-		$status->addMessage($message, $messageColor, true);
-
-	// Display any output
-	if ($result != null) $status->addMessage(implode("<br>", $result), "message", true);
-}
-
 /* Check for correct number of fields and display error message if not correct. */
 function checkNumFields($num_required, $num_have, $type, $line_num, $line, $file)
 {
@@ -187,7 +167,6 @@ function displayUserData($file, $displayType)
 {
 	global $num_buttons;
 	global $num_calls;
-	global $status;
 
 	$num_calls++;
 
@@ -267,7 +246,6 @@ function displayUserData($file, $displayType)
  *
  *
  */
-$status = null;
 function DisplaySystem()
 {
 	global $status;
@@ -431,7 +409,7 @@ function DisplaySystem()
 						runCommand("sudo /bin/systemctl start allsky", "allsky service started", "success");
 					}
 					if (isset($_POST['service_stop'])) {
-						runCommand("echo sudo /bin/systemctl stop allsky", "allsky service stopped", "success");
+						runCommand("sudo /bin/systemctl stop allsky", "allsky service stopped", "success");
 					}
 					// Optional user-specified data.
 					for ($i=0; $i < $user_data_files_count; $i++) {
