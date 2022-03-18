@@ -5,6 +5,7 @@ function DisplayCameraConfig(){
 	$camera_options_str = file_get_contents(RASPI_CAMERA_OPTIONS, true);
 	$camera_options_array = json_decode($camera_options_str, true);
 
+	global $status;
 	$status = new StatusMessages();
 
 	if (isset($_POST['save_camera_settings'])) {
@@ -21,9 +22,8 @@ function DisplayCameraConfig(){
 				fclose($camera_settings_file);
 				$msg = "Camera settings saved";
 				if (isset($_POST['restart'])) {
-					shell_exec("sudo systemctl restart allsky.service");
 					$msg .= " and service restarted";
-					$status->addMessage($msg);
+					runCommand("sudo /bin/systemctl reload-or-restart allsky.service", $msg, "success");
 				} else {
 					$msg .= " but service NOT restarted";
 					$status->addMessage($msg, 'info');
