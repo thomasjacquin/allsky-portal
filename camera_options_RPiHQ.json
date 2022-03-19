@@ -295,6 +295,69 @@
 "label":"Always Show Advanced",
 "type":"checkbox",
 "advanced":1
+},
+{
+"name":"",
+"default":"",
+"description":"Camera Setup",
+"label":"",
+"type":"header",
+"advanced":0
+},
+{
+"name":"location",
+"default":"",
+"description":"The location of your camera. Ex: Whitehorse, YT, Canada",
+"label":"Location",
+"type":"text",
+"advanced":0
+},
+{
+"name":"owner",
+"default":"",
+"description":"The owner of the camera. It can be your name or an association or observatory, etc",
+"label":"Owner",
+"type":"text",
+"advanced":0
+},
+{
+"name":"websiteurl",
+"default":"",
+"description":"The URL of your website. ex: https://thomasjacquin.com/allsky",
+"label":"Website URL",
+"type":"text",
+"advanced":0
+},
+{
+"name":"imageurl",
+"default":"",
+"description":"The url or the image on your website. ex: https://thomasjacquin.com/allsky/image.jpg.<br/>Right-click on the image and select Copy Image Address",
+"label":"Image URL",
+"type":"text",
+"advanced":0
+},
+{
+"name":"camera",
+"default":"",
+"description":"The model of your camera. Ex: ASI 224MC or RPiHQ",
+"label":"Camera",
+"type":"text",
+"advanced":0
+},
+{
+"name":"lens",
+"default":"",
+"description":"The lens you're using on your camera. Ex: Arecont 1.55",
+"label":"Lens",
+"type":"text",
+"advanced":0
+},
+{
+"name":"computer",
+"default":"",
+"description":"The computer inside your allsky enclosure. Ex: Raspberry Pi 3",
+"label":"Computer",
+"type":"text",
+"advanced":0
 }
-
 ]
