@@ -566,19 +566,19 @@
 "advanced":1
 },
 {
-"name":"showonmap",
-"default":0,
-"description":"Activate to have your camera showing up on the allsky map. https://www.thomasjacquin.com/allsky-map",
-"label":"Show on Map",
-"type":"checkbox",
-"advanced":0
-},
-{
 "name":"",
 "default":"",
 "description":"Camera Setup",
 "label":"",
 "type":"header",
+"advanced":0
+},
+{
+"name":"showonmap",
+"default":0,
+"description":"Activate to have your camera showing up on the allsky map. https://www.thomasjacquin.com/allsky-map",
+"label":"Show on Map",
+"type":"checkbox",
 "advanced":0
 },
 {
