@@ -297,6 +297,14 @@
 "advanced":1
 },
 {
+"name":"showonmap",
+"default":0,
+"description":"Activate to have your camera showing up on the allsky map. https://www.thomasjacquin.com/allsky-map",
+"label":"Show on Map",
+"type":"checkbox",
+"advanced":0
+},
+{
 "name":"",
 "default":"",
 "description":"Camera Setup",
@@ -323,7 +331,7 @@
 {
 "name":"websiteurl",
 "default":"",
-"description":"The URL of your website. ex: https://thomasjacquin.com/allsky",
+"description":"The URL of your website. ex: https://www.thomasjacquin.com/allsky",
 "label":"Website URL",
 "type":"text",
 "advanced":0
@@ -331,7 +339,7 @@
 {
 "name":"imageurl",
 "default":"",
-"description":"The url or the image on your website. ex: https://thomasjacquin.com/allsky/image.jpg.<br/>Right-click on the image and select Copy Image Address",
+"description":"The url or the image on your website. ex: https://wwww.thomasjacquin.com/allsky/image.jpg.<br/>Right-click on the image and select Copy Image Address",
 "label":"Image URL",
 "type":"text",
 "advanced":0
