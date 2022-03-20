@@ -7,13 +7,11 @@
  *
 */
 
-//FUTURE define('ALLSKY_CONFIG_DIR', '/config');		// name of directory only.
-
 // These values are updated during installation.
 define('ALLSKY_HOME',    'XX_ALLSKY_HOME_XX');
 define('ALLSKY_SCRIPTS', 'XX_ALLSKY_SCRIPTS_XX');
 define('ALLSKY_IMAGES',  'XX_ALLSKY_IMAGES_XX');
-//FUTURE define('ALLSKY_CONFIG',  'XX_ALLSKY_CONFIG_XX');
+define('ALLSKY_CONFIG',  'XX_ALLSKY_CONFIG_XX');
 define('RASPI_CONFIG',   'XX_RASPI_CONFIG_XX');
 
 // Split the placeholder so it doesn't get replaced if the update script is run multiple times.
@@ -23,23 +21,9 @@ if (ALLSKY_HOME == "XX_ALLSKY_HOME" . "_XX") {
 	echo "<span style='color: red'>";
 	echo "Please run the following from the 'allsky' directory before using the WebUI:";
 	echo "</span>";
-	echo "<code>   sudo gui/install --update</code>";
+	echo "<code>   sudo gui/install.sh --update</code>";
 	echo "</div>";
 	exit;
-}
-
-// xxx COMPATIBILITY CHECK:
-// Version 0.8 and older of allsky had config.sh and autocam.sh in $ALLSKY_HOME.
-// Newer versions have config.sh in $ALLSKY_CONFIG and don't need autocam.sh since "auto" is no longer a valid CAMERA type.
-// Can't change a constant after it's defined so use temp names first.
-$allsky_config_dir = '/config';
-$allsky_config = ALLSKY_HOME . $allsky_config_dir;	// value updated during installation
-if (file_exists($allsky_config . '/config.sh')) {
-	define('ALLSKY_CONFIG_DIR', '/config');			// name of just the directory
-	define('ALLSKY_CONFIG', $allsky_config);
-} else {
-	define('ALLSKY_CONFIG_DIR', '');
-	define('ALLSKY_CONFIG', ALLSKY_HOME);
 }
 
 $cam = get_variable(ALLSKY_CONFIG .'/config.sh', 'CAMERA=', '');
@@ -68,13 +52,10 @@ if (! file_exists(RASPI_CAMERA_SETTINGS)) {
 
 $camera_settings_str = file_get_contents(RASPI_CAMERA_SETTINGS, true);
 $camera_settings_array = json_decode($camera_settings_str, true);
-// $img_dir is an alias in the web server's config.
-// It's the same as ALLSKY_HOME which is the physical path name on the server.
-$img_dir = get_variable(ALLSKY_CONFIG . '/config.sh', 'IMG_DIR=', 'current');
-// xxx new way:  $image_name = $img_dir . "/" . $camera_settings_array['filename'];
-// old way uses IMG_PREFIX:
-$img_prefix = get_variable(ALLSKY_CONFIG .'/config.sh', 'IMG_PREFIX=', '');
-$image_name = $img_dir . "/" . $img_prefix . $camera_settings_array['filename'];
+// $img_dir is an alias in the web server's config that points to where the current image is.
+// It's the same as ${ALLSKY_TMP} which is the physical path name on the server.
+$img_dir = get_variable(ALLSKY_CONFIG . '/config.sh', 'IMG_DIR=', 'current/tmp');
+$image_name = $img_dir . "/" . $camera_settings_array['filename'];
 $darkframe = $camera_settings_array['darkframe'];
 
 
@@ -792,6 +773,29 @@ function ListFileType($dir, $imageFileName, $formalImageTypeName, $type) {	// if
 		}
 	}
         echo "</div>";
+}
+
+$status = null;
+/* Run a command and display the appropriate status message */
+function runCommand($cmd, $message, $messageColor)
+{
+	global $status;
+
+	exec("$cmd 2>&1", $result, $return_val);
+	if ($result === null || $return_val !== 0) {
+		$msg = "'$cmd' failed";
+		if ($result != null) $msg .= ": " . implode("<br>", $result);
+		$status->addMessage($msg, "danger", true);
+		return false;
+	}
+
+	if ($message !== "-")
+		$status->addMessage($message, $messageColor, true);
+
+	// Display any output
+	if ($result != null) $status->addMessage(implode("<br>", $result), "message", true);
+	
+	return true;
 }
 
 ?>
