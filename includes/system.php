@@ -84,12 +84,173 @@ function formatSize($bytes)
 	return (round($bytes, 2) . " " . $types[$i]);
 }
 
+/* Check if the data in $file has expired, using the last modified time of the file.
+ * Assume all data in the file was generated at the same time.
+ * Return true if expired, else false.
+*/
+$now = 0;
+function dataExpired($file, $seconds)
+{
+	global $now;
+	$seconds += 0;	// convert to number
+	if ($seconds === 0) return(false);
+
+	if ($now === 0)		// only get once per invocation
+		$now = strtotime("now") + 0;
+	$expire = filemtime($file) + $seconds;
+	if ($expire < $now)
+		return(true);
+	else
+		return(false);
+}
+
+/* Check for correct number of fields and display error message if not correct. */
+function checkNumFields($num_required, $num_have, $type, $line_num, $line, $file)
+{
+	if ($num_required !== $num_have) {
+		echo "<p style='color: red; border: 1px solid red;'>WARNING: Line $line_num in data file '$file' is invalid:";
+		echo "<br>&nbsp; &nbsp; $line";
+		echo "<br>'$type' lines should have $num_required fields total but there were $num_have fields.";
+		if ($num_have < $num_required) {
+			if ($num_have === 2)
+				// checkNumFields() is only called once we know the first field ($type),
+				// so we know there is at least one TAB on the line.
+				// If there are only 2 fields, that means everthing after $type is missing a tab.
+				echo "<br>There are NO tabs on the line after '$type' - all fields must be TAB-separated.";
+			else
+				echo "<br>Make sure all fields are TAB-separated.";
+		} else {
+			echo "<br>There are too many fields on the line.";
+		}
+		echo "</p>";
+		return(false);
+	}
+	return(true);
+}
+
+/* Display a "progress" bar. */
+function displayProgress($x, $label, $data, $min, $current, $max, $danger, $warning, $status_override)
+{
+	if ($status_override !== "") {
+		$status = $status_override;
+	} else if ($current >= $danger) {
+		$status = "danger";
+	} elseif ($current >= $warning) {
+		$status = "warning";
+	} else {
+		$status = "success";
+	}
+	echo "<tr><td colspan='2' style='height: 5px'></td></tr>\n";
+	echo "<tr><td $x>$label</td>\n";
+	echo "    <td style='width: 100%' class='progress'><div class='progress-bar progress-bar-$status'\n";
+	echo "    role='progressbar'\n";
+
+	echo "    title='current: $current, min: $min, max: $max'";
+	if ($current < $min) $current = $min;
+	else if ($current > $max) $current = $max;
+   	echo "    aria-valuenow='$current' aria-valuemin='$min' aria-valuemax='$max'\n";
+
+	// The width of the bar should be the percent that $current is in the
+	// range of ($max-$min).
+	// In the typical case where $max=100 and $min=0, if $current is 21,
+	// then width=(21/(100-0)*100) = 21.
+	// If $max=50, $min=0, and $current=21, then width=(21/(50-0))*100 = 42.
+	$width = (($current - $min) / ($max - $min)) * 100;
+	echo "    style='width: $width%;'>$data\n";
+	echo "    </div></td></tr>\n";
+}
+
+/* Display user data in "file". */
+$num_buttons = 0;
+$num_calls = 0;
+function displayUserData($file, $displayType)
+{
+	global $num_buttons;
+	global $num_calls;
+
+	$num_calls++;
+
+	if (! file_exists($file)) {
+		if ($num_calls === 1)
+			echo "<p style='color: red'>WARNING: data file '$file' does not exist.</p>";
+		return(false);
+	}
+	$handle = fopen($file, "r");
+	for ($i=1; ; $i++) {		// for each line in $file
+		$line = fgets($handle);
+		if (! $line)
+			break;
+		$line = trim($line);
+		// Skip blank and comment lines
+		if ($line === "" || substr($line, 0, 1) === "#") continue;
+
+		$data = explode('	', $line);		// tab-separated
+		$num = count($data);
+		if ($num === 0) {
+			return(false);
+		}
+		$type = $data[0];
+		if ($type !== "data" && $type !== "progress" && $type !== "button") {
+			if ($num_calls === 1) {
+				echo "<p style='color: red; border: 1px solid red;'>WARNING: Line $i in '$file' is invalid:";
+				echo "<br>&nbsp; &nbsp; $line";
+				echo "<br>The first field should be 'data', 'progress', or 'button'.";
+				if (! strstr($type, " "))
+					echo "<br><br>Make sure the fields are TAB-separated.";
+				else
+					echo "<br><br>The fields don't appear to be TAB-separated.";
+				echo "</p>";
+			}
+		} else if ($type === "data" && $displayType === $type) {
+			if (checkNumFields(4, $num, $type, $i, $line, $file)) {
+				list($type, $timeout_s, $label, $data) = $data;
+				if (dataExpired($file, $timeout_s))
+					echo "<tr class='x' style='color: red; font-weight: bold;'><td>$label (EXPIRED)</td><td>$data</td></tr>\n";
+				else
+					echo "<tr class='x'><td>$label</td><td>$data</td></tr>\n";
+			}
+		} else if ($type === "progress" && $displayType === $type) {
+			if (checkNumFields(9, $num, $type, $i, $line, $file)) {
+				list($type, $timeout_s, $label, $data, $min, $current, $max, $danger, $warning) = $data;
+				if (dataExpired($file, $timeout_s)) {
+					$label = $label . " (EXPIRED)";
+					$x = "style='color: red; font-weight: bold;'";
+				} else {
+					$x = "";
+				}
+				displayProgress($x, $label, $data, $min, $current, $max, $danger, $warning, "");
+			}
+		} else if ($type === "button" && substr($displayType, 0, 7) === "button-") {
+			if (checkNumFields(6, $num, $type, $i, $line, $file)) {
+				list($type, $message, $action, $btn_color, $fa_icon, $btn_label) = $data;
+				// timeout_s doesn't apply to buttons
+				// We output two types of button data: the action block and the button block.
+				$num_buttons++;
+				if ($displayType === "button-action") {
+					$u = "user_$num_buttons";
+					if (isset($_POST[$u]))
+						runCommand($action, $message, "success");
+				} else {	// "button-button"
+					if ($fa_icon !== "-") $fa_icon = "<i class='fa fa-$fa_icon'></i>";
+					echo "<button type='submit' class='btn btn-$btn_color' name='user_$num_buttons'/>$fa_icon $btn_label</button>\n";
+				}
+			}
+		}
+	}
+	fclose($handle);
+	$num_buttons = 0;
+	return(true);
+}
+
 /**
  *
  *
  */
 function DisplaySystem()
 {
+	global $status;
+	$status = new StatusMessages();
+
 	$top_dir = "/var/www";
 	$camera_settings_str = file_get_contents(RASPI_CAMERA_SETTINGS, true);
 	$camera_settings_array = json_decode($camera_settings_str, true);
@@ -132,13 +293,6 @@ function DisplaySystem()
 		exec("free -m | awk '/Mem:/ { total=$2 } /Mem:/ { used=$3 } END { print used/total*100}'", $memarray);
 		$memused = floor($memarray[0]);
 	}
-	if ($memused > 90) {
-		$memused_status = "danger";
-	} elseif ($memused > 75) {
-		$memused_status = "warning";
-	} elseif ($memused > 0) {
-		$memused_status = "success";
-	}
 
 
 	// Disk usage
@@ -150,7 +304,7 @@ function DisplaySystem()
 	/* now we calculate the disk space used (in bytes) */
 	$du = $dt - $df;
 	/* percentage of disk used - this will be used to also set the width % of the progress bar */
-	$dp = sprintf('%.1f', ($du / $dt) * 100);
+	$dp = sprintf('%d', ($du / $dt) * 100);
 
 	/* and we format the size from bytes to MB, GB, etc. */
 	$df = formatSize($df);
@@ -208,22 +362,16 @@ function DisplaySystem()
 	$secs = 2; $q = '"';
 	$cpuload = exec("(grep -m 1 'cpu ' /proc/stat; sleep $secs; grep -m 1 'cpu ' /proc/stat) | awk '{u=$2+$4; t=$2+$4+$5; if (NR==1){u1=u; t1=t;} else printf($q%.0f$q, (($2+$4-u1) * 100 / (t-t1))); }'");
 	if ($cpuload < 0 || $cpuload > 100) echo "<p style='color: red; font-size: 125%;'>Invalid cpuload value: $cpuload</p>";
-	if ($cpuload > 90 || $cpuload < 0) {
-		$cpuload_status = "danger";
-	} elseif ($cpuload > 75) {
-		$cpuload_status = "warning";
-	} else {
-		$cpuload_status = "success";
-	}
 
 	// temperature
 	$temperature = round(exec("awk '{print $1/1000}' /sys/class/thermal/thermal_zone0/temp"), 2);
-	if ($temperature > 70 || $temperature < 0) {
+	// additional checks for temperature
+	if ($temperature < 0) {
 		$temperature_status = "danger";
-	} elseif ($temperature > 60 || $temperature < 10) {
+	} elseif ($temperature < 10) {
 		$temperature_status = "warning";
 	} else {
-		$temperature_status = "success";
+		$temperature_status = "";
 	}
 	$display_temperature = "";
 	if ($temp_type == "C" || $temp_type == "B")
@@ -231,28 +379,15 @@ function DisplaySystem()
 	if ($temp_type == "F" || $temp_type == "B")
 		$display_temperature = $display_temperature . "&nbsp; &nbsp;" . number_format((($temperature * 1.8) + 32), 1, '.', '') . "&deg;F";
 
-	// fan speed.
-	$fan_data = get_variable(ALLSKY_CONFIG .'/config.sh', 'FAN_DATA_FILE=', '');
-	if (file_exists($fan_data)) {	// fanspeed is $1, we want percent which is $2
-		$fan = exec("awk '{print $2}' ".$fan_data);
-		if ($fan >= 90) {
-			$fan_status = "danger";
-		} elseif ($fan >= 75) {
-			$fan_status = "warning";
-		} else {
-			$fan_status = "success";
-		}
+	// Optional user-specified data.
+	// TODO: read each file once and populate arrays for "data", "progress", and "button".
+	$udf = get_variable(ALLSKY_CONFIG .'/config.sh', 'WEBUI_DATA_FILES=', '');
+	if ($udf !== "") {
+		$user_data_files = explode(':', $udf);
+		$user_data_files_count = count($user_data_files);
 	} else {
-		$fan = "";
-	}
-
-	// disk usage
-	if ($dp >= 90) {
-		$disk_usage_status = "danger";
-	} elseif ($dp >= 70 && $dp < 90) {
-		$disk_usage_status = "warning";
-	} else {
-		$disk_usage_status = "success";
+		$user_data_files = "";
+		$user_data_files_count = 0;
 	}
 	?>
 	<div class="row">
@@ -263,83 +398,59 @@ function DisplaySystem()
 
 					<?php
 					if (isset($_POST['system_reboot'])) {
-						echo '<div class="alert alert-warning">System Rebooting Now!</div>';
+						$status->addMessage("System Rebooting Now!", "warning", true);
 						$result = shell_exec("sudo /sbin/reboot");
 					}
 					if (isset($_POST['system_shutdown'])) {
-						echo '<div class="alert alert-warning">System Shutting Down Now!</div>';
+						$status->addMessage("System Shutting Down Now!", "warning", true);
 						$result = shell_exec("sudo /sbin/shutdown -h now");
 					}
 					if (isset($_POST['service_start'])) {
-						echo '<div class="alert alert-warning">allsky service started</div>';
-						$result = shell_exec("sudo /bin/systemctl start allsky");
+						runCommand("sudo /bin/systemctl start allsky", "allsky service started", "success");
 					}
 					if (isset($_POST['service_stop'])) {
-						echo '<div class="alert alert-warning">allsky service stopped</div>';
-						$result = shell_exec("sudo /bin/systemctl stop allsky");
+						runCommand("sudo /bin/systemctl stop allsky", "allsky service stopped", "success");
+					}
+					// Optional user-specified data.
+					for ($i=0; $i < $user_data_files_count; $i++) {
+						displayUserData($user_data_files[$i], "button-action");
 					}
 					?>
+					<p><?php $status->showMessages(); ?></p>
 
 					<div class="row">
-						<div class="col-md-6">
+						<div xxxclass="col-md-6">
 							<div class="panel panel-default">
 								<div class="panel-body">
 									<h4>System Information</h4>
 									<table>
-									<tr class="x"><td class="info-item">Hostname</td><td><?php echo $hostname ?></td></tr>
-									<tr class="x"><td class="info-item">Pi Revision</td><td><?php echo RPiVersion() ?></td></tr>
-									<tr class="x"><td class="info-item">Uptime</td><td><?php echo $uptime ?></td></tr>
-									<tr class="x"><td class="info-item">SD Card</td><td><?php echo "$dt ($df free)" ?></td></tr>
-									<tr><td colspan="2" style="height: 10px"></td></tr>
-									<tr><td class="info-item">Throttle Status</td>
-										<!-- Treat it like a full-width progress bar -->
-										<td style="width: 100%" class="progress"><div class="progress-bar progress-bar-<?php echo $throttle_status ?>"
-										role="progressbar"
-										aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"
-										style="width: 100%;"><?php echo $throttle ?>
-										</div></td></tr>
-
-									<tr><td colspan="2" style="height: 10px"></td></tr>
-									<tr><td class="info-item">Memory Used</td>
-										<td style="width: 100%" class="progress"><div class="progress-bar progress-bar-<?php echo $memused_status ?>"
-										role="progressbar"
-										aria-valuenow="<?php echo $memused ?>" aria-valuemin="0" aria-valuemax="100"
-										style="width: <?php echo $memused ?>%;"><?php echo $memused ?>%
-										</div></td></tr>
-
-									<tr><td colspan="2" style="height: 10px"></td></tr>
-									<tr><td class="info-item">CPU Load</td>
-										<td style="width: 100%" class="progress"><div class="progress-bar progress-bar-<?php echo $cpuload_status ?>"
-										role="progressbar"
-										aria-valuenow="<?php echo $cpuload ?>" aria-valuemin="0" aria-valuemax="100"
-										style="width: <?php echo $cpuload ?>%;"><?php echo $cpuload ?>%
-										</div></td></tr>
-
-									<tr><td colspan="2" style="height: 10px"></td></tr>
-									<tr><td class="info-item">CPU Temperature</td>
-										<td style="width: 100%" class="progress"><div class="progress-bar progress-bar-<?php echo $temperature_status ?>"
-										role="progressbar"
-										aria-valuenow="<?php echo $temperature ?>" aria-valuemin="0" aria-valuemax="100"
-										style="width: <?php echo $temperature ?>%;"><?php echo $display_temperature ?>
-										</div></td></tr>
-								<?php if ($fan != "") { ?>
-
-									<tr><td colspan="2" style="height: 10px"></td></tr>
-									<tr><td class="info-item">Fan Speed</td>
-										<td style="width: 100%" class="progress"><div class="progress-bar progress-bar-<?php echo $fan_status ?>"
-										role="progressbar"
-										aria-valuenow="<?php echo $fan ?>" aria-valuemin="0" aria-valuemax="100"
-										style="width: <?php echo $fan ?>%;"><?php echo $fan ?>%
-										</div></td></tr>
-								<?php } ?>
-
-									<tr><td colspan="2" style="height: 10px"></td></tr>
-									<tr><td class="info-item">Disk Usage</td>
-										<td style="width: 100%" class="progress"><div class="progress-bar progress-bar-<?php echo $disk_usage_status ?>"
-										role="progressbar"
-										aria-valuenow="<?php echo $dp ?>" aria-valuemin="0" aria-valuemax="100"
-										style="width: <?php echo $dp ?>%;"><?php echo $dp ?>%
-										</div></td></tr>
+									<!-- <colgroup> doesn't seem to support "width", so set on 1st line -->
+									<tr class="x"><td style="padding-right: 90px;">Hostname</td><td><?php echo $hostname ?></td></tr>
+									<tr class="x"><td>Pi Revision</td><td><?php echo RPiVersion() ?></td></tr>
+									<tr class="x"><td>Uptime</td><td><?php echo $uptime ?></td></tr>
+									<tr class="x"><td>SD Card</td><td><?php echo "$dt ($df free)" ?></td></tr>
+									<?php // Optional user-specified data.
+										for ($i=0; $i < $user_data_files_count; $i++) {
+											displayUserData($user_data_files[$i], "data");
+										}
+									?>
+									<tr><td colspan="2" style="height: 5px"></td></tr>
+									<!-- Treat Throttle Status like a full-width progress bar -->
+									<?php displayProgress("", "Throttle Status", $throttle, 0, 100, 100, -1, -1, $throttle_status); ?>
+									<tr><td colspan="2" style="height: 5px"></td></tr>
+									<?php displayProgress("", "Memory Used", "$memused%", 0, $memused, 100, 90, 75, ""); ?>
+									<tr><td colspan="2" style="height: 5px"></td></tr>
+									<?php displayProgress("", "CPU Load", "$cpuload%", 0, $cpuload, 100, 90, 75, ""); ?>
+									<tr><td colspan="2" style="height: 5px"></td></tr>
+									<?php displayProgress("", "CPU Temperature", $display_temperature, 0, $temperature, 100, 70, 60, $temperature_status); ?>
+									<tr><td colspan="2" style="height: 5px"></td></tr>
+									<?php displayProgress("", "Disk Usage", "$dp%", 0, $dp, 100, 90, 70, ""); ?>
+									<?php
+										// Optional user-specified data.
+										for ($i=0; $i < $user_data_files_count; $i++) {
+											displayUserData($user_data_files[$i], "progress");
+										}
+									?>
 									</table>
 								</div><!-- /.panel-body -->
 							</div><!-- /.panel-default -->
@@ -347,15 +458,22 @@ function DisplaySystem()
 					</div><!-- /.row -->
 
 					<form action="?page=system_info" method="POST">
-					<div style="margin-bottom: 20px">
-						<button type="button" class="btn btn-outline btn-primary" onclick="document.location.reload(true)"><i class="fa fa-sync-alt"></i> Refresh</button>
+					<div style="margin-bottom: 15px">
+						<button type="button" class="btn btn-primary" onclick="document.location.reload(true)"><i class="fa fa-sync-alt"></i> Refresh</button>
 					</div>
 					<div style="margin-bottom: 15px">
-						<button type="submit" class="btn btn-success" style="margin-bottom:5px" name="service_start"/><i class="fa fa-play"></i> Start allsky</button>
-						<button type="submit" class="btn btn-danger" style="margin-bottom:5px" name="service_stop"/><i class="fa fa-stop"></i> Stop allsky</button>
+						<button type="submit" class="btn btn-success" name="service_start"/><i class="fa fa-play"></i> Start allsky</button>
+						<button type="submit" class="btn btn-danger" name="service_stop"/><i class="fa fa-stop"></i> Stop allsky</button>
 					</div>
-					<button type="submit" class="btn btn-warning" style="margin-bottom:5px" name="system_reboot"/><i class="fa fa-power-off"></i> Reboot Raspberry Pi</button>
-					<button type="submit" class="btn btn-warning" style="margin-bottom:5px" name="system_shutdown"/><i class="fa fa-plug"></i> Shutdown Raspberry Pi</button>
+					<div style="margin-bottom: 15px">
+						<button type="submit" class="btn btn-warning" name="system_reboot"/><i class="fa fa-power-off"></i> Reboot Raspberry Pi</button>
+						<button type="submit" class="btn btn-warning" name="system_shutdown"/><i class="fa fa-plug"></i> Shutdown Raspberry Pi</button>
+					</div>
+					<?php // Optional user-specified data.
+						for ($i=0; $i < $user_data_files_count; $i++) {
+							displayUserData($user_data_files[$i], "button-button");
+						}
+					?>
 					</form>
 
 				</div><!-- /.panel-body -->

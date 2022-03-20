@@ -291,3 +291,47 @@ body.dark {
 .dark .advanced {
     background-color: #999967;
 }
+
+.btn-primary:hover { color: black; }
+.btn-success:hover { color: black; }
+.btn-warning:hover { color: black; }
+.btn-danger:hover { color: black; }
+
+/* Colors for user-supplied buttons.
+ * In dark theme the border colors become darker.
+ * On hover the background and border colors switch.
+*/
+.btn-red		{ background-color: #cc3030; border-color: #ff6060; color: white; }
+.dark .btn-red	{ border-color: #990000; }
+.btn-red:hover	{ background-color: #ff6060; border-color: #000000; color: black; }
+.dark .btn-red	{ border-color: #ffffff; }
+
+.btn-green		 { background-color: #30cc30; border-color: #60ff60; color: black; }
+.dark .btn-green { border-color: #009900; }
+.btn-green:hover { background-color: #90ff90; border-color: #000000; color: black; }
+.dark .btn-green { border-color: #ffffff; }
+
+.btn-blue		{ background-color: #0080ff; border-color: #60bbff; color: white; }
+.dark .btn-blue { border-color: #000099; }
+.btn-blue:hover { background-color: #0030dd; border-color: #000000; color: white; }
+.dark .btn-blue { border-color: #ffffff; }
+
+.btn-yellow		  { background-color: #ffff00; border-color: #dddd00; color: black; }
+.dark .btn-yellow { border-color: #bbbb00; }
+.btn-yellow:hover { background-color: #dddd00; border-color: #000000; color: black; }
+.dark .btn-yellow { border-color: #ffffff; }
+
+.btn-cyan		{ background-color: #00ffff; border-color: #00dddd; color: black; }
+.dark .btn-cyan { border-color: #00bbbb; }
+.btn-cyan:hover { background-color: #00dddd; border-color: #000000; color: black; }
+.dark .btn-cyan { border-color: #ffffff; }
+
+.btn-white		 { background-color: #f6f6f6; border-color: #bbbbbb; color: black; }
+.dark .btn-white { border-color: #aaaaaa; }
+.btn-white:hover { background-color: #bbbbbb; border-color: #000000; color: black; }
+.dark .btn-white { border-color: #ffffff; }
+
+.btn-black		 { background-color: #333333; border-color: #777777; color: white; }
+.dark .btn-black { border-color: #999999; }
+.btn-black:hover { background-color: #999999; border-color: #000000; color: white; }
+.dark .btn-black { border-color: #ffffff; }
