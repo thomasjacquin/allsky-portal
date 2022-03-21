@@ -47,7 +47,8 @@ function DisplayCameraConfig(){
 				if ($changes !== "" && file_exists(ALLSKY_SCRIPTS . "/makeChanges.sh")) {
 					$CMD = ALLSKY_SCRIPTS . "/makeChanges.sh $changes";
 					// echo "<br>CMD=[$CMD]";
-					runCommand($CMD, "Other settings updated", "success");
+					# Let makeChanges.sh display any output
+					runCommand($CMD, "-", "success");
 				}
 			} else {
 				$status->addMessage('Failed to save camera settings', 'danger');
