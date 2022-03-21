@@ -13,20 +13,21 @@ function DisplayCameraConfig(){
 			if ($camera_settings_file = fopen(RASPI_CAMERA_SETTINGS, 'w')) {
 				$settings = array();
 				$changes = "";
-				$DQ = '"';		// Double Quote
 	 			foreach ($_POST as $key => $value){
 					// We look into POST data to only select camera settings
+					// Instead of trying to escape single and double quotes, which I never figured out how to do,
+					// convert them to HTML codes.
 					$isOLD = substr($key, 0, 4) === "OLD_";
 					if (!in_array($key, ["csrf_token", "save_camera_settings", "reset_camera_settings", "restart"]) && ! $isOLD) {
-						$settings[$key] = $value;
+						$settings[$key] = str_replace("'", "&#x27", str_replace('"', '&quot;', $value));
+					$value = str_replace("'", "&#x27;", $value);
 					} else if ($isOLD) {
 						$originalName = substr($key, 4);		// everything after "OLD_"
+						$oldValue = str_replace("'", "&#x27", str_replace('"', '&quot;', $value));
 						$newValue = $settings[$originalName];
-						if ($value !== $newValue) {
-							// TODO: There has to be a better way to escape double quotes.
-							$value = str_replace('"', '${DQ}', $value);
-							$newValue = str_replace('"', '${DQ}', $newValue);
-							$changes .= "  '$originalName' " . '"' . $value . '" '  . '"' . $newValue . '"';
+						if ($oldValue !== $newValue) {
+							// echo "<br>$key: old [$oldValue] !== new [$newValue]";
+							$changes .= "  '$originalName' '$oldValue' '$newValue'";
 						}
 					}
 				}
@@ -44,7 +45,7 @@ function DisplayCameraConfig(){
 					$status->addMessage($msg, 'info');
 				}
 				if ($changes !== "" && file_exists(ALLSKY_SCRIPTS . "/makeChanges.sh")) {
-					$CMD = "DQ=$DQ'$DQ " . ALLSKY_SCRIPTS . "/makeChanges.sh --debug $changes";
+					$CMD = ALLSKY_SCRIPTS . "/makeChanges.sh $changes";
 					// echo "<br>CMD=[$CMD]";
 					runCommand($CMD, "Other settings updated", "success");
 				}
