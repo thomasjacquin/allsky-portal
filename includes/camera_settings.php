@@ -158,7 +158,6 @@ function toggle_advanced()
 					$value = str_replace("'", "&#x27;", $value);
 					$default = str_replace("'", "&#x27;", $default);
 				}
-			//	$description = str_replace("'", "&#x27;", $option['description']);
 				$description = $option['description'];
 				// xxxxx Margin and padding don't seem to work, so using border-bottom...
 				echo "\n<tr class='form-group $advClass' style='border-bottom: 3px solid transparent; $advStyle'>";
@@ -180,6 +179,8 @@ function toggle_advanced()
 						$default = "[empty]";
 					}
 					$popup = "Default=$default";
+					if ($minimum !== "") $popup .= "\nMinimum=$minimum";
+					if ($maximum !== "") $popup .= "\nMaximum=$maximum";
 
 					echo "<td valign='middle'>";
 					echo "<label style='padding-right: 5px;'>$label</label>";
