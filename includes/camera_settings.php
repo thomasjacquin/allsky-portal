@@ -12,21 +12,36 @@ function DisplayCameraConfig(){
 		if (CSRFValidate()) {
 			if ($camera_settings_file = fopen(RASPI_CAMERA_SETTINGS, 'w')) {
 				$settings = array();
+				$changes = "";
 	 			foreach ($_POST as $key => $value){
 					// We look into POST data to only select camera settings
-					if (!in_array($key, ["csrf_token", "save_camera_settings", "reset_camera_settings", "restart"])){
+					$isOLD = substr($key, 0, 4) === "OLD_";
+					if (!in_array($key, ["csrf_token", "save_camera_settings", "reset_camera_settings", "restart"]) && ! $isOLD) {
 						$settings[$key] = $value;
+					} else if ($isOLD) {
+						$originalName = substr($key, 4);		// everything after "OLD_"
+						if ($value !== $settings[$originalName]) {
+//echo "<br>$key changed: $originalName was $value, now " . $settings[$originalName];
+							// TODO: escape single quotes.
+							$changes .= " '$originalName' '$value'";
+						}
 					}
 				}
 				fwrite($camera_settings_file, json_encode($settings, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES));
 				fclose($camera_settings_file);
-				$msg = "Camera settings saved";
+				if ($changes === "")
+					$msg = "No camera settings changed (but file re-written anyway)";
+				else
+					$msg = "Camera settings saved";
 				if (isset($_POST['restart'])) {
 					$msg .= " and service restarted";
 					runCommand("sudo /bin/systemctl reload-or-restart allsky.service", $msg, "success");
 				} else {
 					$msg .= " but service NOT restarted";
 					$status->addMessage($msg, 'info');
+				}
+				if ($changes !== "" && file_exists(ALLSKY_SCRIPTS . "/makeChanges.sh")) {
+					runCommand(ALLSKY_SCRIPTS . "/makeChanges.sh $changes", 'Other settings updated', "success");
 				}
 			} else {
 				$status->addMessage('Failed to save camera settings', 'danger');
@@ -219,6 +234,7 @@ function toggle_advanced()
 						echo "</div>";
 					}
 					echo "</span>";
+					echo "<input type='hidden' name='OLD_$name' value='$value'>";
 					echo "</td>";
 					echo "<td>$description</td>";
 				}
