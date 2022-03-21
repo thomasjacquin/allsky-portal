@@ -13,6 +13,7 @@ function DisplayCameraConfig(){
 			if ($camera_settings_file = fopen(RASPI_CAMERA_SETTINGS, 'w')) {
 				$settings = array();
 				$changes = "";
+				$DQ = '"';		// Double Quote
 	 			foreach ($_POST as $key => $value){
 					// We look into POST data to only select camera settings
 					$isOLD = substr($key, 0, 4) === "OLD_";
@@ -20,10 +21,12 @@ function DisplayCameraConfig(){
 						$settings[$key] = $value;
 					} else if ($isOLD) {
 						$originalName = substr($key, 4);		// everything after "OLD_"
-						if ($value !== $settings[$originalName]) {
-//echo "<br>$key changed: $originalName was $value, now " . $settings[$originalName];
-							// TODO: escape single quotes.
-							$changes .= " '$originalName' '$value'";
+						$newValue = $settings[$originalName];
+						if ($value !== $newValue) {
+							// TODO: There has to be a better way to escape double quotes.
+							$value = str_replace('"', '${DQ}', $value);
+							$newValue = str_replace('"', '${DQ}', $newValue);
+							$changes .= "  '$originalName' " . '"' . $value . '" '  . '"' . $newValue . '"';
 						}
 					}
 				}
@@ -41,7 +44,9 @@ function DisplayCameraConfig(){
 					$status->addMessage($msg, 'info');
 				}
 				if ($changes !== "" && file_exists(ALLSKY_SCRIPTS . "/makeChanges.sh")) {
-					runCommand(ALLSKY_SCRIPTS . "/makeChanges.sh $changes", 'Other settings updated', "success");
+					$CMD = "DQ=$DQ'$DQ " . ALLSKY_SCRIPTS . "/makeChanges.sh --debug $changes";
+					// echo "<br>CMD=[$CMD]";
+					runCommand($CMD, "Other settings updated", "success");
 				}
 			} else {
 				$status->addMessage('Failed to save camera settings', 'danger');
