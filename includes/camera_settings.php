@@ -181,10 +181,9 @@ function toggle_advanced()
 					$default = str_replace("'", "&#x27;", $default);
 				}
 				$description = $option['description'];
-				// xxxxx Margin and padding don't seem to work, so using border-bottom...
-				echo "\n<tr class='form-group $advClass' style='border-bottom: 3px solid transparent; $advStyle'>";
+				echo "\n<tr class='form-group $advClass' style='border-bottom: 1px solid lightgray; $advStyle'>";
 				if ($type == "header"){
-					echo "<td colspan='3' class='settingsHeader'>$description</td>";
+					echo "<td colspan='3' style='padding: 8px 0px' class='settingsHeader'>$description</td>";
 				} else {
 					// Show the default in a popup
 					if ($type == "checkbox") {
@@ -204,7 +203,7 @@ function toggle_advanced()
 					if ($minimum !== "") $popup .= "\nMinimum=$minimum";
 					if ($maximum !== "") $popup .= "\nMaximum=$maximum";
 
-					echo "<td valign='middle'>";
+					echo "<td valign='middle' style='padding: 8px 0px'>";
 					echo "<label style='padding-right: 5px;'>$label</label>";
 					echo "</td>";
 					echo "<td>";
