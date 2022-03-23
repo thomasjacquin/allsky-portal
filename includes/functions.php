@@ -783,6 +783,11 @@ function runCommand($cmd, $message, $messageColor)
 
 	exec("$cmd 2>&1", $result, $return_val);
 	if ($result === null || $return_val !== 0) {
+		// display the caller's message
+		$status->addMessage($message, "danger", true);
+		$message = "-";
+
+		// now display the failed message
 		$msg = "'$cmd' failed";
 		if ($result != null) $msg .= ": " . implode("<br>", $result);
 		$status->addMessage($msg, "danger", true);
@@ -794,7 +799,7 @@ function runCommand($cmd, $message, $messageColor)
 
 	// Display any output
 	if ($result != null) $status->addMessage(implode("<br>", $result), "message", true);
-	
+
 	return true;
 }
 
