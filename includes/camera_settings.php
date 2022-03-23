@@ -10,51 +10,54 @@ function DisplayCameraConfig(){
 
 	if (isset($_POST['save_settings'])) {
 		if (CSRFValidate()) {
-			if ($settings_file = fopen(RASPI_CAMERA_SETTINGS, 'w')) {
-				$settings = array();
-				$changes = "";
-				$somethingChanged = false;
-	 			foreach ($_POST as $key => $value){
-					// We look into POST data to only select settings
-					// Instead of trying to escape single and double quotes, which I never figured out how to do,
-					// convert them to HTML codes.
-					$isOLD = substr($key, 0, 4) === "OLD_";
-					if (!in_array($key, ["csrf_token", "save_settings", "reset_settings", "restart"]) && ! $isOLD) {
-						$settings[$key] = str_replace("'", "&#x27", str_replace('"', '&quot;', $value));
-						$value = str_replace("'", "&#x27;", $value);
-					} else if ($isOLD) {
-						$originalName = substr($key, 4);		// everything after "OLD_"
-						$oldValue = str_replace("'", "&#x27", str_replace('"', '&quot;', $value));
-						$newValue = $settings[$originalName];
-						if ($oldValue !== $newValue) {
-							$somethingChanged = true;
-							// echo "<br>$key: old [$oldValue] !== new [$newValue]";
-							if (isset($options_array['checkchanges']) && $options_array['checkchanges'])
-								$changes .= "  '$originalName' '$oldValue' '$newValue'";
-						}
+			$settings = array();
+			$changes = "";
+			$somethingChanged = false;
+	 		foreach ($_POST as $key => $value){
+				// We look into POST data to only select settings
+				// Instead of trying to escape single and double quotes, which I never figured out how to do,
+				// convert them to HTML codes.
+				$isOLD = substr($key, 0, 4) === "OLD_";
+				if (!in_array($key, ["csrf_token", "save_settings", "reset_settings", "restart"]) && ! $isOLD) {
+					$settings[$key] = str_replace("'", "&#x27", str_replace('"', '&quot;', $value));
+					$value = str_replace("'", "&#x27;", $value);
+				} else if ($isOLD) {
+					$originalName = substr($key, 4);		// everything after "OLD_"
+					$oldValue = str_replace("'", "&#x27", str_replace('"', '&quot;', $value));
+					$newValue = $settings[$originalName];
+					if ($oldValue !== $newValue) {
+						$somethingChanged = true;
+						// echo "<br>$key: old [$oldValue] !== new [$newValue]";
+						if (isset($options_array['checkchanges']) && $options_array['checkchanges'])
+							$changes .= "  '$originalName' '$oldValue' '$newValue'";
 					}
 				}
-				fwrite($settings_file, json_encode($settings, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES));
-				fclose($settings_file);
-				if ($somethingChanged)
+			}
+			if ($somethingChanged) {
+				if ($settings_file = fopen(RASPI_CAMERA_SETTINGS, 'w')) {
 					$msg = "Settings saved";
-				else
-					$msg = "No settings changed (but file re-written anyway)";
-				if (isset($_POST['restart'])) {
-					$msg .= " and service restarted";
-					runCommand("sudo /bin/systemctl reload-or-restart allsky.service", $msg, "success");
+					fwrite($settings_file, json_encode($settings, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES));
+					fclose($settings_file);
 				} else {
-					$msg .= " and service NOT restarted";
-					$status->addMessage($msg, 'info');
-				}
-				if ($changes !== "" && file_exists(ALLSKY_SCRIPTS . "/makeChanges.sh")) {
-					$CMD = ALLSKY_SCRIPTS . "/makeChanges.sh $changes";
-					// echo "<br>CMD=[$CMD]";
-					# Let makeChanges.sh display any output
-					runCommand($CMD, "-", "success");
+					$status->addMessage('Failed to save settings', 'danger');
 				}
 			} else {
-				$status->addMessage('Failed to save settings', 'danger');
+				$msg = "No settings changed (file not updated)";
+			}
+
+			if (isset($_POST['restart'])) {
+				$msg .= " and service restarted";
+				// runCommand displays $msg.
+				runCommand("sudo /bin/systemctl reload-or-restart allsky.service", $msg, "success");
+			} else {
+				$msg .= " and service NOT restarted";
+				$status->addMessage($msg, 'info');
+			}
+
+			if ($changes !== "" && file_exists(ALLSKY_SCRIPTS . "/makeChanges.sh")) {
+				$CMD = ALLSKY_SCRIPTS . "/makeChanges.sh $changes";
+				# Let makeChanges.sh display any output
+				runCommand($CMD, "-", "success");
 			}
 		} else {
 			$status->addMessage('Unable to save settings - session timeout', 'danger');
@@ -269,6 +272,7 @@ function toggle_advanced()
 					echo "</span>";
 
 					// Track current values so we can determine what changed.
+					echo "<input type='hidden' name='OLD_$name' value='$value'>";
 
 					echo "</td>";
 					if ($type == "widetext")
