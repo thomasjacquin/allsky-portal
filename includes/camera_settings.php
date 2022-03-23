@@ -13,6 +13,7 @@ function DisplayCameraConfig(){
 			if ($camera_settings_file = fopen(RASPI_CAMERA_SETTINGS, 'w')) {
 				$settings = array();
 				$changes = "";
+				$somethingChanged = false;
 	 			foreach ($_POST as $key => $value){
 					// We look into POST data to only select camera settings
 					// Instead of trying to escape single and double quotes, which I never figured out how to do,
@@ -20,23 +21,25 @@ function DisplayCameraConfig(){
 					$isOLD = substr($key, 0, 4) === "OLD_";
 					if (!in_array($key, ["csrf_token", "save_camera_settings", "reset_camera_settings", "restart"]) && ! $isOLD) {
 						$settings[$key] = str_replace("'", "&#x27", str_replace('"', '&quot;', $value));
-					$value = str_replace("'", "&#x27;", $value);
+						$value = str_replace("'", "&#x27;", $value);
 					} else if ($isOLD) {
 						$originalName = substr($key, 4);		// everything after "OLD_"
 						$oldValue = str_replace("'", "&#x27", str_replace('"', '&quot;', $value));
 						$newValue = $settings[$originalName];
 						if ($oldValue !== $newValue) {
+							$somethingChanged = true;
 							// echo "<br>$key: old [$oldValue] !== new [$newValue]";
-							$changes .= "  '$originalName' '$oldValue' '$newValue'";
+							if (isset($camera_options_array['checkchanges']) && $camera_options_array['checkchanges'])
+								$changes .= "  '$originalName' '$oldValue' '$newValue'";
 						}
 					}
 				}
 				fwrite($camera_settings_file, json_encode($settings, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES));
 				fclose($camera_settings_file);
-				if ($changes === "")
-					$msg = "No camera settings changed (but file re-written anyway)";
-				else
+				if ($somethingChanged)
 					$msg = "Camera settings saved";
+				else
+					$msg = "No camera settings changed (but file re-written anyway)";
 				if (isset($_POST['restart'])) {
 					$msg .= " and service restarted";
 					runCommand("sudo /bin/systemctl reload-or-restart allsky.service", $msg, "success");
@@ -125,11 +128,11 @@ function toggle_advanced()
 }
 </script>
   <div class="row">
-    <div class="col-lg-12">
+    <div class="col-lg-12" style="padding: 0px 5px;">
       <div class="panel panel-primary">
       <div class="panel-heading"><i class="fa fa-camera fa-fw"></i> Configure Camera Settings <?php echo "&nbsp; &nbsp; &nbsp; - &nbsp; &nbsp; &nbsp; " . RASPI_CAMERA_OPTIONS; ?></div>
         <!-- /.panel-heading -->
-        <div class="panel-body">
+        <div class="panel-body" style="padding: 5px;">
           <p><?php $status->showMessages(); ?></p>
 
           <form method="POST" action="?page=camera_conf" name="camera_conf_form">
@@ -186,11 +189,16 @@ function toggle_advanced()
 				// a wide input box on the top row spanning the 2nd and 3rd columns,
 				// and the description on the bottom row in the 3rd column.
 				// This way, all descriptions are in the 3rd column.
-				if ($type !== "widetext" && $type != "header") $style = $rowStyle;
+				if ($type !== "widetext" && $type !== "header") $style = $rowStyle;
 				else $style="";
-				echo "\n<tr class='form-group $advClass' style='$style $advStyle'>";
-				if ($type == "header"){
-					echo "<td colspan='3' style='padding: 8px 0px' class='settingsHeader'>$description</td>";
+				echo "\n";	// to make it easier to read web source when debugging
+
+				// Put some space before and after headers.  This next line is the "before":
+				if ($type == "header") echo "<tr style='height: 10px'><td colspan='3'></td></tr>";
+
+				echo "<tr class='form-group $advClass' style='margin-bottom: 0px; $style $advStyle'>";
+				if ($type === "header"){
+					echo "<td colspan='3' style='padding: 8px 0px;' class='settingsHeader'>$description</td>";
 				} else {
 					// Show the default in a popup
 					if ($type == "checkbox") {
@@ -212,13 +220,13 @@ function toggle_advanced()
 
 					if ($type == "widetext") $span="rowspan='2'";
 					else $span="";
-					echo "<td $span valign='middle' style='padding: 8px 0px'>";
-					echo "<label style='padding-right: 5px;'>$label</label>";
+					echo "<td $span valign='middle' style='padding: 2px 0px'>";
+					echo "<label style='padding-right: 3px;'>$label</label>";
 					echo "</td>";
-					if ($type == "widetext")
-						echo "<td colspan='2' style='padding: 5px 0px;'>";
-					else
-						echo "<td>";
+
+					if ($type == "widetext") $span="colspan='2'";
+					else $span="";
+					echo "<td $span style='padding: 5px 0px;'>";
 					// The popup gets in the way of seeing the value a little.
 					// May want to consider having a symbol next to the field
 					// that has the popup.
@@ -257,7 +265,9 @@ function toggle_advanced()
 						echo "</div>";
 					}
 					echo "</span>";
-					if (isset($option['checkchanges']) && $option['checkchanges'])
+
+					// Track current values so we can determine what changed.
+//xxxx					if (isset($option['checkchanges']) && $option['checkchanges'])
 						echo "<input type='hidden' name='OLD_$name' value='$value'>";
 
 					echo "</td>";
@@ -266,6 +276,8 @@ function toggle_advanced()
 					echo "<td>$description</td>";
 				}
 				echo "</tr>";
+				if ($type == "header") echo "<tr style='height: 10px; $rowStyle'><td colspan='3'></td></tr>";
+
 			 }
 		echo "</table>";
 	?>
