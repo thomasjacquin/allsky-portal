@@ -143,6 +143,7 @@ function toggle_advanced()
 		// confusing novice users.
 		$numAdvanced = 0;
 		$rowStyle = "border-bottom: 1px solid lightgray;";	// separate table rows
+		$boxShadow = "box-shadow: 2px 3px rgb(0,0,0,6%);";
 		echo "<table border='0'>";
 			foreach($options_array as $option) {
 				$display = $option['display'];
@@ -234,14 +235,15 @@ function toggle_advanced()
 					if ($type == "text" || $type == "number"){
 						echo "<input class='form-control' type='$type'" .
 							" name='$name' value='$value'" .
-							" style='padding: 0px 3px 0px 0px; text-align: right; width: 120px; margin-right: 20px;'>";
+							" style='$boxShadow background-color: #f3f8fd; padding: 0px 3px 0px 0px; text-align: right; width: 120px; margin-right: 20px;'>";
 					} else if ($type == "widetext"){
 						echo "<input class='form-control' type='text'" .
 							" name='$name' value='$value'" .
-						   	" style='padding: 6px 5px;'>";
+						   	" style='$boxShadow background-color: #f3f8fd; padding: 6px 5px;'>";
 					} else if ($type == "select"){
 						// text-align for <select> works on Firefox but not Chrome or Edge
-						echo "<select class='form-control' name='$name' style='width: 120px; margin-right: 20px; text-align: right; padding: 0px 3px 0px 0px;'>";
+						echo "<select class='form-control' name='$name'" .
+						   	" style='$boxShadow background-color: #f3f8fd; width: 120px; margin-right: 20px; text-align: right; padding: 0px 3px 0px 0px;'>";
 						foreach($option['options'] as $opt){
 							$val = $opt['value'];
 							$lab = $opt['label'];
@@ -253,21 +255,20 @@ function toggle_advanced()
 						}
 						echo "</select>";
 					} else if ($type == "checkbox"){
-						echo "<div class='switch-field' style='margin-bottom: -5px;'>";
+						echo "<div class='switch-field' style='margin-bottom: -3px; $boxShadow border-radius: 4px;'>";
 							echo "<input id='switch_no_".$name."' class='form-control' type='radio' ".
-								"style='width: 40px; box-shadow:none' name='$name' value='0' ".
+								"name='$name' value='0' ".
 								($value == 0 ? " checked " : "").  ">";
-							echo "<label for='switch_no_".$name."'>No</label>";
+							echo "<label style='margin-bottom: 0px;' for='switch_no_".$name."'>No</label>";
 							echo "<input id='switch_yes_".$name."' class='form-control' type='radio' ".
-								"style='width: 40px; box-shadow:none' name='$name' value='1' ".
+								"name='$name' value='1' ".
 								($value == 1 ? " checked " : "").  ">";
-							echo "<label for='switch_yes_".$name."'>Yes</label>";
+							echo "<label style='margin-bottom: 0px;' for='switch_yes_".$name."'>Yes</label>";
 						echo "</div>";
 					}
 					echo "</span>";
 
 					// Track current values so we can determine what changed.
-					echo "<input type='hidden' name='OLD_$name' value='$value'>";
 
 					echo "</td>";
 					if ($type == "widetext")
