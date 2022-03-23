@@ -139,6 +139,7 @@ function toggle_advanced()
 		// Allow for "advanced" options that aren't displayed by default to avoid
 		// confusing novice users.
 		$numAdvanced = 0;
+		$rowStyle = "border-bottom: 1px solid lightgray;";	// separate table rows
 		echo "<table border='0'>";
 			foreach($camera_options_array as $option) {
 				$display = $option['display'];
@@ -181,7 +182,13 @@ function toggle_advanced()
 					$default = str_replace("'", "&#x27;", $default);
 				}
 				$description = $option['description'];
-				echo "\n<tr class='form-group $advClass' style='border-bottom: 1px solid lightgray; $advStyle'>";
+				// "widetext" should have the label spanning 2 rows,
+				// a wide input box on the top row spanning the 2nd and 3rd columns,
+				// and the description on the bottom row in the 3rd column.
+				// This way, all descriptions are in the 3rd column.
+				if ($type !== "widetext" && $type != "header") $style = $rowStyle;
+				else $style="";
+				echo "\n<tr class='form-group $advClass' style='$style $advStyle'>";
 				if ($type == "header"){
 					echo "<td colspan='3' style='padding: 8px 0px' class='settingsHeader'>$description</td>";
 				} else {
@@ -203,17 +210,27 @@ function toggle_advanced()
 					if ($minimum !== "") $popup .= "\nMinimum=$minimum";
 					if ($maximum !== "") $popup .= "\nMaximum=$maximum";
 
-					echo "<td valign='middle' style='padding: 8px 0px'>";
+					if ($type == "widetext") $span="rowspan='2'";
+					else $span="";
+					echo "<td $span valign='middle' style='padding: 8px 0px'>";
 					echo "<label style='padding-right: 5px;'>$label</label>";
 					echo "</td>";
-					echo "<td>";
+					if ($type == "widetext")
+						echo "<td colspan='2' style='padding: 5px 0px;'>";
+					else
+						echo "<td>";
 					// The popup gets in the way of seeing the value a little.
 					// May want to consider having a symbol next to the field
 					// that has the popup.
 					echo "<span title='$popup'>";
 					if ($type == "text" || $type == "number"){
-						echo "<input class='form-control' type='$type' ".
-						"style='text-align: right; width: 120px; margin-right: 20px; padding: 0px 3px 0px 0px;' name='$name' value='$value'>";
+						echo "<input class='form-control' type='$type'" .
+							" name='$name' value='$value'" .
+							" style='padding: 0px 3px 0px 0px; text-align: right; width: 120px; margin-right: 20px;'>";
+					} else if ($type == "widetext"){
+						echo "<input class='form-control' type='text'" .
+							" name='$name' value='$value'" .
+						   	" style='padding: 6px 5px;'>";
 					} else if ($type == "select"){
 						// text-align for <select> works on Firefox but not Chrome or Edge
 						echo "<select class='form-control' name='$name' style='width: 120px; margin-right: 20px; text-align: right; padding: 0px 3px 0px 0px;'>";
@@ -240,8 +257,12 @@ function toggle_advanced()
 						echo "</div>";
 					}
 					echo "</span>";
-					echo "<input type='hidden' name='OLD_$name' value='$value'>";
+					if (isset($option['checkchanges']) && $option['checkchanges'])
+						echo "<input type='hidden' name='OLD_$name' value='$value'>";
+
 					echo "</td>";
+					if ($type == "widetext")
+						echo "</tr><tr style='$rowStyle'><td></td>";
 					echo "<td>$description</td>";
 				}
 				echo "</tr>";
