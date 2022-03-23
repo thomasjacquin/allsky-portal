@@ -2,24 +2,24 @@
 include_once( 'includes/status_messages.php' );
 
 function DisplayCameraConfig(){
-	$camera_options_str = file_get_contents(RASPI_CAMERA_OPTIONS, true);
-	$camera_options_array = json_decode($camera_options_str, true);
+	$options_str = file_get_contents(RASPI_CAMERA_OPTIONS, true);
+	$options_array = json_decode($options_str, true);
 
 	global $status;
 	$status = new StatusMessages();
 
-	if (isset($_POST['save_camera_settings'])) {
+	if (isset($_POST['save_settings'])) {
 		if (CSRFValidate()) {
-			if ($camera_settings_file = fopen(RASPI_CAMERA_SETTINGS, 'w')) {
+			if ($settings_file = fopen(RASPI_CAMERA_SETTINGS, 'w')) {
 				$settings = array();
 				$changes = "";
 				$somethingChanged = false;
 	 			foreach ($_POST as $key => $value){
-					// We look into POST data to only select camera settings
+					// We look into POST data to only select settings
 					// Instead of trying to escape single and double quotes, which I never figured out how to do,
 					// convert them to HTML codes.
 					$isOLD = substr($key, 0, 4) === "OLD_";
-					if (!in_array($key, ["csrf_token", "save_camera_settings", "reset_camera_settings", "restart"]) && ! $isOLD) {
+					if (!in_array($key, ["csrf_token", "save_settings", "reset_settings", "restart"]) && ! $isOLD) {
 						$settings[$key] = str_replace("'", "&#x27", str_replace('"', '&quot;', $value));
 						$value = str_replace("'", "&#x27;", $value);
 					} else if ($isOLD) {
@@ -29,22 +29,22 @@ function DisplayCameraConfig(){
 						if ($oldValue !== $newValue) {
 							$somethingChanged = true;
 							// echo "<br>$key: old [$oldValue] !== new [$newValue]";
-							if (isset($camera_options_array['checkchanges']) && $camera_options_array['checkchanges'])
+							if (isset($options_array['checkchanges']) && $options_array['checkchanges'])
 								$changes .= "  '$originalName' '$oldValue' '$newValue'";
 						}
 					}
 				}
-				fwrite($camera_settings_file, json_encode($settings, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES));
-				fclose($camera_settings_file);
+				fwrite($settings_file, json_encode($settings, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES));
+				fclose($settings_file);
 				if ($somethingChanged)
-					$msg = "Camera settings saved";
+					$msg = "Settings saved";
 				else
-					$msg = "No camera settings changed (but file re-written anyway)";
+					$msg = "No settings changed (but file re-written anyway)";
 				if (isset($_POST['restart'])) {
 					$msg .= " and service restarted";
 					runCommand("sudo /bin/systemctl reload-or-restart allsky.service", $msg, "success");
 				} else {
-					$msg .= " but service NOT restarted";
+					$msg .= " and service NOT restarted";
 					$status->addMessage($msg, 'info');
 				}
 				if ($changes !== "" && file_exists(ALLSKY_SCRIPTS . "/makeChanges.sh")) {
@@ -54,38 +54,38 @@ function DisplayCameraConfig(){
 					runCommand($CMD, "-", "success");
 				}
 			} else {
-				$status->addMessage('Failed to save camera settings', 'danger');
+				$status->addMessage('Failed to save settings', 'danger');
 			}
 		} else {
-			$status->addMessage('Unable to save camera settings - session timeout', 'danger');
+			$status->addMessage('Unable to save settings - session timeout', 'danger');
 		}
 	}
 
-	if (isset($_POST['reset_camera_settings'])) {
+	if (isset($_POST['reset_settings'])) {
 		if (CSRFValidate()) {
-			if ($camera_settings_file = fopen(RASPI_CAMERA_SETTINGS, 'w')) {
+			if ($settings_file = fopen(RASPI_CAMERA_SETTINGS, 'w')) {
 				$settings = array();
-				foreach ($camera_options_array as $option){
+				foreach ($options_array as $option){
 					$key = $option['name'];
 					$value = $option['default'];
 					$settings[$key] = $value;
 				}
-				fwrite($camera_settings_file, json_encode($settings,JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES|JSON_NUMERIC_CHECK));
-				fclose($camera_settings_file);
-				$status->addMessage('Camera settings reset to default');
+				fwrite($settings_file, json_encode($settings,JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES|JSON_NUMERIC_CHECK));
+				fclose($settings_file);
+				$status->addMessage('Settings reset to default');
 			} else {
-				$status->addMessage('Failed to reset camera settings', 'danger');
+				$status->addMessage('Failed to reset settings', 'danger');
 			}
 		} else {
-			$status->addMessage('Unable to reset camera settings - session timeout', 'danger');
+			$status->addMessage('Unable to reset settings - session timeout', 'danger');
 		}
 	}
 
-	$camera_settings_str = file_get_contents(RASPI_CAMERA_SETTINGS, true);
-	$camera_settings_array = json_decode($camera_settings_str, true);
+	$settings_str = file_get_contents(RASPI_CAMERA_SETTINGS, true);
+	$settings_array = json_decode($settings_str, true);
 
 	// Determine if the advanced settings should always be shown.
-	$initial_display = $camera_settings_array['alwaysshowadvanced'] == 1 ? "table-row" : "none";
+	$initial_display = $settings_array['alwaysshowadvanced'] == 1 ? "table-row" : "none";
 ?>
 <script language="javascript">
 function toggle_advanced()
@@ -130,12 +130,12 @@ function toggle_advanced()
   <div class="row">
     <div class="col-lg-12" style="padding: 0px 5px;">
       <div class="panel panel-primary">
-      <div class="panel-heading"><i class="fa fa-camera fa-fw"></i> Configure Camera Settings <?php echo "&nbsp; &nbsp; &nbsp; - &nbsp; &nbsp; &nbsp; " . RASPI_CAMERA_OPTIONS; ?></div>
+      <div class="panel-heading"><i class="fa fa-camera fa-fw"></i> Configure Settings <?php echo "&nbsp; &nbsp; &nbsp; - &nbsp; &nbsp; &nbsp; " . RASPI_CAMERA_OPTIONS; ?></div>
         <!-- /.panel-heading -->
         <div class="panel-body" style="padding: 5px;">
           <p><?php $status->showMessages(); ?></p>
 
-          <form method="POST" action="?page=camera_conf" name="camera_conf_form">
+          <form method="POST" action="?page=camera_conf" name="conf_form">
             <?php CSRFToken()?>
 
              <?php
@@ -144,7 +144,7 @@ function toggle_advanced()
 		$numAdvanced = 0;
 		$rowStyle = "border-bottom: 1px solid lightgray;";	// separate table rows
 		echo "<table border='0'>";
-			foreach($camera_options_array as $option) {
+			foreach($options_array as $option) {
 				$display = $option['display'];
 				if (! $display) continue;
 
@@ -175,8 +175,8 @@ function toggle_advanced()
 				if ($type == "header") {
 					$value = "";
 				} else {
-					if (isset($camera_settings_array[$name]))
-						$value = $camera_settings_array[$name] != null ? $camera_settings_array[$name] : $default;
+					if (isset($settings_array[$name]))
+						$value = $settings_array[$name] != null ? $settings_array[$name] : $default;
 					else
 						$value = $default;
 					// Allow single quotes in values (for string values).
@@ -189,7 +189,7 @@ function toggle_advanced()
 				// a wide input box on the top row spanning the 2nd and 3rd columns,
 				// and the description on the bottom row in the 3rd column.
 				// This way, all descriptions are in the 3rd column.
-				if ($type !== "widetext" && $type !== "header") $style = $rowStyle;
+				if ($type !== "widetext" && $type != "header") $style = $rowStyle;
 				else $style="";
 				echo "\n";	// to make it easier to read web source when debugging
 
@@ -267,8 +267,7 @@ function toggle_advanced()
 					echo "</span>";
 
 					// Track current values so we can determine what changed.
-//xxxx					if (isset($option['checkchanges']) && $option['checkchanges'])
-						echo "<input type='hidden' name='OLD_$name' value='$value'>";
+					echo "<input type='hidden' name='OLD_$name' value='$value'>";
 
 					echo "</td>";
 					if ($type == "widetext")
@@ -283,8 +282,8 @@ function toggle_advanced()
 	?>
 
 	<div style="margin-top: 20px">
-		<input type="submit" class="btn btn-outline btn-primary" name="save_camera_settings" value="Save changes">
-		<input type="submit" class="btn btn-warning" name="reset_camera_settings" value="Reset to default values" onclick="return confirm('Really RESET ALL VALUES TO DEFAULT??');">
+		<input type="submit" class="btn btn-outline btn-primary" name="save_settings" value="Save changes">
+		<input type="submit" class="btn btn-warning" name="reset_settings" value="Reset to default values" onclick="return confirm('Really RESET ALL VALUES TO DEFAULT??');">
 		<button type="button" class="btn advanced" id="advButton" onclick="toggle_advanced();"><?php if ($initial_display == "none") echo "Show advanced options"; else echo "Hide advanced options"; ?></button>
 		<div title="UNcheck to only save settings without restarting Allsky" style="line-height: 0.3em;"><br><input type="checkbox" name="restart" checked> Restart Allsky after saving changes?<br><br>&nbsp;</div>
 	</div>
