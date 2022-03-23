@@ -10,6 +10,11 @@ function DisplayCameraConfig(){
 
 	if (isset($_POST['save_settings'])) {
 		if (CSRFValidate()) {
+			$checkChanges = array();	// holds all settings where "checkchanges" is on
+			foreach ($options_array as $option){
+				if (isset($option['checkchanges']) && $option['checkchanges'])
+					$checkChanges[$option['name']] = $option['checkchanges'];
+			}
 			$settings = array();
 			$changes = "";
 			$somethingChanged = false;
@@ -28,7 +33,14 @@ function DisplayCameraConfig(){
 					if ($oldValue !== $newValue) {
 						$somethingChanged = true;
 						// echo "<br>$key: old [$oldValue] !== new [$newValue]";
-						if (isset($options_array['checkchanges']) && $options_array['checkchanges'])
+						$checkchanges = false;
+						foreach ($options_array as $option){
+							if ($option['name'] === $originalName) {
+								$checkchanges = isset($option['checkchanges']) && $option['checkchanges'];
+								break;
+							}
+						}
+						if ($checkchanges)
 							$changes .= "  '$originalName' '$oldValue' '$newValue'";
 					}
 				}
@@ -238,7 +250,7 @@ function toggle_advanced()
 					if ($type == "text" || $type == "number"){
 						echo "<input class='form-control' type='$type'" .
 							" name='$name' value='$value'" .
-							" style='$boxShadow background-color: #f3f8fd; padding: 0px 3px 0px 0px; text-align: right; width: 120px; margin-right: 20px;'>";
+							" style='$boxShadow background-color: #f3f8fd; padding: 0px 3px 0px 0px; text-align: right; width: 120px;'>";
 					} else if ($type == "widetext"){
 						echo "<input class='form-control' type='text'" .
 							" name='$name' value='$value'" .
