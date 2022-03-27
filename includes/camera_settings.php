@@ -161,8 +161,8 @@ function toggle_advanced()
 		$boxShadow = "box-shadow: 2px 3px rgb(0,0,0,6%);";
 		echo "<table border='0'>";
 			foreach($options_array as $option) {
-				$display = $option['display'];
-				if (! $display) continue;
+				// Should this setting be displayed?
+				if (isset($option['display']) && ! $display) continue;
 
 				if (isset($option['minimum']))
 					$minimum = $option['minimum'];
