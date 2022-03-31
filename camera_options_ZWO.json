@@ -663,7 +663,7 @@
 "default":"",
 "description":"Text that appears below the optional time with the same color and size.",
 "label":"Text Overlay",
-"type":"text",
+"type":"widetext",
 "display":1,
 "advanced":0
 },
@@ -672,7 +672,7 @@
 "default":"",
 "description":"Extra Text File (enter full path to the file).<br>Leave blank if NOT using an extra text file.",
 "label":"Extra Text File",
-"type":"text",
+"type":"widetext",
 "display":1,
 "checkchanges": true,
 "advanced":0
@@ -819,9 +819,9 @@
 {
 "name":"location",
 "default":"",
-"description":"The location of your camera, for example: Whitehorse, YT, Canada.",
+"description":"The location of your camera, for example: Whitehorse, YT.<br>No need to enter country since it'll be obvious looking at the map.",
 "label":"Location",
-"type":"text",
+"type":"widetext",
 "display":1,
 "checkchanges": true,
 "advanced":0
@@ -841,7 +841,7 @@
 "default":"",
 "description":"The URL of your website, for example: https://www.thomasjacquin.com/allsky.<br>If your camera is not accessible on the Internet, leave this field empty.",
 "label":"Website URL",
-"type":"text",
+"type":"widetext",
 "display":1,
 "checkchanges": true,
 "advanced":0
@@ -851,7 +851,7 @@
 "default":"",
 "description":"The URL of the image on your website, for example: https://wwww.thomasjacquin.com/allsky/image.jpg.<br/>Right-click on the image and select <i>Copy Image Address</i>.<br>If your camera is not accessible on the Internet, leave this field empty.",
 "label":"Image URL",
-"type":"text",
+"type":"widetext",
 "display":1,
 "checkchanges": true,
 "advanced":0
@@ -861,7 +861,7 @@
 "default":"",
 "description":"The model of your camera, for example: ASI 224MC or RPiHQ.",
 "label":"Camera",
-"type":"text",
+"type":"widetext",
 "display":1,
 "checkchanges": true,
 "advanced":0
@@ -881,7 +881,7 @@
 "default":"",
 "description":"The computer inside your allsky enclosure, for example: Raspberry Pi 3.",
 "label":"Computer",
-"type":"text",
+"type":"widetext",
 "display":1,
 "checkchanges": true,
 "advanced":0
