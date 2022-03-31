@@ -162,7 +162,7 @@ function toggle_advanced()
 		echo "<table border='0'>";
 			foreach($options_array as $option) {
 				// Should this setting be displayed?
-				if (isset($option['display']) && ! $display) continue;
+				if (isset($option['display']) && ! $option['display']) continue;
 
 				if (isset($option['minimum']))
 					$minimum = $option['minimum'];
