@@ -1,5 +1,6 @@
 <?php
-define('ALLSKY_HOME', 'XX_ALLSKY_HOME_XX');		// value updated during installation
+define('ALLSKY_HOME', 'XX_ALLSKY_HOME_XX');			// value updated during installation
+define('ALLSKY_WEBSITE', 'XX_ALLSKY_WEBSITE_XX');	// value updated during installation
 
 $content = "";
 $path = "";
@@ -19,8 +20,12 @@ if ($path == "") {
 }
 
 // "current" is a web alias to ALLSKY_HOME.
+// "website" is a web alias to ALLSKY_WEBSITE.
 // $path is the web address to the file; we need the physical path ($file) to move.
-$file = str_replace('current', ALLSKY_HOME, $path);
+if (substr($path, 0, 7) === "current")
+	$file = str_replace('current', ALLSKY_HOME, $path);
+else	// website
+	$file = str_replace('website', ALLSKY_WEBSITE, $path);
 if (! file_exists($file)) {
 	echo "save_file.php: file to save '$file' does not exist!";
 	exit;
