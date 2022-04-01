@@ -157,12 +157,10 @@ function toggle_advanced()
 		// Allow for "advanced" options that aren't displayed by default to avoid
 		// confusing novice users.
 		$numAdvanced = 0;
-		$rowStyle = "border-bottom: 1px solid lightgray;";	// separate table rows
-		$boxShadow = "box-shadow: 2px 3px rgb(0,0,0,6%);";
 		echo "<table border='0'>";
 			foreach($options_array as $option) {
 				// Should this setting be displayed?
-				if (isset($option['display']) && ! $display) continue;
+				if (isset($option['display']) && ! $option['display']) continue;
 
 				if (isset($option['minimum']))
 					$minimum = $option['minimum'];
@@ -205,14 +203,14 @@ function toggle_advanced()
 				// a wide input box on the top row spanning the 2nd and 3rd columns,
 				// and the description on the bottom row in the 3rd column.
 				// This way, all descriptions are in the 3rd column.
-				if ($type !== "widetext" && $type != "header") $style = $rowStyle;
-				else $style="";
+				if ($type !== "widetext" && $type != "header") $class = "rowSeparator";
+				else $class="";
 				echo "\n";	// to make it easier to read web source when debugging
 
 				// Put some space before and after headers.  This next line is the "before":
 				if ($type == "header") echo "<tr style='height: 10px'><td colspan='3'></td></tr>";
 
-				echo "<tr class='form-group $advClass' style='margin-bottom: 0px; $style $advStyle'>";
+				echo "<tr class='form-group $advClass $class' style='margin-bottom: 0px; $advStyle'>";
 				if ($type === "header"){
 					echo "<td colspan='3' style='padding: 8px 0px;' class='settingsHeader'>$description</td>";
 				} else {
@@ -248,17 +246,17 @@ function toggle_advanced()
 					// that has the popup.
 					echo "<span title='$popup'>";
 					if ($type == "text" || $type == "number"){
-						echo "<input class='form-control' type='$type'" .
+						echo "<input class='form-control boxShadow' type='$type'" .
 							" name='$name' value='$value'" .
-							" style='$boxShadow background-color: #f3f8fd; padding: 0px 3px 0px 0px; text-align: right; width: 120px;'>";
+							" style='padding: 0px 3px 0px 0px; text-align: right; width: 120px;'>";
 					} else if ($type == "widetext"){
-						echo "<input class='form-control' type='text'" .
+						echo "<input class='form-control boxShadow' type='text'" .
 							" name='$name' value='$value'" .
-						   	" style='$boxShadow background-color: #f3f8fd; padding: 6px 5px;'>";
+						   	" style='padding: 6px 5px;'>";
 					} else if ($type == "select"){
 						// text-align for <select> works on Firefox but not Chrome or Edge
-						echo "<select class='form-control' name='$name'" .
-						   	" style='$boxShadow background-color: #f3f8fd; width: 120px; margin-right: 20px; text-align: right; padding: 0px 3px 0px 0px;'>";
+						echo "<select class='form-control boxShadow' name='$name'" .
+						   	" style='width: 120px; margin-right: 20px; text-align: right; padding: 0px 3px 0px 0px;'>";
 						foreach($option['options'] as $opt){
 							$val = $opt['value'];
 							$lab = $opt['label'];
@@ -270,7 +268,7 @@ function toggle_advanced()
 						}
 						echo "</select>";
 					} else if ($type == "checkbox"){
-						echo "<div class='switch-field' style='margin-bottom: -3px; $boxShadow border-radius: 4px;'>";
+						echo "<div class='switch-field boxShadow' style='margin-bottom: -3px; border-radius: 4px;'>";
 							echo "<input id='switch_no_".$name."' class='form-control' type='radio' ".
 								"name='$name' value='0' ".
 								($value == 0 ? " checked " : "").  ">";
@@ -288,11 +286,11 @@ function toggle_advanced()
 
 					echo "</td>";
 					if ($type == "widetext")
-						echo "</tr><tr style='$rowStyle'><td></td>";
+						echo "</tr><tr class='rowSeparator'><td></td>";
 					echo "<td>$description</td>";
 				}
 				echo "</tr>";
-				if ($type == "header") echo "<tr style='height: 10px; $rowStyle'><td colspan='3'></td></tr>";
+				if ($type == "header") echo "<tr class='rowSeparator' style='height: 10px;'><td colspan='3'></td></tr>";
 
 			 }
 		echo "</table>";

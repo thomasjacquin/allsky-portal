@@ -86,27 +86,6 @@ $csrf_token = $_SESSION['csrf_token'];
     <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
 	<!-- Make messages look nicer, and align the "x" with the message. -->
 	<style>
-		.alert {
-			padding: 3px;
-			margin-bottom: 0;
-		}
-		.alert-message {
-			color: #31708f;
-			background-color: #d9edf7;
-			border-color: #bce8f1;
-		}
-		.alert-dismissable .close {
-			right: 0px;
-			opacity: .6;
-		}
-		/* used in system.php */
-		.progress-bar {
-			color: black;
-			animation-name: progress_bar;
-			animation-duration: 0.6s;
-			animation-timing-function: ease;
-		}
-		@keyframes progress_bar { from { width: 0px } }
 		.x {line-height: 150%;}
 		@media (min-width: 992px) {.col-md-6 { width: 75%; }}
 	</style>
