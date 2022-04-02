@@ -157,19 +157,15 @@ $csrf_token = $_SESSION['csrf_token'];
     <!-- Custom Theme JavaScript -->
     <script src="dist/js/sb-admin-2.js"></script>
 
-    <link rel="stylesheet"
-          href="lib/codeMirror/codemirror.min.css">
-
-    <link rel="stylesheet"
-          href="lib/codeMirror/monokai.min.css">
-
-    <script type="text/javascript"
-            src="lib/codeMirror/codemirror.min.js">
-    </script>
-
-    <script type="text/javascript"
-            src="lib/codeMirror/shell.js">
-    </script>
+    <!-- Code Mirror editor -->
+    <link rel="stylesheet" href="lib/codeMirror/codemirror.css">
+    <link rel="stylesheet" href="lib/codeMirror/monokai.min.css">
+    <script type="text/javascript" src="lib/codeMirror/codemirror.js"> </script>
+    <script type="text/javascript" src="lib/codeMirror/shell.js"> </script>
+<?php if (is_dir(ALLSKY_WEBSITE)) { ?>
+    <script type="text/javascript" src="lib/codeMirror/javascript.js"> </script>
+    <script type="text/javascript" src="lib/codeMirror/json.js"> </script>
+<?php } ?>
 </head>
 <body>
 
