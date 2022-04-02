@@ -17,7 +17,7 @@ function DisplayEditor()
                     mode: "shell",
                     theme: "monokai"
                 });
-            });
+			});
 
             $("#save_file").click(function () {
                 editor.display.input.blur();
@@ -48,15 +48,27 @@ function DisplayEditor()
             });
 
             $("#script_path").change(function(e) {
-                $.get(e.currentTarget.value + "?_ts=" + new Date().getTime(), function (data) {
-                    // console.log(data);	// This puts the whole file into the browser log
-                    editor.getDoc().setValue(data);
-				}).fail(function() {
-					alert('Requested file [' + e.currentTarget.value + '] not found.');
+				editor.getDoc().setValue("");	// Keeps new file from reading old one first.
+                var ext = e.currentTarget.value.substring(e.currentTarget.value.lastIndexOf(".") + 1);
+				if (ext == "js") {
+					editor.setOption("mode", "javascript");
+				} else if (ext == "json") {
+					editor.setOption("mode", "json");
+				} else {
+					editor.setOption("mode", "shell");
+				}
+				// It would be easy to support other files types.  Would need "type.js" file to do the formatting.
+				$.get(e.currentTarget.value + "?_ts=" + new Date().getTime(), function (data) {
+					editor.getDoc().setValue(data);
+				}).fail(function(x) {
+					if (x.status == 200) {	// json files can fail but actually work
+						editor.getDoc().setValue(x.responseText);
+					} else {
+						alert('Requested file [' + e.currentTarget.value + '] not found or an unsupported language.');
+					}
 				})
 			});
         });
-
 
     </script>
 
@@ -91,6 +103,14 @@ function DisplayEditor()
 								foreach ($scripts as $script) {
 									echo "<option value='current/" . basename(ALLSKY_SCRIPTS) . "/$script'>$script</option>";
 								}
+							}
+							if (is_dir(ALLSKY_WEBSITE)) {
+								// The website is installed on this Pi.
+								// The physical path is ALLSKY_WEBSITE; the virtual pathe is "website".
+								if (file_exists(ALLSKY_WEBSITE . "/config.js"))
+									echo "<option value='website/config.js'>website config.js</option>";
+								if (file_exists(ALLSKY_WEBSITE . "/virtualsky.json"))
+									echo "<option value='website/virtualsky.json'>website virtualsky.json</option>";
 							}
                ?>
                         </select>
