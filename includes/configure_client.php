@@ -120,9 +120,9 @@ function DisplayWPAConfig(){
 	if (! isset($networks)) $networks = [];	// eliminates warning messages in log file
 	foreach( $scan_return as $network ) {
 		$arrNetwork = preg_split("/[\t]+/",$network);
-		// fields: bssid,   frequency, signal level, flags,	ssid 
-		// fields: channel						   protocol  ssid
-		// fields: 0		1		  2			 3		 4
+		// fields: bssid,   frequency, signal level, flags,    ssid 
+		// fields:          channel                  protocol  ssid
+		// fields: 0        1          2             3         4
 		if (isset($arrNetwork[4])) {
 			$ssid = $arrNetwork[4];
 			if (substr($ssid, 0, 4) == "\\x00") $ssid = "Unknown (\\x00)";
@@ -136,16 +136,16 @@ function DisplayWPAConfig(){
 					$have_multiple = true;
 					$networks[$ssid]['channel'] = $networks[$ssid]['channel'] . $note;
 				}
-			// TODO What if the security has changed?
+				// TODO What if the security has changed?
 			} else {
 				$num_networks += 1;
 				$networks[$ssid] = array(
-				'configured' => false,
-				'protocol' => ConvertToSecurity($arrNetwork[3]),
-				'channel' => ConvertToChannel($arrNetwork[1]),
-				'passphrase' => '',
-				'visible' => true,
-				'connected' => false
+					'configured' => false,
+					'protocol' => ConvertToSecurity($arrNetwork[3]),
+					'channel' => ConvertToChannel($arrNetwork[1]),
+					'passphrase' => '',
+					'visible' => true,
+					'connected' => false
 				);
 			}
 		}
