@@ -111,6 +111,7 @@ function DisplayWPAConfig(){
   exec( 'sudo wpa_cli scan' );
   sleep(3);
   exec( 'sudo wpa_cli scan_results',$scan_return );
+//echo "<br>scan_return before=<pre>"; echo print_r($scan_return) . "</pre>";
   for( $shift = 0; $shift < 2; $shift++ ) {
     array_shift($scan_return);
   }
@@ -118,10 +119,15 @@ function DisplayWPAConfig(){
   $have_multiple = false;
   $note = " <span style='color: red; font-weight: bold'>*</span>";
   $num_networks = 0;
+  if (! isset($networks)) $networks = [];	// eliminates warning messages in log file
   foreach( $scan_return as $network ) {
     $arrNetwork = preg_split("/[\t]+/",$network);
+	// fields: bssid,   frequency, signal level, flags,    ssid 
+	// fields: channel                           protocol  ssid
+	// fields: 0        1          2             3         4
     if (isset($arrNetwork[4])) {
       $ssid = $arrNetwork[4];
+	  if (substr($ssid, 0, 4) == "\\x00") $ssid = "Unknown (\\x00)";
       if (array_key_exists($ssid, $networks)) {
           $is_new = false;
           $networks[$ssid]['visible'] = true;
@@ -134,7 +140,7 @@ function DisplayWPAConfig(){
           }
 	  // TODO What if the security has changed?
       } else {
-	  $num_networks += 1;
+		  $num_networks += 1;
           $networks[$ssid] = array(
             'configured' => false,
             'protocol' => ConvertToSecurity($arrNetwork[3]),
