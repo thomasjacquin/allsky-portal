@@ -353,14 +353,14 @@ input[type="number"],
 input[type="select"],
 select {
 	background-color: #e4e4e4;
-    color: #888888;
+	color: #555555;
 }
 
 
 .btn-primary:hover { color: black; }
 .btn-success:hover { color: black; }
 .btn-warning:hover { color: black; }
-.btn-danger:hover { color: black; }
+.btn-danger:hover  { color: black; }
 
 /* Colors for user-supplied buttons.
  * In dark theme the border colors become darker.
