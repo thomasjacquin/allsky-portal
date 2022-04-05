@@ -7,6 +7,7 @@
 function DisplayDashboard($interface) {
 
 	$status = new StatusMessages();
+	$notSetMsg = "[not set]";
 
 	$interface_output = get_interface_status("ifconfig $interface; iwconfig $interface");
 
@@ -15,22 +16,22 @@ function DisplayDashboard($interface) {
 
 	// parse the iwconfig data:
 	preg_match( '/ESSID:\"([a-zA-Z0-9\s]+)\"/i',$interface_output,$result );
-	$strSSID = isset($result[1]) ?  str_replace('"','',$result[1]) : "[not set]";
+	$strSSID = isset($result[1]) ?  str_replace('"','',$result[1]) : $notSetMsg;
 
 	preg_match( '/Access Point: ([0-9a-f:]+)/i',$interface_output,$result );
-	$strBSSID = isset($result[1]) ?  $result[1] : "[not set]";
+	$strBSSID = isset($result[1]) ?  $result[1] : $notSetMsg;
 
 	preg_match( '/Bit Rate=([0-9\.]+ Mb\/s)/i',$interface_output,$result );
-	$strBitrate = isset($result[1]) ?  $result[1] : "[not set]";
+	$strBitrate = isset($result[1]) ?  $result[1] : $notSetMsg;
 
 	preg_match( '/Tx-Power=([0-9]+ dBm)/i',$interface_output,$result );
-	$strTxPower = isset($result[1]) ?  $result[1] : "[not set]";
+	$strTxPower = isset($result[1]) ?  $result[1] : $notSetMsg;
 
 	// for example:   Link Quality=63/70.  Show absolute number (63) and percent (90%)
 	preg_match( '/Link Quality=([0-9]+)\/([0-9]+)/i',$interface_output,$result );
-	$strLinkQualityAbsolute = isset($result[1]) ?  $result[1] : "[not set]";
+	$strLinkQualityAbsolute = isset($result[1]) ?  $result[1] : $notSetMsg;
 	$strLinkQualityMax = isset($result[2]) ?  $result[2] : $strLinkQualityAbsolute;
-	if ($strLinkQualityAbsolute !== "[not set]" && $strLinkQualityMax !== "[not set]") {
+	if ($strLinkQualityAbsolute !== $notSetMsg && $strLinkQualityMax !== $notSetMsg) {
 		$strLinkQualityPercent = number_format(($strLinkQualityAbsolute / $strLinkQualityMax) * 100, 0);
 		if ($strLinkQualityPercent >= 75)
 			$strLinkQuality_status = "success";
@@ -44,10 +45,10 @@ function DisplayDashboard($interface) {
 	}
 
 	preg_match( '/Signal level=(-?[0-9]+ dBm)/i',$interface_output,$result );
-	$strSignalLevel = isset($result[1]) ?  $result[1] : "[not set]";
+	$strSignalLevel = isset($result[1]) ?  $result[1] : $notSetMsg;
 
 	preg_match('/Frequency:(\d+.\d+ GHz)/i',$interface_output,$result);
-	$strFrequency = isset($result[1]) ?  $result[1] : "[not set]";
+	$strFrequency = isset($result[1]) ?  $result[1] : $notSetMsg;
 
 	// $interface and $interface_output are sent, $status is returned.
 	$interface_up = handle_interface_POST_and_status($interface, $interface_output, $status);
@@ -89,6 +90,10 @@ function DisplayDashboard($interface) {
 								<div class="info-item">Transmit Power</div> <?php echo $strTxPower ?></br>
 								<div class="info-item">Frequency</div>      <?php echo $strFrequency ?></br>
 								<div class="info-item">Link Quality</div>
+						<?php
+							if ($strLinkQualityPercent == $notSetMsg) echo "$notSetMsg </br>";
+							else
+						{ ?>
 								<div class="progress">
 									<div class="progress-bar progress-bar-<?php echo $strLinkQuality_status ?>"
 									role="progressbar"
@@ -96,6 +101,7 @@ function DisplayDashboard($interface) {
 									style="width: <?php echo $strLinkQualityPercent ?>%;"><?php echo "$strLinkQualityPercent% &nbsp; &nbsp; ($strLinkQualityAbsolute / $strLinkQualityMax)" ?>
 									</div>
 								</div>
+						<?php } ?>
 							</div><!-- /.panel-body -->
 						</div><!-- /.panel-default -->
 					</div><!-- /.col-md-6 -->
