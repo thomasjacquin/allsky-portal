@@ -76,12 +76,16 @@ $nightdelay = $camera_settings_array["nightdelay"] + $x;
 $angle = $camera_settings_array['angle'];
 $lat = $camera_settings_array['latitude'];
 $lon = $camera_settings_array['longitude'];
-exec("sunwait poll exit set angle $angle $lat $lon", $return);
-if ($return[0] == 'DAY') {
+exec("sunwait poll exit set angle $angle $lat $lon", $return, $retval);
+if ($retval == 2) {
 	$delay = $daydelay;
-} else {
+} else if ($retval == 3) {
 	$delay = $nightdelay;
+} else {
+	echo "<p class='errorMsg'>ERROR: 'sunwait' returned exit code $retval so we don't know if it's day or night.</p>";
+	$delay = ($daydelay + $nightdelay) / 2;		// Use the average delay
 }
+
 // Divide by 2 to lessen the delay between a new picture and when we check.
 $delay /= 2;
 
