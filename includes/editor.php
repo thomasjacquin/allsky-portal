@@ -107,10 +107,13 @@ function DisplayEditor()
 							if (is_dir(ALLSKY_WEBSITE)) {
 								// The website is installed on this Pi.
 								// The physical path is ALLSKY_WEBSITE; the virtual pathe is "website".
+								if (file_exists(ALLSKY_WEBSITE . "/configuration.json"))
+									echo "<option value='website/configuration.json'>Allsky Website configuration.json</option>";
+								// TODO: when the new version of the website is deployed, remove these files:
 								if (file_exists(ALLSKY_WEBSITE . "/config.js"))
-									echo "<option value='website/config.js'>website config.js</option>";
+									echo "<option value='website/config.js'>Allsky Website config.js</option>";
 								if (file_exists(ALLSKY_WEBSITE . "/virtualsky.json"))
-									echo "<option value='website/virtualsky.json'>website virtualsky.json</option>";
+									echo "<option value='website/virtualsky.json'>Allsky Website virtualsky.json</option>";
 							}
 			   ?>
 						</select>
