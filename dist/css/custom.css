@@ -393,3 +393,9 @@ select {
 .btn-black		 { background-color: #333333; border-color: #777777; color: white; }
 .btn-black:hover { background-color: #888888; border-color: #000000; color: white; }
 .dark .btn-black { border-color: #ffffff; }
+
+/* Error messages */
+.errorMsg {
+	color: red;
+	font-size: 125%;
+}
