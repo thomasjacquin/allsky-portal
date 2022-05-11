@@ -251,7 +251,7 @@ function DisplaySystem()
 	global $status;
 	$status = new StatusMessages();
 
-	$top_dir = "/var/www";
+	$top_dir = dirname(ALLSKY_WEBSITE, 1);
 	$camera_settings_str = file_get_contents(RASPI_CAMERA_SETTINGS, true);
 	$camera_settings_array = json_decode($camera_settings_str, true);
 	if (isset($camera_settings_array['temptype'])) {
