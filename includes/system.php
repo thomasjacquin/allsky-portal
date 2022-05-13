@@ -251,7 +251,7 @@ function DisplaySystem()
 	global $status;
 	$status = new StatusMessages();
 
-	$top_dir = "/var/www";
+	$top_dir = dirname(ALLSKY_WEBSITE, 1);
 	$camera_settings_str = file_get_contents(RASPI_CAMERA_SETTINGS, true);
 	$camera_settings_array = json_decode($camera_settings_str, true);
 	if (isset($camera_settings_array['temptype'])) {
@@ -298,18 +298,22 @@ function DisplaySystem()
 	// Disk usage
 	// File Usage
 	/* get disk space free (in bytes) */
-	$df = disk_free_space($top_dir);
-	/* and get disk space total (in bytes)  */
-	$dt = disk_total_space($top_dir);
-	/* now we calculate the disk space used (in bytes) */
-	$du = $dt - $df;
-	/* percentage of disk used - this will be used to also set the width % of the progress bar */
-	$dp = sprintf('%d', ($du / $dt) * 100);
+	$df = @disk_free_space($top_dir);
+	if ($df === false) {
+		$dp = -1;	// signals an error
+	} else {
+		/* and get disk space total (in bytes)  */
+		$dt = disk_total_space($top_dir);
+		/* now we calculate the disk space used (in bytes) */
+		$du = $dt - $df;
+		/* percentage of disk used - this will be used to also set the width % of the progress bar */
+		$dp = sprintf('%d', ($du / $dt) * 100);
 
-	/* and we format the size from bytes to MB, GB, etc. */
-	$df = formatSize($df);
-	$du = formatSize($du);
-	$dt = formatSize($dt);
+		/* and we format the size from bytes to MB, GB, etc. */
+		$df = formatSize($df);
+		$du = formatSize($du);
+		$dt = formatSize($dt);
+	}
 
 	// Throttle / undervoltage status
 	$x = exec("sudo vcgencmd get_throttled 2>&1");	// Output: throttled=0x12345...
@@ -428,7 +432,10 @@ function DisplaySystem()
 									<tr class="x"><td style="padding-right: 90px;">Hostname</td><td><?php echo $hostname ?></td></tr>
 									<tr class="x"><td>Pi Revision</td><td><?php echo RPiVersion() ?></td></tr>
 									<tr class="x"><td>Uptime</td><td><?php echo $uptime ?></td></tr>
-									<tr class="x"><td>SD Card</td><td><?php echo "$dt ($df free)" ?></td></tr>
+									<?php if ($dp === -1) $x = "<span class='errorMsg'>ERROR: unable to read '$top_dir' to get data.</span>";
+										  else $x = "$dt ($df free)";
+									?>
+									<tr class="x"><td>SD Card</td><td><?php echo "$x" ?></td></tr>
 									<?php // Optional user-specified data.
 										for ($i=0; $i < $user_data_files_count; $i++) {
 											displayUserData($user_data_files[$i], "data");
@@ -444,11 +451,15 @@ function DisplaySystem()
 									<tr><td colspan="2" style="height: 5px"></td></tr>
 									<?php displayProgress("", "CPU Temperature", $display_temperature, 0, $temperature, 100, 70, 60, $temperature_status); ?>
 									<tr><td colspan="2" style="height: 5px"></td></tr>
-									<?php displayProgress("", "Disk Usage", "$dp%", 0, $dp, 100, 90, 70, ""); ?>
-									<?php
-										// Optional user-specified data.
-										for ($i=0; $i < $user_data_files_count; $i++) {
-											displayUserData($user_data_files[$i], "progress");
+									<?php 
+										if ($dp === -1) {
+											echo "<tr><td>Disk Usage</td><td><span class='errorMsg'>ERROR: unable to read '$top_dir' to get disk usage.</span></td></tr>";
+										} else {
+											displayProgress("", "Disk Usage", "$dp%", 0, $dp, 100, 90, 70, "");
+											// Optional user-specified data.
+											for ($i=0; $i < $user_data_files_count; $i++) {
+												displayUserData($user_data_files[$i], "progress");
+											}
 										}
 									?>
 									</table>
