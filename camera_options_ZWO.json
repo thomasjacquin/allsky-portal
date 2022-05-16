@@ -307,7 +307,7 @@
 "name":"nightskipframes",
 "minimum":0,
 "default":1,
-"description":"When starting Allsky during at night, skip up to this many frames while the software gets to the correct exposure.",
+"description":"When starting Allsky at night, skip up to this many frames while the software gets to the correct exposure.",
 "label":"Frames To Skip",
 "type":"number",
 "display":1,
