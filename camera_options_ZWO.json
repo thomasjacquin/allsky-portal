@@ -19,8 +19,7 @@
 },
 {
 "name":"daymaxexposure",
-"minimum":"",
-"maximum":"",
+"maximum":"camera-specific",
 "default":10000,
 "description":"Maximum daytime Auto-Exposure time in ms (1000ms = 1 sec).<br>Only applies if 'Auto-Exposure' is enabled.",
 "label":"Max Auto-Exposure",
@@ -30,8 +29,8 @@
 },
 {
 "name":"dayexposure",
-"minimum":"",
-"maximum":"",
+"minimum":"camera-specific",
+"maximum":"camera-specific",
 "default":0.5,
 "description":"Daytime manual exposure time in ms (1000ms = 1 sec). Can be a fraction.<br>If using auto-exposure, this number is used as a starting point.",
 "label":"Manual Exposure",
@@ -44,10 +43,10 @@
 "minimum":"0.0",
 "maximum":"1.0",
 "default":0.5,
-"description":"The target mean brightness level when Auto-Exposure is on. Ranges from 0.0 (pure black) to 1.0 (pure white). Best used when Auto-Exposure and Auto-Gain are on.",
+"description":"The target mean brightness level when Auto-Exposure is on. Ranges from 0.0 (pure black) to 1.0 (pure white).<br>Best used when Auto-Exposure and Auto-Gain are on.",
 "label":"Mean Target",
 "type":"text",
-"display":1,
+"display":0,
 "advanced":1
 },
 {
@@ -63,7 +62,7 @@
 },
 {
 "name":"daydelay",
-"minimum":"",
+"minimum":10,
 "default":15000,
 "description":"Delay between daytime images in milliseconds. 1000ms = 1 sec.",
 "label":"Delay",
@@ -82,8 +81,8 @@
 },
 {
 "name":"daymaxgain",
-"minimum":"",
-"maximum":"",
+"minimum":"1",
+"maximum":"camera-specific",
 "default":200,
 "description":"Maximum gain when using Auto-Gain.",
 "label":"Max Auto-Gain",
@@ -93,10 +92,10 @@
 },
 {
 "name":"daygain",
-"minimum":"",
-"maximum":"",
-"default":1.0,
-"description":"Manually set the gain (light sensitivity).<br>Starts at 1.0. A high value returns a brighter image but more noise too.",
+"minimum":"1",
+"maximum":"camera-specific",
+"default":1,
+"description":"Manually set the gain (light sensitivity).<br>Starts at 1. A high value returns a brighter image but more noise too.",
 "label":"Gain",
 "type":"number",
 "display":1,
@@ -113,6 +112,47 @@
 	{"value": 2, "label": "2x2"},
 	{"value": 4, "label": "4x4"}
 ],
+"display":1,
+"advanced":1
+},
+{
+"name":"dayawb",
+"default":0,
+"description":"Sets Auto White Balance.",
+"label":"Auto White Balance",
+"type":"checkbox",
+"display":0,
+"advanced":0
+},
+{
+"name":"daywbr",
+"minimum":0,
+"maximum":100,
+"default":53,
+"description":"Red component for the white balance.<br>When using Auto White Balance, this number is a starting point.",
+"label":"Red Balance",
+"type":"text",
+"display":0,
+"advanced":0
+},
+{
+"name":"daywbb",
+"minimum":0,
+"maximum":100,
+"default":90,
+"description":"Blue component for the white balance.<br>When using auto white balance, this number is a starting point.",
+"label":"Blue Balance",
+"type":"text",
+"display":0,
+"advanced":0
+},
+{
+"name":"dayskipframes",
+"minimum":0,
+"default":5,
+"description":"When starting Allsky during the day, skip up to this many frames while the software gets to the correct exposure.",
+"label":"Frames To Skip",
+"type":"number",
 "display":1,
 "advanced":1
 },
@@ -137,9 +177,7 @@
 },
 {
 "name":"nightmaxexposure",
-"minimum":"",
-"maximum":"",
-"default":20000,
+"default":60000,
 "description":"Maximum nighttime Auto-Exposure time in ms (1000ms = 1 sec).<br>Only applies if 'Auto-Exposure' is enabled.",
 "label":"Max Auto-Exposure",
 "type":"number",
@@ -148,8 +186,8 @@
 },
 {
 "name":"nightexposure",
-"minimum":"",
-"maximum":"",
+"minimum":"camera-specific",
+"maximum":"none",
 "default":10000,
 "description":"Manual nighttime exposure time in ms (1000ms = 1 sec).<br>If using auto-exposure, this number is used as a starting point.",
 "label":"Manual Exposure",
@@ -162,10 +200,10 @@
 "minimum":"0.0",
 "maximum":"1.0",
 "default":0.2,
-"description":"The target mean brightness level when Auto-Exposure is on. Ranges from 0.0 (pure black) to 1.0 (pure white). Best used when Auto-Exposure and Auto-Gain are on.",
+"description":"The target mean brightness level when Auto-Exposure is on. Ranges from 0.0 (pure black) to 1.0 (pure white).<br>Best used when Auto-Exposure and Auto-Gain are on.",
 "label":"Mean Target",
 "type":"text",
-"display":1,
+"display":0,
 "advanced":1
 },
 {
@@ -181,7 +219,7 @@
 },
 {
 "name":"nightdelay",
-"minimum":"",
+"minimum":10,
 "default":10,
 "description":"Delay between nighttime images in milliseconds (1000ms = 1 sec).",
 "label":"Delay",
@@ -200,8 +238,8 @@
 },
 {
 "name":"nightmaxgain",
-"minimum":"",
-"maximum":"",
+"minimum":"1",
+"maximum":"camera-specific",
 "default":200,
 "description":"Maximum gain when using Auto-Gain.",
 "label":"Max Auto-Gain",
@@ -211,23 +249,14 @@
 },
 {
 "name":"nightgain",
-"minimum":"",
-"maximum":"",
+"minimum":"1",
+"maximum":"camera-specific",
 "default":50,
 "description":"Manually set the gain (light sensitivity).<br>A high value returns a brighter image but more noise too.",
 "label":"Gain",
 "type":"text",
 "display":1,
 "advanced":0
-},
-{
-"name":"gaintransitiontime",
-"default":15,
-"description":"Number of <b>minutes</b> over which to increase or decrease the gain when going from day-to-night or night-to-day images.<br>This helps smooth brightness differences.  Only works if nighttime Auto-Gain is off. 0 disables transitions.",
-"label":"Gain Transition Time",
-"type":"number",
-"display":1,
-"advanced":1
 },
 {
 "name":"nightbin",
@@ -243,6 +272,47 @@
 "display":1,
 "advanced":0
 },
+{
+"name":"nightawb",
+"default":0,
+"description":"Sets Auto White Balance.",
+"label":"Auto White Balance",
+"type":"checkbox",
+"display":0,
+"advanced":0
+},
+{
+"name":"nightwbr",
+"minimum":0,
+"maximum":100,
+"default":53,
+"description":"Red component for the white balance.<br>When using Auto White Balance, this number is a starting point.",
+"label":"Red Balance",
+"type":"text",
+"display":0,
+"advanced":0
+},
+{
+"name":"nightwbb",
+"minimum":0,
+"maximum":100,
+"default":90,
+"description":"Blue component for the white balance.<br>When using auto white balance, this number is a starting point.",
+"label":"Blue Balance",
+"type":"text",
+"display":0,
+"advanced":0
+},
+{
+"name":"nightskipframes",
+"minimum":0,
+"default":1,
+"description":"When starting Allsky at night, skip up to this many frames while the software gets to the correct exposure.",
+"label":"Frames To Skip",
+"type":"number",
+"display":1,
+"advanced":1
+},
 
 {
 "name":"",
@@ -254,7 +324,93 @@
 "advanced":0
 },
 {
+"name":"saturation",
+"minimum":"",
+"maximum":"",
+"default":50,
+"description":"-100 to 100 on Buster, 0.0 to 2.0 on Bullseye.",
+"label":"Saturation",
+"type":"text",
+"display":0,
+"advanced":0
+},
+{
+"name":"gamma",
+"minimum":"",
+"maximum":"",
+"default":50,
+"description":"0 to 100. Changes the difference between light and dark areas.<br>A high value increases contrast. <i>Not supported on all cameras</i>.",
+"label":"Gamma",
+"type":"number",
+"display":0,
+"advanced":0
+},
+{
+"name":"offset",
+"minimum":0,
+"maximum":"camera-specific",
+"default":0,
+"description":"Adds about 1/10 the specified value to every pixel to brighten everything.",
+"label":"Offset",
+"type":"number",
+"display":0,
+"advanced":1
+},
+{
+"name":"awb",
+"default":0,
+"description":"Sets Auto White Balance.",
+"label":"Auto White Balance",
+"type":"checkbox",
+"display":1,
+"advanced":0
+},
+{
+"name":"wbr",
+"minimum":0,
+"maximum":100,
+"default":53,
+"description":"Red component for the white balance.<br>When using Auto White Balance, this number is a starting point.",
+"label":"Red Balance",
+"type":"text",
+"display":1,
+"advanced":0
+},
+{
+"name":"wbb",
+"minimum":0,
+"maximum":100,
+"default":90,
+"description":"Blue component for the white balance.<br>When using auto white balance, this number is a starting point.",
+"label":"Blue Balance",
+"type":"text",
+"display":1,
+"advanced":0
+},
+{
+"name":"aggression",
+"minimum":0,
+"maximum":100,
+"default":75,
+"description":"How much of a calculated change should be made during auto-exposure?<br>Lower numbers smooth out changes but take longer to react to brightness changes.",
+"label":"Aggression",
+"type":"number",
+"display":1,
+"advanced":1
+},
+{
+"name":"gaintransitiontime",
+"default":15,
+"description":"Number of <b>minutes</b> over which to increase or decrease the gain when going from day-to-night or night-to-day images.<br>This helps smooth brightness differences.  Only works if nighttime Auto-Gain is off. 0 disables transitions.",
+"label":"Gain Transition Time",
+"type":"number",
+"display":1,
+"advanced":1
+},
+{
 "name":"width",
+"minimum":1,
+"maximum":"camera-specific",
 "default":0,
 "description":"Image width in pixels. 0 = max sensor width.",
 "label":"Image Width",
@@ -264,6 +420,8 @@
 },
 {
 "name":"height",
+"minimum":1,
+"maximum":"camera-specific",
 "default":0,
 "description":"Image height in pixels. 0 = max sensor height.",
 "label":"Image Height",
@@ -286,70 +444,6 @@
 	{"value": 3, "label": "Y8"}
 ],
 "advanced":1
-},
-{
-"name":"saturation",
-"minimum":"",
-"maximum":"",
-"default":50,
-"description":"-100 to 100 on Buster, 0.0 to 2.0 on Bullseye.",
-"label":"Saturation",
-"type":"text",
-"display":0,
-"advanced":0
-},
-{
-"name":"gamma",
-"minimum":"",
-"maximum":"",
-"default":50,
-"description":"0 to 100. Changes the difference between light and dark areas.<br>A high value increases contrast. <i>Not supported on all cameras</i>.",
-"label":"Gamma",
-"type":"number",
-"display":1,
-"advanced":0
-},
-{
-"name":"offset",
-"minimum":"",
-"maximum":"",
-"default":"0",
-"description":"From 0 to a camera-specific upper value. Adds about 1/10 the specified value to every pixel.",
-"label":"Offset",
-"type":"number",
-"display":1,
-"advanced":1
-},
-{
-"name":"awb",
-"default":0,
-"description":"Sets Auto White Balance.",
-"label":"Auto White Balance",
-"type":"checkbox",
-"display":1,
-"advanced":0
-},
-{
-"name":"wbr",
-"minimum":"",
-"maximum":"",
-"default":53,
-"description":"Red component for the white balance.<br>When using Auto White Balance, this number is a starting point.",
-"label":"Red Balance",
-"type":"text",
-"display":1,
-"advanced":0
-},
-{
-"name":"wbb",
-"minimum":"",
-"maximum":"",
-"default":90,
-"description":"Blue component for the white balance.<br>When using auto white balance, this number is a starting point.",
-"label":"Blue Balance",
-"type":"text",
-"display":1,
-"advanced":0
 },
 {
 "name":"quality",
@@ -440,18 +534,18 @@
 "label":"Cooling",
 "type":"checkbox",
 "display":1,
-"advanced":0
+"advanced":1
 },
 {
 "name":"targetTemp",
-"minimum":"",
-"maximum":"",
+"minimum":"camera-specific",
+"maximum":"camera-specific",
 "default":0,
 "description":"Sensor's target temperature <i>when cooler is enabled</i> (degrees Celsius).",
 "label":"Target Temp.",
 "type":"number",
 "display":1,
-"advanced":0
+"advanced":1
 },
 {
 "name":"latitude",
@@ -507,15 +601,6 @@
 "description":"Size of the histogram box (X and Y in pixels) and offset from left and top (0-100 percent). Sizes must be even numbers.",
 "label":"Histogram Box",
 "type":"text",
-"display":1,
-"advanced":1
-},
-{
-"name":"showhistogrambox",
-"default":0,
-"description":"Enable to show an outline of the histogram box, useful for determining what the 'Histogram Box' numbers should be.",
-"label":"Show Histogram Box",
-"type":"checkbox",
 "display":1,
 "advanced":1
 },
@@ -645,6 +730,15 @@
 "default":0,
 "description":"Activate to display the mean brightness on the overlay.",
 "label":"Show Mean Brightness",
+"type":"checkbox",
+"display":1,
+"advanced":1
+},
+{
+"name":"showhistogrambox",
+"default":0,
+"description":"Enable to show an outline of the histogram box, useful for determining what the 'Histogram Box' numbers should be.",
+"label":"Show Histogram Box",
 "type":"checkbox",
 "display":1,
 "advanced":1
@@ -839,7 +933,7 @@
 {
 "name":"websiteurl",
 "default":"",
-"description":"The URL of your website, for example: https://www.thomasjacquin.com/allsky.<br>If your camera is not accessible on the Internet, leave this field empty.",
+"description":"The URL of your website, for example: https://www.thomasjacquin.com/allsky.<br>If your camera is not accessible on the Internet, leave this field empty.<br>Must begin with <b>http</b> or <b>https</b>.",
 "label":"Website URL",
 "type":"widetext",
 "display":1,
@@ -849,7 +943,7 @@
 {
 "name":"imageurl",
 "default":"",
-"description":"The URL of the image on your website, for example: https://wwww.thomasjacquin.com/allsky/image.jpg.<br/>Right-click on the image and select <i>Copy Image Address</i>.<br>If your camera is not accessible on the Internet, leave this field empty.",
+"description":"The URL of the image on your website, for example: https://wwww.thomasjacquin.com/allsky/image.jpg.<br/>Right-click on the image and select <i>Copy Image Address</i>.<br>If your camera is not accessible on the Internet, leave this field empty.<br>Must begin with <b>http</b> or <b>https</b>.",
 "label":"Image URL",
 "type":"widetext",
 "display":1,
@@ -887,3 +981,4 @@
 "advanced":0
 }
 ]
+
